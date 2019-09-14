@@ -7,12 +7,13 @@ Slug: manjaro-local-setting
 Authors: yjkim 
 Summary: local
 
-# oh-my-zsh install 
 
+# oh-my-zsh install 
+```sh 
 chsh -s `which zsh`
 echo $SHELL 
 curl -L https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh | sh
-
+```
 # theme change 
 # terminal 환경에서  안깨지는 font 적용 후 확인  
 
@@ -20,43 +21,48 @@ curl -L https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh | 
 
 
 # byobu install 
- 
+```sh
 git clone https://aur.archlinux.org/byobu.git
 cd byobu
 makepkg
 pacman -U *.xz
+```
 
 # kvm install
-
+```sh
 LC_ALL=C lscpu | grep Virtualization
 Virtualization: VT-x
 sudo pacman -S virt-manager qemu vde2 ebtables dnsmasq bridge-utils openbsd-netcat
 sudo systemctl enable libvirtd.service
 sudo systemctl start libvirtd.service
- 
-# virtualbox install 
+```
 
+# virtualbox install 
+```sh
 sudo pacman -S virtualbox virtualbox-ext-vnc virtualbox-guest-dkms virtualbox-host-dkms virtualbox-guest-utils virtualbox-guest-iso virtualbox-sdk 
 
 yjkim@yjkim-pc  ~/문서  uname -r
 4.19.66-1-MANJARO
 sudo pacman -S linux419-virtualbox-host-modules
+```
 
 # vscode hangul encodding 
-
+```sh
 type [Ctrl + ,]
 * linux default terminal 에서 한글이 출력되는 font 로 변경 필요 
 setting > editor.fontFamily : ""DejaVu Sans Mono for Powerline""
-
+```
 
 
 # shutdown freeze solving
 
-https://forum.manjaro.org/t/how-to-troubleshoot-shutdown-delays/5767
+* https://forum.manjaro.org/t/how-to-troubleshoot-shutdown-delays/5767
 
 # install other package 
 
-jq, tree
+```sh 
+pacman -Ss -no-confirm jq, tree
+```
 
 # firefox extension 
 
@@ -65,15 +71,18 @@ jq, tree
 # linux application remove password prompt 
 
 * docker 
-sudo usermod -a -G docker $USER
+```sh
+$ sudo usermod -a -G docker $USER
+```
 
 * libvirtd, virt-manager 
-sudo usermod -a -G libvirt $USER
-
+```sh
+$ sudo usermod -a -G libvirt $USER
+```
 
 # python pip install on manjaro 
 
-```
+```sh 
 python2 --version
 Python 2.7.16
 python3 --version
