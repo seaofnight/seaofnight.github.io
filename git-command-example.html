@@ -92,18 +92,52 @@ $ git add readme.md <span class="c1"># readme.md </span>
 
 
 <ul>
-<li>
-<p>git commit </p>
-</li>
+<li>git commit </li>
+<li>commit 시에는 message 를 날려주면 된다. </li>
+</ul>
+<div class="highlight"><pre><span></span>$ git commit -m <span class="s2">&quot;add pelican source&quot;</span> 
+
+<span class="c1"># 그러면 아래와 같이 로그에 출력이 되며 깃헙에도 메시지가 올라가게 된다. </span>
+$ git log 
+commit 4fb60f7260f17fee8cc5b6e4eaf779d8997a2a5a <span class="o">(</span>HEAD -&gt; gh-pages, origin/gh-pages<span class="o">)</span>
+Author: yjkim &lt;seaofnight@hanmail.net&gt;
+Date:   Sat Sep <span class="m">14</span> <span class="m">18</span>:58:04 <span class="m">2019</span> +0900
+
+    add pelican <span class="nb">source</span>
+</pre></div>
+
+
+<ul>
 <li>
 <p>git branch </p>
 </li>
 <li>
-<p>git push </p>
+<p>git checkout </p>
 </li>
-<li></li>
+<li>git branch 간에 이동을하거나 삭제를 하고자 할떄 사용한다. </li>
 </ul>
-<p>git pull </p>
+<div class="highlight"><pre><span></span>$ git checkout branch_name 
+<span class="c1"># 변경하면 폴더도 해당 브렌치에 맞도록 변경이 된다. </span>
+</pre></div>
+
+
+<ul>
+<li>git push </li>
+<li>local 레포에 있는 변경사항을 원격 레포로 업로드 한다. </li>
+</ul>
+<div class="highlight"><pre><span></span>$ git push origin master 
+<span class="c1"># 다른 레포지토리로 업로드 하고 싶으면 이렇게 하면 된다. </span>
+$ git push -u origin gh-pages
+
+<span class="c1"># 원격 레포의 브랜치 삭제 : git push --delete &lt;remote-name&gt; &lt;branch-name&gt;</span>
+$ git push --delete origin gh 
+</pre></div>
+
+
+<ul>
+<li>git pull </li>
+<li>git 원격 레포에 있는 내용을 가져오는 명령이다.</li>
+</ul>
             <a href="#" class="go-top">Go Top</a>
 <footer class="footer">
     <p>&copy; yjkim &ndash;
