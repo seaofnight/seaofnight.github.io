@@ -7,14 +7,21 @@
 
         <link rel="alternate"  href="https://seaofnight.github.io/feeds/all.atom.xml" type="application/atom+xml" title="yjkim blog Full Atom Feed"/>
 
-        <title>yjkim author // yjkim blog // Man of few words...</title>
+        <title>git-command-example // yjkim blog // Man of few words...</title>
 
 
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/pure/0.3.0/pure-min.css">
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.1.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="https://seaofnight.github.io/theme/css/pure.css">
+    <link rel="stylesheet" href="https://seaofnight.github.io/theme/css/pygments.css">
 
     <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/fitvids/1.0.1/jquery.fitvids.min.js"></script>
+    <script>
+        $(document).ready(function(){
+            $(".content").fitVids();
+        });
+    </script>
 </head>
 
 <body>
@@ -42,44 +49,68 @@
         </div>
     <div class="pure-u">
         <div class="content">
-            <!-- A wrapper for all the blog posts -->
-            <div class="posts">
-                <h1 class="content-subhead">
-Posts by 'yjkim'                </h1>
-                    <section class="post">
-                        <header class="post-header">
-                            <h3><a class="post-title" href="https://seaofnight.github.io/git-command-example.html">git-command-example</a></h3>
-                            <p class="post-meta"><p>git</p></p>
-                            <p class="post-meta">
-                                in <a href="https://seaofnight.github.io/category/git.html">git</a> &middot; 토 14 9월 2019
-                            </p>
-                        </header>
-                    </section>
-                    <section class="post">
-                        <header class="post-header">
-                            <h3><a class="post-title" href="https://seaofnight.github.io/pelican-blog-setting.html">python pelican blog config</a></h3>
-                            <p class="post-meta"><p>pelican</p></p>
-                            <p class="post-meta">
-                                in <a href="https://seaofnight.github.io/category/python.html">Python</a> &middot; 토 14 9월 2019
-                            </p>
-                        </header>
-                    </section>
-<div class="pagination-wrapper content-subhead">
-    <div class="pagination">
-        <div class="pagination-left">
-                &nbsp;
-        </div>
-        <span>Page 1 / 1</span>
-        <div class="pagination-right">
-        </div>
-    </div>
-</div><footer class="footer">
+            <section class="post">
+                <header class="post-header">
+                    <h1>git-command-example</h1>
+                        <p class="post-meta">
+                            // under                                 <a class="post-category" href="https://seaofnight.github.io/tag/git.html">git</a>
+                        </p>
+                </header>
+            </section>
+            <h1>common 명령어</h1>
+<ul>
+<li>git init </li>
+<li>
+<p>일반 폴더에서 깃 저장소로 만들어 준다. </p>
+</li>
+<li>
+<p>git config </p>
+</li>
+<li>깃 저장소의 설정을 변경한다. 예시로 유저명, 메일등을 설정 할 수 있다. </li>
+</ul>
+<div class="highlight"><pre><span></span>git config --global user.name <span class="s2">&quot;yjkim1@ntels.com&quot;</span> 
+git config --global user.email <span class="s2">&quot;yjkim1@ntels.com&quot;</span>
+</pre></div>
+
+
+<ul>
+<li>
+<p>git help </p>
+</li>
+<li>
+<p>git status </p>
+</li>
+</ul>
+<h1>upload, download 관련</h1>
+<ul>
+<li>git add</li>
+<li>git 에 업로드 하기 위하여는 add commit 의 순서를 거치는데 우리가 어떤 파일을 로컬 레포에 저장할 것이다 라는 명령어이다. </li>
+</ul>
+<div class="highlight"><pre><span></span>$ git add . <span class="c1"># current folder </span>
+$ git add readme.md <span class="c1"># readme.md </span>
+</pre></div>
+
+
+<ul>
+<li>
+<p>git commit </p>
+</li>
+<li>
+<p>git branch </p>
+</li>
+<li>
+<p>git push </p>
+</li>
+<li></li>
+</ul>
+<p>git pull </p>
+            <a href="#" class="go-top">Go Top</a>
+<footer class="footer">
     <p>&copy; yjkim &ndash;
         Built with <a href="https://github.com/PurePelicanTheme/pure-single">Pure Theme</a>
         for <a href="http://blog.getpelican.com/">Pelican</a>
     </p>
-</footer>            </div>
-        </div>
+</footer>        </div>
     </div>
     </div>
     <script>
