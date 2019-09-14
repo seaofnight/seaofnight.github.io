@@ -58,56 +58,81 @@
                 </header>
             </section>
             <h1>oh-my-zsh install</h1>
-<p>chsh -s <code>which zsh</code>
-echo $SHELL 
-curl -L https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh | sh</p>
+<div class="highlight"><pre><span></span>chsh -s <span class="sb">`</span>which zsh<span class="sb">`</span>
+<span class="nb">echo</span> <span class="nv">$SHELL</span> 
+curl -L https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh <span class="p">|</span> sh
+</pre></div>
+
+
 <h1>theme change</h1>
 <h1>terminal 환경에서  안깨지는 font 적용 후 확인</h1>
 <h1>zsh autosuggestion install</h1>
 <h1>byobu install</h1>
-<p>git clone https://aur.archlinux.org/byobu.git
-cd byobu
+<div class="highlight"><pre><span></span>git clone https://aur.archlinux.org/byobu.git
+<span class="nb">cd</span> byobu
 makepkg
-pacman -U *.xz</p>
+pacman -U *.xz
+</pre></div>
+
+
 <h1>kvm install</h1>
-<p>LC_ALL=C lscpu | grep Virtualization
+<div class="highlight"><pre><span></span><span class="nv">LC_ALL</span><span class="o">=</span>C lscpu <span class="p">|</span> grep Virtualization
 Virtualization: VT-x
 sudo pacman -S virt-manager qemu vde2 ebtables dnsmasq bridge-utils openbsd-netcat
-sudo systemctl enable libvirtd.service
-sudo systemctl start libvirtd.service</p>
+sudo systemctl <span class="nb">enable</span> libvirtd.service
+sudo systemctl start libvirtd.service
+</pre></div>
+
+
 <h1>virtualbox install</h1>
-<p>sudo pacman -S virtualbox virtualbox-ext-vnc virtualbox-guest-dkms virtualbox-host-dkms virtualbox-guest-utils virtualbox-guest-iso virtualbox-sdk </p>
-<p>yjkim@yjkim-pc  ~/문서  uname -r
-4.19.66-1-MANJARO
-sudo pacman -S linux419-virtualbox-host-modules</p>
+<div class="highlight"><pre><span></span>sudo pacman -S virtualbox virtualbox-ext-vnc virtualbox-guest-dkms virtualbox-host-dkms virtualbox-guest-utils virtualbox-guest-iso virtualbox-sdk 
+
+yjkim@yjkim-pc  ~/문서  uname -r
+<span class="m">4</span>.19.66-1-MANJARO
+sudo pacman -S linux419-virtualbox-host-modules
+</pre></div>
+
+
 <h1>vscode hangul encodding</h1>
-<p>type [Ctrl + ,]
+<div class="highlight"><pre><span></span><span class="nb">type</span> <span class="o">[</span>Ctrl + ,<span class="o">]</span>
 * linux default terminal 에서 한글이 출력되는 font 로 변경 필요 
-setting &gt; editor.fontFamily : ""DejaVu Sans Mono for Powerline""</p>
+setting &gt; editor.fontFamily : <span class="s2">&quot;&quot;</span>DejaVu Sans Mono <span class="k">for</span> Powerline<span class="s2">&quot;&quot;</span>
+</pre></div>
+
+
 <h1>shutdown freeze solving</h1>
-<p>https://forum.manjaro.org/t/how-to-troubleshoot-shutdown-delays/5767</p>
+<ul>
+<li>https://forum.manjaro.org/t/how-to-troubleshoot-shutdown-delays/5767</li>
+</ul>
 <h1>install other package</h1>
-<p>jq, tree</p>
+<div class="highlight"><pre><span></span>pacman -Ss -no-confirm jq, tree
+</pre></div>
+
+
 <h1>firefox extension</h1>
 <ul>
 <li>translate</li>
 </ul>
 <h1>linux application remove password prompt</h1>
 <ul>
-<li>
-<p>docker 
-sudo usermod -a -G docker $USER</p>
-</li>
-<li>
-<p>libvirtd, virt-manager 
-sudo usermod -a -G libvirt $USER</p>
-</li>
+<li>docker </li>
 </ul>
+<div class="highlight"><pre><span></span>$ sudo usermod -a -G docker <span class="nv">$USER</span>
+</pre></div>
+
+
+<ul>
+<li>libvirtd, virt-manager </li>
+</ul>
+<div class="highlight"><pre><span></span>$ sudo usermod -a -G libvirt <span class="nv">$USER</span>
+</pre></div>
+
+
 <h1>python pip install on manjaro</h1>
 <div class="highlight"><pre><span></span>python2 --version
-Python 2.7.16
+Python <span class="m">2</span>.7.16
 python3 --version
-Python 3.7.4
+Python <span class="m">3</span>.7.4
 
 sudo pacman -S python-pip --noconfirm
 </pre></div>

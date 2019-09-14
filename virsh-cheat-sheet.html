@@ -1,0 +1,154 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="yjkim blog, Man of few words...">
+
+        <link rel="alternate"  href="https://seaofnight.github.io/feeds/all.atom.xml" type="application/atom+xml" title="yjkim blog Full Atom Feed"/>
+
+        <title>virsh-cheat-sheet // yjkim blog // Man of few words...</title>
+
+
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/pure/0.3.0/pure-min.css">
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.1.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://seaofnight.github.io/theme/css/pure.css">
+    <link rel="stylesheet" href="https://seaofnight.github.io/theme/css/pygments.css">
+
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/fitvids/1.0.1/jquery.fitvids.min.js"></script>
+    <script>
+        $(document).ready(function(){
+            $(".content").fitVids();
+        });
+    </script>
+</head>
+
+<body>
+    <div class="pure-g-r" id="layout">
+        <div class="sidebar pure-u">
+            <div class="cover-img" style="background-image: url('/images/sidebar.jpg')">
+                <div class="cover-body">
+                    <header class="header">
+                        <hgroup>
+                            <h1 class="brand-main"><a href="https://seaofnight.github.io">yjkim blog</a></h1>
+                            <p class="tagline">Man of few words...</p>
+                                <p class="links"><a href="/archives.html">Archives</a></p>
+                                <p class="social">
+                                    <a href="">
+                                        <i class="fa fa-twitter fa-3x"></i>
+                                    </a>
+                                    <a href="https://github.com/seaofnight">
+                                        <i class="fa fa-github fa-3x"></i>
+                                    </a>
+                                </p>
+                        </hgroup>
+                    </header>
+                </div>
+            </div>
+        </div>
+    <div class="pure-u">
+        <div class="content">
+            <section class="post">
+                <header class="post-header">
+                    <h1>virsh-cheat-sheet</h1>
+                        <p class="post-meta">
+                            // under                                 <a class="post-category" href="https://seaofnight.github.io/tag/virsh.html">virsh</a>
+                                <a class="post-category" href="https://seaofnight.github.io/tag/cheat-sheet.html">cheat-sheet</a>
+                        </p>
+                </header>
+            </section>
+            <h1>list</h1>
+<p>virsh list 
+virsh list --all</p>
+<h1>start</h1>
+<p>virsh start ${vm_id}</p>
+<h1>machine view</h1>
+<p>virsh dominfo ${vm_id}</p>
+<h2>machine get domid</h2>
+<p>virsh domid ${vm_nm}</p>
+<h2>machine get domname</h2>
+<p>virsh domname ${vm_id}</p>
+<h1>machine down</h1>
+<p>virsh shutdown ${vm_id} </p>
+<h1>machine reboot</h1>
+<p>virsh reboot ${vm_id} </p>
+<h1>machine remove</h1>
+<p>virsh destroy ${vm_id} </p>
+<h1>machine remove</h1>
+<p>virsh undefine ${vm_id}</p>
+<h1>machine autostart loop</h1>
+<p>for i in $$(virsh list --uuid) ; do virsh autostart $i; done</p>
+<h1>machine create</h1>
+<p>{
+    NODE_NAME=provision
+    VRAM=1024
+    VCPU=2
+    OSTYPE=linux
+    OSVARIANT=virtio26
+    DISK="path=/data/kvm_disk/container-linux/container-linux1.qcow2,format=qcow2,bus=virtio"
+    NETWORK="network:ovs-network,mac=52:54:00:fe:b3:c0"
+    OUTPUT=/var/lib/libvirt/container-linux/container-linux1/domain.xml</p>
+<div class="highlight"><pre><span></span><span class="n">virt</span><span class="o">-</span><span class="n">install</span> 
+    <span class="o">--</span><span class="n">connect</span> <span class="n">qemu</span><span class="p">:</span><span class="o">///</span><span class="n">system</span> \
+    <span class="o">--</span><span class="kn">import</span> \
+    <span class="o">--</span><span class="n">name</span> <span class="err">$</span><span class="p">{</span><span class="n">NODE_NAME</span><span class="p">}</span> \
+    <span class="o">--</span><span class="n">ram</span> <span class="err">$</span><span class="p">{</span><span class="n">VRAM</span><span class="p">}</span> \ 
+    <span class="o">--</span><span class="n">vcpus</span> <span class="err">$</span><span class="p">{</span><span class="n">VCPU</span><span class="p">}</span> \
+    <span class="o">--</span><span class="n">os</span><span class="o">-</span><span class="nb">type</span><span class="o">=</span><span class="err">$</span><span class="p">{</span><span class="n">OSTYPE</span><span class="p">}</span> \
+    <span class="o">--</span><span class="n">os</span><span class="o">-</span><span class="n">variant</span><span class="o">=</span><span class="err">$</span><span class="p">{</span><span class="n">OSVARIANT</span><span class="p">}</span> \
+    <span class="o">--</span><span class="n">disk</span> <span class="err">$</span><span class="p">{</span><span class="n">DISK</span><span class="p">}</span> \
+    <span class="o">--</span><span class="n">network</span> <span class="err">$</span><span class="p">{</span><span class="n">NETWORK</span><span class="p">}</span>
+    <span class="o">--</span><span class="n">vnc</span> <span class="o">--</span><span class="n">noautoconsole</span> \
+    <span class="o">--</span><span class="k">print</span><span class="o">-</span><span class="n">xml</span> <span class="o">&amp;</span><span class="n">gt</span><span class="p">;</span> <span class="err">$</span><span class="p">{</span><span class="n">OUTPUT</span><span class="p">}</span>
+
+<span class="n">sed</span> <span class="o">-</span><span class="n">ie</span> <span class="s1">&#39;s|type=&quot;kvm&quot;|type=&quot;kvm&quot; xmlns:qemu=&quot;http://libvirt.org/schemas/domain/qemu/1.0&quot;|&#39;</span> <span class="s2">&quot;${OUTPUT}&quot;</span>
+<span class="n">sed</span> <span class="o">-</span><span class="n">i</span> <span class="s2">&quot;/&amp;lt;\/devices&amp;gt;/a &amp;lt;qemu:commandline&amp;gt;</span><span class="se">\n</span><span class="s2">  &amp;lt;qemu:arg value=&#39;-fw_cfg&#39;/&amp;gt;</span><span class="se">\n</span><span class="s2">  &amp;lt;qemu:arg value=&#39;name=opt/com.coreos/config,file=${ignition_file}&#39;/&amp;gt;</span><span class="se">\n</span><span class="s2">&amp;lt;/qemu:commandline&amp;gt;&quot;</span> <span class="s2">&quot;${OUTPUT}&quot;</span>
+
+<span class="n">virsh</span> <span class="n">define</span> <span class="err">$</span><span class="p">{</span><span class="n">OUTPUT</span><span class="p">}</span>
+<span class="n">virsh</span> <span class="n">start</span> <span class="err">$</span><span class="p">{</span><span class="n">NODE_NAME</span><span class="p">}</span>
+</pre></div>
+
+
+<p>}</p>
+<h1>view kvm network command</h1>
+<p>virsh net-list </p>
+<p>virsh net-destroy ${netid | name}</p>
+<p>virsh net-edit ${network-name}</p>
+<p>virsh net-create ${network-spec-file}</p>
+            <a href="#" class="go-top">Go Top</a>
+<footer class="footer">
+    <p>&copy; yjkim &ndash;
+        Built with <a href="https://github.com/PurePelicanTheme/pure-single">Pure Theme</a>
+        for <a href="http://blog.getpelican.com/">Pelican</a>
+    </p>
+</footer>        </div>
+    </div>
+    </div>
+    <script>
+        var $top = $('.go-top');
+
+        // Show or hide the sticky footer button
+        $(window).scroll(function() {
+            if ($(this).scrollTop() > 200) {
+                $top.fadeIn(200);
+            } else {
+                $top.fadeOut(200);
+            }
+        });
+
+        // Animate the scroll to top
+        $top.click(function(event) {
+            event.preventDefault();
+            $('html, body').animate({scrollTop: 0}, 300);
+        })
+
+        // Makes sure that the href="#" attached to the <a> elements
+        // don't scroll you back up the page.
+        $('body').on('click', 'a[href="#"]', function(event) {
+            event.preventDefault();
+        });
+    </script>
+
+</body>
+</html>

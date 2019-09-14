@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom"><title>yjkim blog - virsh</title><link href="https://seaofnight.github.io/" rel="alternate"></link><link href="https://seaofnight.github.io/feeds/virsh.atom.xml" rel="self"></link><id>https://seaofnight.github.io/</id><updated>2019-09-14T10:20:00+09:00</updated><entry><title>virsh-cheat-sheet</title><link href="https://seaofnight.github.io/virsh-cheat-sheet.html" rel="alternate"></link><published>2019-09-14T10:20:00+09:00</published><updated>2019-09-14T10:20:00+09:00</updated><author><name>yjkim</name></author><id>tag:seaofnight.github.io,2019-09-14:/virsh-cheat-sheet.html</id><summary type="html">&lt;p&gt;virsh,cheat-sheet&lt;/p&gt;</summary><content type="html">&lt;h1&gt;list&lt;/h1&gt;
+&lt;p&gt;virsh list 
+virsh list --all&lt;/p&gt;
+&lt;h1&gt;start&lt;/h1&gt;
+&lt;p&gt;virsh start ${vm_id}&lt;/p&gt;
+&lt;h1&gt;machine view&lt;/h1&gt;
+&lt;p&gt;virsh dominfo ${vm_id}&lt;/p&gt;
+&lt;h2&gt;machine get domid&lt;/h2&gt;
+&lt;p&gt;virsh domid ${vm_nm}&lt;/p&gt;
+&lt;h2&gt;machine get domname&lt;/h2&gt;
+&lt;p&gt;virsh domname ${vm_id}&lt;/p&gt;
+&lt;h1&gt;machine down&lt;/h1&gt;
+&lt;p&gt;virsh shutdown ${vm_id} &lt;/p&gt;
+&lt;h1&gt;machine reboot&lt;/h1&gt;
+&lt;p&gt;virsh reboot ${vm_id} &lt;/p&gt;
+&lt;h1&gt;machine remove&lt;/h1&gt;
+&lt;p&gt;virsh destroy ${vm_id} &lt;/p&gt;
+&lt;h1&gt;machine remove&lt;/h1&gt;
+&lt;p&gt;virsh undefine ${vm_id}&lt;/p&gt;
+&lt;h1&gt;machine autostart loop&lt;/h1&gt;
+&lt;p&gt;for i in $$(virsh list --uuid) ; do virsh autostart $i; done&lt;/p&gt;
+&lt;h1&gt;machine create&lt;/h1&gt;
+&lt;p&gt;{
+    NODE_NAME=provision
+    VRAM=1024
+    VCPU=2
+    OSTYPE=linux
+    OSVARIANT=virtio26
+    DISK="path=/data/kvm_disk/container-linux/container-linux1.qcow2,format=qcow2,bus=virtio"
+    NETWORK="network:ovs-network,mac=52:54:00:fe:b3:c0"
+    OUTPUT=/var/lib/libvirt/container-linux/container-linux1/domain.xml&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="n"&gt;virt&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;install&lt;/span&gt; 
+    &lt;span class="o"&gt;--&lt;/span&gt;&lt;span class="n"&gt;connect&lt;/span&gt; &lt;span class="n"&gt;qemu&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="o"&gt;///&lt;/span&gt;&lt;span class="n"&gt;system&lt;/span&gt; \
+    &lt;span class="o"&gt;--&lt;/span&gt;&lt;span class="kn"&gt;import&lt;/span&gt; \
+    &lt;span class="o"&gt;--&lt;/span&gt;&lt;span class="n"&gt;name&lt;/span&gt; &lt;span class="err"&gt;$&lt;/span&gt;&lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="n"&gt;NODE_NAME&lt;/span&gt;&lt;span class="p"&gt;}&lt;/span&gt; \
+    &lt;span class="o"&gt;--&lt;/span&gt;&lt;span class="n"&gt;ram&lt;/span&gt; &lt;span class="err"&gt;$&lt;/span&gt;&lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="n"&gt;VRAM&lt;/span&gt;&lt;span class="p"&gt;}&lt;/span&gt; \ 
+    &lt;span class="o"&gt;--&lt;/span&gt;&lt;span class="n"&gt;vcpus&lt;/span&gt; &lt;span class="err"&gt;$&lt;/span&gt;&lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="n"&gt;VCPU&lt;/span&gt;&lt;span class="p"&gt;}&lt;/span&gt; \
+    &lt;span class="o"&gt;--&lt;/span&gt;&lt;span class="n"&gt;os&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="nb"&gt;type&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="err"&gt;$&lt;/span&gt;&lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="n"&gt;OSTYPE&lt;/span&gt;&lt;span class="p"&gt;}&lt;/span&gt; \
+    &lt;span class="o"&gt;--&lt;/span&gt;&lt;span class="n"&gt;os&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;variant&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="err"&gt;$&lt;/span&gt;&lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="n"&gt;OSVARIANT&lt;/span&gt;&lt;span class="p"&gt;}&lt;/span&gt; \
+    &lt;span class="o"&gt;--&lt;/span&gt;&lt;span class="n"&gt;disk&lt;/span&gt; &lt;span class="err"&gt;$&lt;/span&gt;&lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="n"&gt;DISK&lt;/span&gt;&lt;span class="p"&gt;}&lt;/span&gt; \
+    &lt;span class="o"&gt;--&lt;/span&gt;&lt;span class="n"&gt;network&lt;/span&gt; &lt;span class="err"&gt;$&lt;/span&gt;&lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="n"&gt;NETWORK&lt;/span&gt;&lt;span class="p"&gt;}&lt;/span&gt;
+    &lt;span class="o"&gt;--&lt;/span&gt;&lt;span class="n"&gt;vnc&lt;/span&gt; &lt;span class="o"&gt;--&lt;/span&gt;&lt;span class="n"&gt;noautoconsole&lt;/span&gt; \
+    &lt;span class="o"&gt;--&lt;/span&gt;&lt;span class="k"&gt;print&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;xml&lt;/span&gt; &lt;span class="o"&gt;&amp;amp;&lt;/span&gt;&lt;span class="n"&gt;gt&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="err"&gt;$&lt;/span&gt;&lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="n"&gt;OUTPUT&lt;/span&gt;&lt;span class="p"&gt;}&lt;/span&gt;
+
+&lt;span class="n"&gt;sed&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;ie&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;s|type=&amp;quot;kvm&amp;quot;|type=&amp;quot;kvm&amp;quot; xmlns:qemu=&amp;quot;http://libvirt.org/schemas/domain/qemu/1.0&amp;quot;|&amp;#39;&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;${OUTPUT}&amp;quot;&lt;/span&gt;
+&lt;span class="n"&gt;sed&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;i&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;/&amp;amp;lt;\/devices&amp;amp;gt;/a &amp;amp;lt;qemu:commandline&amp;amp;gt;&lt;/span&gt;&lt;span class="se"&gt;\n&lt;/span&gt;&lt;span class="s2"&gt;  &amp;amp;lt;qemu:arg value=&amp;#39;-fw_cfg&amp;#39;/&amp;amp;gt;&lt;/span&gt;&lt;span class="se"&gt;\n&lt;/span&gt;&lt;span class="s2"&gt;  &amp;amp;lt;qemu:arg value=&amp;#39;name=opt/com.coreos/config,file=${ignition_file}&amp;#39;/&amp;amp;gt;&lt;/span&gt;&lt;span class="se"&gt;\n&lt;/span&gt;&lt;span class="s2"&gt;&amp;amp;lt;/qemu:commandline&amp;amp;gt;&amp;quot;&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;${OUTPUT}&amp;quot;&lt;/span&gt;
+
+&lt;span class="n"&gt;virsh&lt;/span&gt; &lt;span class="n"&gt;define&lt;/span&gt; &lt;span class="err"&gt;$&lt;/span&gt;&lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="n"&gt;OUTPUT&lt;/span&gt;&lt;span class="p"&gt;}&lt;/span&gt;
+&lt;span class="n"&gt;virsh&lt;/span&gt; &lt;span class="n"&gt;start&lt;/span&gt; &lt;span class="err"&gt;$&lt;/span&gt;&lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="n"&gt;NODE_NAME&lt;/span&gt;&lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;}&lt;/p&gt;
+&lt;h1&gt;view kvm network command&lt;/h1&gt;
+&lt;p&gt;virsh net-list &lt;/p&gt;
+&lt;p&gt;virsh net-destroy ${netid | name}&lt;/p&gt;
+&lt;p&gt;virsh net-edit ${network-name}&lt;/p&gt;
+&lt;p&gt;virsh net-create ${network-spec-file}&lt;/p&gt;</content><category term="virsh"></category><category term="cheat-sheet"></category></entry></feed>
