@@ -114,9 +114,11 @@ curl -L https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh &l
 &lt;/pre&gt;&lt;/div&gt;
 
 
-&lt;h1&gt;theme change&lt;/h1&gt;
-&lt;h1&gt;terminal 환경에서  안깨지는 font 적용 후 확인&lt;/h1&gt;
-&lt;h1&gt;zsh autosuggestion install&lt;/h1&gt;
+&lt;ul&gt;
+&lt;li&gt;theme change &lt;/li&gt;
+&lt;li&gt;terminal 환경에서  안깨지는 font 적용 후 확인  &lt;/li&gt;
+&lt;li&gt;zsh autosuggestion install &lt;/li&gt;
+&lt;/ul&gt;
 &lt;h1&gt;byobu install&lt;/h1&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;git clone https://aur.archlinux.org/byobu.git
 &lt;span class="nb"&gt;cd&lt;/span&gt; byobu
