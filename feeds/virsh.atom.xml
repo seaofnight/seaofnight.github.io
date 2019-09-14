@@ -1,5 +1,66 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>yjkim blog - virsh</title><link href="https://seaofnight.github.io/" rel="alternate"></link><link href="https://seaofnight.github.io/feeds/virsh.atom.xml" rel="self"></link><id>https://seaofnight.github.io/</id><updated>2019-09-14T10:20:00+09:00</updated><entry><title>virsh-cheat-sheet</title><link href="https://seaofnight.github.io/virsh-cheat-sheet.html" rel="alternate"></link><published>2019-09-14T10:20:00+09:00</published><updated>2019-09-14T10:20:00+09:00</updated><author><name>yjkim</name></author><id>tag:seaofnight.github.io,2019-09-14:/virsh-cheat-sheet.html</id><summary type="html">&lt;p&gt;virsh,cheat-sheet&lt;/p&gt;</summary><content type="html">&lt;h1&gt;list&lt;/h1&gt;
+<feed xmlns="http://www.w3.org/2005/Atom"><title>yjkim blog - virsh</title><link href="https://seaofnight.github.io/" rel="alternate"></link><link href="https://seaofnight.github.io/feeds/virsh.atom.xml" rel="self"></link><id>https://seaofnight.github.io/</id><updated>2019-09-14T10:20:00+09:00</updated><entry><title>tmux-byobu-cheat-sheet</title><link href="https://seaofnight.github.io/tmux-byobu-cheat-sheet.html" rel="alternate"></link><published>2019-09-14T10:20:00+09:00</published><updated>2019-09-14T10:20:00+09:00</updated><author><name>yjkim</name></author><id>tag:seaofnight.github.io,2019-09-14:/tmux-byobu-cheat-sheet.html</id><summary type="html">&lt;p&gt;tmux-byobu,cheat-sheet&lt;/p&gt;</summary><content type="html">&lt;h1&gt;tmux&lt;/h1&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;개요 &lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;tmux 는 screen 멀티플렉서 프로그램으로 gnu환경에서 terminal 을 분리 활용 할 수 있는 프로그램이다. &lt;/li&gt;
+&lt;li&gt;tmux 는 단축키를 이용하기위하 호출하는 명령어가 있는데 기본적으로 Ctrl + b 를 누르면 단축키가 입력 가능하다. &lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;shoutcut&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;# 스크롤 
+Ctrl + b [
+# 화면 종분할 
+Ctrl + b &amp;quot;
+# 화면 횡분할
+Ctrl + b %
+
+# 입력 커서의 화면이동 
+Ctrl + b 화살키 (1번만 이동)
+
+# 화면 다음화면으로 
+Ctrl + b o 
+
+# 화면 사이즈 조절 방법 
+
+(ctrl + b, :) 
+## 하단 입력창에 타이핑
+resize-pane -L 10 
+            -R 10 
+            -D 10 
+            -U 10 
+
+# 화면 레이아웃 변경 
+ctrl + b, spacebar 
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h1&gt;byobu&lt;/h1&gt;
+&lt;ul&gt;
+&lt;li&gt;byobu 는 백엔드로 screen, tmux 등 스크린 멀티플렉서를 내장하여 실행하도록 되어있으며 &lt;/li&gt;
+&lt;li&gt;단축키가 screen, tmux에 비하여 심플하다. &lt;/li&gt;
+&lt;li&gt;그래서 우선 로컬PC에는 byobu 개발용 서버에는 screen or tmux 중에 하나를 깔고 실행하며 운영에는.. 깔지 않는다. &lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="c1"&gt;# new window &lt;/span&gt;
+F2
+
+&lt;span class="c1"&gt;# next window &lt;/span&gt;
+F4
+
+&lt;span class="c1"&gt;# preous window &lt;/span&gt;
+F3 
+
+&lt;span class="c1"&gt;# 화면 분할&lt;/span&gt;
+Ctrl + F2 
+Shift + F2 
+
+&lt;span class="c1"&gt;# 여러 화면에 동일 Command 입력 &lt;/span&gt;
+Shift + F9
+&lt;/pre&gt;&lt;/div&gt;</content><category term="tmux"></category><category term="byobu"></category><category term="cheat-sheet"></category></entry><entry><title>virsh-cheat-sheet</title><link href="https://seaofnight.github.io/virsh-cheat-sheet.html" rel="alternate"></link><published>2019-09-14T10:20:00+09:00</published><updated>2019-09-14T10:20:00+09:00</updated><author><name>yjkim</name></author><id>tag:seaofnight.github.io,2019-09-14:/virsh-cheat-sheet.html</id><summary type="html">&lt;p&gt;virsh,cheat-sheet&lt;/p&gt;</summary><content type="html">&lt;h1&gt;list&lt;/h1&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;virsh list 
 virsh list --all
 &lt;/pre&gt;&lt;/div&gt;
