@@ -59,63 +59,98 @@
                 </header>
             </section>
             <h1>list</h1>
-<p>virsh list 
-virsh list --all</p>
-<h1>start</h1>
-<p>virsh start ${vm_id}</p>
-<h1>machine view</h1>
-<p>virsh dominfo ${vm_id}</p>
-<h2>machine get domid</h2>
-<p>virsh domid ${vm_nm}</p>
-<h2>machine get domname</h2>
-<p>virsh domname ${vm_id}</p>
-<h1>machine down</h1>
-<p>virsh shutdown ${vm_id} </p>
-<h1>machine reboot</h1>
-<p>virsh reboot ${vm_id} </p>
-<h1>machine remove</h1>
-<p>virsh destroy ${vm_id} </p>
-<h1>machine remove</h1>
-<p>virsh undefine ${vm_id}</p>
-<h1>machine autostart loop</h1>
-<p>for i in $$(virsh list --uuid) ; do virsh autostart $i; done</p>
-<h1>machine create</h1>
-<p>{
-    NODE_NAME=provision
-    VRAM=1024
-    VCPU=2
-    OSTYPE=linux
-    OSVARIANT=virtio26
-    DISK="path=/data/kvm_disk/container-linux/container-linux1.qcow2,format=qcow2,bus=virtio"
-    NETWORK="network:ovs-network,mac=52:54:00:fe:b3:c0"
-    OUTPUT=/var/lib/libvirt/container-linux/container-linux1/domain.xml</p>
-<div class="highlight"><pre><span></span><span class="n">virt</span><span class="o">-</span><span class="n">install</span> 
-    <span class="o">--</span><span class="n">connect</span> <span class="n">qemu</span><span class="p">:</span><span class="o">///</span><span class="n">system</span> \
-    <span class="o">--</span><span class="kn">import</span> \
-    <span class="o">--</span><span class="n">name</span> <span class="err">$</span><span class="p">{</span><span class="n">NODE_NAME</span><span class="p">}</span> \
-    <span class="o">--</span><span class="n">ram</span> <span class="err">$</span><span class="p">{</span><span class="n">VRAM</span><span class="p">}</span> \ 
-    <span class="o">--</span><span class="n">vcpus</span> <span class="err">$</span><span class="p">{</span><span class="n">VCPU</span><span class="p">}</span> \
-    <span class="o">--</span><span class="n">os</span><span class="o">-</span><span class="nb">type</span><span class="o">=</span><span class="err">$</span><span class="p">{</span><span class="n">OSTYPE</span><span class="p">}</span> \
-    <span class="o">--</span><span class="n">os</span><span class="o">-</span><span class="n">variant</span><span class="o">=</span><span class="err">$</span><span class="p">{</span><span class="n">OSVARIANT</span><span class="p">}</span> \
-    <span class="o">--</span><span class="n">disk</span> <span class="err">$</span><span class="p">{</span><span class="n">DISK</span><span class="p">}</span> \
-    <span class="o">--</span><span class="n">network</span> <span class="err">$</span><span class="p">{</span><span class="n">NETWORK</span><span class="p">}</span>
-    <span class="o">--</span><span class="n">vnc</span> <span class="o">--</span><span class="n">noautoconsole</span> \
-    <span class="o">--</span><span class="k">print</span><span class="o">-</span><span class="n">xml</span> <span class="o">&amp;</span><span class="n">gt</span><span class="p">;</span> <span class="err">$</span><span class="p">{</span><span class="n">OUTPUT</span><span class="p">}</span>
-
-<span class="n">sed</span> <span class="o">-</span><span class="n">ie</span> <span class="s1">&#39;s|type=&quot;kvm&quot;|type=&quot;kvm&quot; xmlns:qemu=&quot;http://libvirt.org/schemas/domain/qemu/1.0&quot;|&#39;</span> <span class="s2">&quot;${OUTPUT}&quot;</span>
-<span class="n">sed</span> <span class="o">-</span><span class="n">i</span> <span class="s2">&quot;/&amp;lt;\/devices&amp;gt;/a &amp;lt;qemu:commandline&amp;gt;</span><span class="se">\n</span><span class="s2">  &amp;lt;qemu:arg value=&#39;-fw_cfg&#39;/&amp;gt;</span><span class="se">\n</span><span class="s2">  &amp;lt;qemu:arg value=&#39;name=opt/com.coreos/config,file=${ignition_file}&#39;/&amp;gt;</span><span class="se">\n</span><span class="s2">&amp;lt;/qemu:commandline&amp;gt;&quot;</span> <span class="s2">&quot;${OUTPUT}&quot;</span>
-
-<span class="n">virsh</span> <span class="n">define</span> <span class="err">$</span><span class="p">{</span><span class="n">OUTPUT</span><span class="p">}</span>
-<span class="n">virsh</span> <span class="n">start</span> <span class="err">$</span><span class="p">{</span><span class="n">NODE_NAME</span><span class="p">}</span>
+<div class="highlight"><pre><span></span>virsh list 
+virsh list --all
 </pre></div>
 
 
-<p>}</p>
+<h1>start</h1>
+<div class="highlight"><pre><span></span>virsh start <span class="si">${</span><span class="nv">vm_id</span><span class="si">}</span>
+</pre></div>
+
+
+<h1>machine view</h1>
+<div class="highlight"><pre><span></span>virsh dominfo <span class="si">${</span><span class="nv">vm_id</span><span class="si">}</span>
+</pre></div>
+
+
+<h2>machine get domid</h2>
+<div class="highlight"><pre><span></span>virsh domid <span class="si">${</span><span class="nv">vm_nm</span><span class="si">}</span>
+</pre></div>
+
+
+<h2>machine get domname</h2>
+<div class="highlight"><pre><span></span>virsh domname <span class="si">${</span><span class="nv">vm_id</span><span class="si">}</span>
+</pre></div>
+
+
+<h1>machine down</h1>
+<div class="highlight"><pre><span></span>virsh shutdown <span class="si">${</span><span class="nv">vm_id</span><span class="si">}</span> 
+</pre></div>
+
+
+<h1>machine reboot</h1>
+<div class="highlight"><pre><span></span>virsh reboot <span class="si">${</span><span class="nv">vm_id</span><span class="si">}</span> 
+</pre></div>
+
+
+<h1>machine remove</h1>
+<div class="highlight"><pre><span></span>virsh destroy <span class="si">${</span><span class="nv">vm_id</span><span class="si">}</span> 
+</pre></div>
+
+
+<h1>machine remove</h1>
+<div class="highlight"><pre><span></span>virsh undefine <span class="si">${</span><span class="nv">vm_id</span><span class="si">}</span>
+</pre></div>
+
+
+<h1>machine autostart loop</h1>
+<div class="highlight"><pre><span></span><span class="k">for</span> i in <span class="nv">$$</span><span class="o">(</span>virsh list --uuid<span class="o">)</span> <span class="p">;</span> <span class="k">do</span> virsh autostart <span class="nv">$i</span><span class="p">;</span> <span class="k">done</span>
+</pre></div>
+
+
+<h1>machine create</h1>
+<div class="highlight"><pre><span></span><span class="o">{</span>
+    <span class="nv">NODE_NAME</span><span class="o">=</span>provision
+    <span class="nv">VRAM</span><span class="o">=</span><span class="m">1024</span>
+    <span class="nv">VCPU</span><span class="o">=</span><span class="m">2</span>
+    <span class="nv">OSTYPE</span><span class="o">=</span>linux
+    <span class="nv">OSVARIANT</span><span class="o">=</span>virtio26
+    <span class="nv">DISK</span><span class="o">=</span><span class="s2">&quot;path=/data/kvm_disk/container-linux/container-linux1.qcow2,format=qcow2,bus=virtio&quot;</span>
+    <span class="nv">NETWORK</span><span class="o">=</span><span class="s2">&quot;network:ovs-network,mac=52:54:00:fe:b3:c0&quot;</span>
+    <span class="nv">OUTPUT</span><span class="o">=</span>/var/lib/libvirt/container-linux/container-linux1/domain.xml
+
+    virt-install 
+        --connect qemu:///system <span class="se">\</span>
+        --import <span class="se">\</span>
+        --name <span class="si">${</span><span class="nv">NODE_NAME</span><span class="si">}</span> <span class="se">\</span>
+        --ram <span class="si">${</span><span class="nv">VRAM</span><span class="si">}</span> <span class="se">\ </span>
+        --vcpus <span class="si">${</span><span class="nv">VCPU</span><span class="si">}</span> <span class="se">\</span>
+        --os-type<span class="o">=</span><span class="si">${</span><span class="nv">OSTYPE</span><span class="si">}</span> <span class="se">\</span>
+        --os-variant<span class="o">=</span><span class="si">${</span><span class="nv">OSVARIANT</span><span class="si">}</span> <span class="se">\</span>
+        --disk <span class="si">${</span><span class="nv">DISK</span><span class="si">}</span> <span class="se">\</span>
+        --network <span class="si">${</span><span class="nv">NETWORK</span><span class="si">}</span>
+        --vnc --noautoconsole <span class="se">\</span>
+        --print-xml &gt; <span class="si">${</span><span class="nv">OUTPUT</span><span class="si">}</span>
+
+    sed -ie <span class="s1">&#39;s|type=&quot;kvm&quot;|type=&quot;kvm&quot; xmlns:qemu=&quot;http://libvirt.org/schemas/domain/qemu/1.0&quot;|&#39;</span> <span class="s2">&quot;</span><span class="si">${</span><span class="nv">OUTPUT</span><span class="si">}</span><span class="s2">&quot;</span>
+    sed -i <span class="s2">&quot;/&lt;\/devices&gt;/a &lt;qemu:commandline&gt;\n  &lt;qemu:arg value=&#39;-fw_cfg&#39;/&gt;\n  &lt;qemu:arg value=&#39;name=opt/com.coreos/config,file=</span><span class="si">${</span><span class="nv">ignition_file</span><span class="si">}</span><span class="s2">&#39;/&gt;\n&lt;/qemu:commandline&gt;&quot;</span> <span class="s2">&quot;</span><span class="si">${</span><span class="nv">OUTPUT</span><span class="si">}</span><span class="s2">&quot;</span>
+
+    virsh define <span class="si">${</span><span class="nv">OUTPUT</span><span class="si">}</span>
+    virsh start <span class="si">${</span><span class="nv">NODE_NAME</span><span class="si">}</span>
+<span class="o">}</span>
+</pre></div>
+
+
 <h1>view kvm network command</h1>
-<p>virsh net-list </p>
-<p>virsh net-destroy ${netid | name}</p>
-<p>virsh net-edit ${network-name}</p>
-<p>virsh net-create ${network-spec-file}</p>
+<div class="highlight"><pre><span></span>virsh net-list 
+
+virsh net-destroy <span class="si">${</span><span class="nv">netid</span><span class="p"> | name</span><span class="si">}</span>
+
+virsh net-edit <span class="si">${</span><span class="nv">network</span><span class="p">-name</span><span class="si">}</span>
+
+virsh net-create <span class="si">${</span><span class="nv">network</span><span class="p">-spec-file</span><span class="si">}</span>
+</pre></div>
             <a href="#" class="go-top">Go Top</a>
 <footer class="footer">
     <p>&copy; yjkim &ndash;
