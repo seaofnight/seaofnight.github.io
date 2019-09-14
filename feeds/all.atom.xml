@@ -1,5 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>yjkim blog</title><link href="https://seaofnight.github.io/" rel="alternate"></link><link href="https://seaofnight.github.io/feeds/all.atom.xml" rel="self"></link><id>https://seaofnight.github.io/</id><updated>2019-09-14T18:20:00+09:00</updated><entry><title>git-command-example</title><link href="https://seaofnight.github.io/git-command-example.html" rel="alternate"></link><published>2019-09-14T18:20:00+09:00</published><updated>2019-09-14T18:20:00+09:00</updated><author><name>yjkim</name></author><id>tag:seaofnight.github.io,2019-09-14:/git-command-example.html</id><summary type="html">&lt;p&gt;git&lt;/p&gt;</summary><content type="html">&lt;h1&gt;common 명령어&lt;/h1&gt;
+<feed xmlns="http://www.w3.org/2005/Atom"><title>yjkim blog</title><link href="https://seaofnight.github.io/" rel="alternate"></link><link href="https://seaofnight.github.io/feeds/all.atom.xml" rel="self"></link><id>https://seaofnight.github.io/</id><updated>2019-09-14T18:20:00+09:00</updated><entry><title>centos-desktop-setting</title><link href="https://seaofnight.github.io/centos-desktop-setting.html" rel="alternate"></link><published>2019-09-14T18:20:00+09:00</published><updated>2019-09-14T18:20:00+09:00</updated><author><name>yjkim</name></author><id>tag:seaofnight.github.io,2019-09-14:/centos-desktop-setting.html</id><summary type="html">&lt;p&gt;centos,desktop&lt;/p&gt;</summary><content type="html">&lt;h1&gt;how to gnome desktop install&lt;/h1&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;gnome desktop install 
+sudo yum update  
+yum group list  
+yum groupinstall &amp;quot;GNOME Desktop&amp;quot; &amp;quot;Graphical Administration Tools&amp;quot; 
+ln -sf /lib/systemd/system/runlevel5.target /etc/systemd/system/default.target 
+sudo reboot 
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h1&gt;tiger vnc install&lt;/h1&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;yum install tigervnc-server 
+vncserver 
+# geometry : resolution 
+&lt;/pre&gt;&lt;/div&gt;</content><category term="linux"></category><category term="centos"></category><category term="desktop"></category></entry><entry><title>git-command-example</title><link href="https://seaofnight.github.io/git-command-example.html" rel="alternate"></link><published>2019-09-14T18:20:00+09:00</published><updated>2019-09-14T18:20:00+09:00</updated><author><name>yjkim</name></author><id>tag:seaofnight.github.io,2019-09-14:/git-command-example.html</id><summary type="html">&lt;p&gt;git&lt;/p&gt;</summary><content type="html">&lt;h1&gt;common 명령어&lt;/h1&gt;
 &lt;ul&gt;
 &lt;li&gt;git init &lt;/li&gt;
 &lt;li&gt;
@@ -79,7 +93,60 @@ $ git push --delete origin gh
 &lt;ul&gt;
 &lt;li&gt;git pull &lt;/li&gt;
 &lt;li&gt;git 원격 레포에 있는 내용을 가져오는 명령이다.&lt;/li&gt;
-&lt;/ul&gt;</content><category term="git"></category></entry><entry><title>python pelican blog config</title><link href="https://seaofnight.github.io/pelican-blog-setting.html" rel="alternate"></link><published>2019-09-14T10:20:00+09:00</published><updated>2019-09-14T10:20:00+09:00</updated><author><name>yjkim</name></author><id>tag:seaofnight.github.io,2019-09-14:/pelican-blog-setting.html</id><summary type="html">&lt;p&gt;pelican&lt;/p&gt;</summary><content type="html">&lt;h1&gt;install pelican dependency&lt;/h1&gt;
+&lt;/ul&gt;</content><category term="git"></category></entry><entry><title>manjaro-local-setting</title><link href="https://seaofnight.github.io/manjaro-local-setting.html" rel="alternate"></link><published>2019-09-14T18:20:00+09:00</published><updated>2019-09-14T18:20:00+09:00</updated><author><name>yjkim</name></author><id>tag:seaofnight.github.io,2019-09-14:/manjaro-local-setting.html</id><summary type="html">&lt;p&gt;local&lt;/p&gt;</summary><content type="html">&lt;h1&gt;oh-my-zsh install&lt;/h1&gt;
+&lt;p&gt;chsh -s &lt;code&gt;which zsh&lt;/code&gt;
+echo $SHELL 
+curl -L https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh | sh&lt;/p&gt;
+&lt;h1&gt;theme change&lt;/h1&gt;
+&lt;h1&gt;terminal 환경에서  안깨지는 font 적용 후 확인&lt;/h1&gt;
+&lt;h1&gt;zsh autosuggestion install&lt;/h1&gt;
+&lt;h1&gt;byobu install&lt;/h1&gt;
+&lt;p&gt;git clone https://aur.archlinux.org/byobu.git
+cd byobu
+makepkg
+pacman -U *.xz&lt;/p&gt;
+&lt;h1&gt;kvm install&lt;/h1&gt;
+&lt;p&gt;LC_ALL=C lscpu | grep Virtualization
+Virtualization: VT-x
+sudo pacman -S virt-manager qemu vde2 ebtables dnsmasq bridge-utils openbsd-netcat
+sudo systemctl enable libvirtd.service
+sudo systemctl start libvirtd.service&lt;/p&gt;
+&lt;h1&gt;virtualbox install&lt;/h1&gt;
+&lt;p&gt;sudo pacman -S virtualbox virtualbox-ext-vnc virtualbox-guest-dkms virtualbox-host-dkms virtualbox-guest-utils virtualbox-guest-iso virtualbox-sdk &lt;/p&gt;
+&lt;p&gt;yjkim@yjkim-pc  ~/문서  uname -r
+4.19.66-1-MANJARO
+sudo pacman -S linux419-virtualbox-host-modules&lt;/p&gt;
+&lt;h1&gt;vscode hangul encodding&lt;/h1&gt;
+&lt;p&gt;type [Ctrl + ,]
+* linux default terminal 에서 한글이 출력되는 font 로 변경 필요 
+setting &amp;gt; editor.fontFamily : ""DejaVu Sans Mono for Powerline""&lt;/p&gt;
+&lt;h1&gt;shutdown freeze solving&lt;/h1&gt;
+&lt;p&gt;https://forum.manjaro.org/t/how-to-troubleshoot-shutdown-delays/5767&lt;/p&gt;
+&lt;h1&gt;install other package&lt;/h1&gt;
+&lt;p&gt;jq, tree&lt;/p&gt;
+&lt;h1&gt;firefox extension&lt;/h1&gt;
+&lt;ul&gt;
+&lt;li&gt;translate&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h1&gt;linux application remove password prompt&lt;/h1&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;docker 
+sudo usermod -a -G docker $USER&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;libvirtd, virt-manager 
+sudo usermod -a -G libvirt $USER&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h1&gt;python pip install on manjaro&lt;/h1&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;python2 --version
+Python 2.7.16
+python3 --version
+Python 3.7.4
+
+sudo pacman -S python-pip --noconfirm
+&lt;/pre&gt;&lt;/div&gt;</content><category term="local"></category></entry><entry><title>python pelican blog config</title><link href="https://seaofnight.github.io/pelican-blog-setting.html" rel="alternate"></link><published>2019-09-14T10:20:00+09:00</published><updated>2019-09-14T10:20:00+09:00</updated><author><name>yjkim</name></author><id>tag:seaofnight.github.io,2019-09-14:/pelican-blog-setting.html</id><summary type="html">&lt;p&gt;pelican&lt;/p&gt;</summary><content type="html">&lt;h1&gt;install pelican dependency&lt;/h1&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="c1"&gt;# virtualenv  &lt;/span&gt;
 $ sudo pip install virtualenv
 

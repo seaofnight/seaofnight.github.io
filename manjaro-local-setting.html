@@ -7,14 +7,21 @@
 
         <link rel="alternate"  href="https://seaofnight.github.io/feeds/all.atom.xml" type="application/atom+xml" title="yjkim blog Full Atom Feed"/>
 
-        <title>All Tags | yjkim blog // Man of few words... </title>
+        <title>manjaro-local-setting // yjkim blog // Man of few words...</title>
 
 
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/pure/0.3.0/pure-min.css">
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.1.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="https://seaofnight.github.io/theme/css/pure.css">
+    <link rel="stylesheet" href="https://seaofnight.github.io/theme/css/pygments.css">
 
     <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/fitvids/1.0.1/jquery.fitvids.min.js"></script>
+    <script>
+        $(document).ready(function(){
+            $(".content").fitVids();
+        });
+    </script>
 </head>
 
 <body>
@@ -40,27 +47,78 @@
                 </div>
             </div>
         </div>
-  <div class="pure-u-1">
-    <div class="content">
-      <h1 class="content-subhead">All Tags</h1>
-      <ul>
+    <div class="pure-u">
+        <div class="content">
+            <section class="post">
+                <header class="post-header">
+                    <h1>manjaro-local-setting</h1>
+                        <p class="post-meta">
+                            // under                                 <a class="post-category" href="https://seaofnight.github.io/tag/local.html">local</a>
+                        </p>
+                </header>
+            </section>
+            <h1>oh-my-zsh install</h1>
+<p>chsh -s <code>which zsh</code>
+echo $SHELL 
+curl -L https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh | sh</p>
+<h1>theme change</h1>
+<h1>terminal 환경에서  안깨지는 font 적용 후 확인</h1>
+<h1>zsh autosuggestion install</h1>
+<h1>byobu install</h1>
+<p>git clone https://aur.archlinux.org/byobu.git
+cd byobu
+makepkg
+pacman -U *.xz</p>
+<h1>kvm install</h1>
+<p>LC_ALL=C lscpu | grep Virtualization
+Virtualization: VT-x
+sudo pacman -S virt-manager qemu vde2 ebtables dnsmasq bridge-utils openbsd-netcat
+sudo systemctl enable libvirtd.service
+sudo systemctl start libvirtd.service</p>
+<h1>virtualbox install</h1>
+<p>sudo pacman -S virtualbox virtualbox-ext-vnc virtualbox-guest-dkms virtualbox-host-dkms virtualbox-guest-utils virtualbox-guest-iso virtualbox-sdk </p>
+<p>yjkim@yjkim-pc  ~/문서  uname -r
+4.19.66-1-MANJARO
+sudo pacman -S linux419-virtualbox-host-modules</p>
+<h1>vscode hangul encodding</h1>
+<p>type [Ctrl + ,]
+* linux default terminal 에서 한글이 출력되는 font 로 변경 필요 
+setting &gt; editor.fontFamily : ""DejaVu Sans Mono for Powerline""</p>
+<h1>shutdown freeze solving</h1>
+<p>https://forum.manjaro.org/t/how-to-troubleshoot-shutdown-delays/5767</p>
+<h1>install other package</h1>
+<p>jq, tree</p>
+<h1>firefox extension</h1>
+<ul>
+<li>translate</li>
+</ul>
+<h1>linux application remove password prompt</h1>
+<ul>
+<li>
+<p>docker 
+sudo usermod -a -G docker $USER</p>
+</li>
+<li>
+<p>libvirtd, virt-manager 
+sudo usermod -a -G libvirt $USER</p>
+</li>
+</ul>
+<h1>python pip install on manjaro</h1>
+<div class="highlight"><pre><span></span>python2 --version
+Python 2.7.16
+python3 --version
+Python 3.7.4
 
-          <li><a href="https://seaofnight.github.io/tag/centos.html">centos</a> (1) </li>
-          <li><a href="https://seaofnight.github.io/tag/desktop.html">desktop</a> (1) </li>
-          <li><a href="https://seaofnight.github.io/tag/git.html">git</a> (1) </li>
-          <li><a href="https://seaofnight.github.io/tag/linux.html">linux</a> (1) </li>
-          <li><a href="https://seaofnight.github.io/tag/local.html">local</a> (1) </li>
-          <li><a href="https://seaofnight.github.io/tag/pelican.html">pelican</a> (1) </li>
-          <li><a href="https://seaofnight.github.io/tag/publishing.html">publishing</a> (1) </li>
+sudo pacman -S python-pip --noconfirm
+</pre></div>
+            <a href="#" class="go-top">Go Top</a>
 <footer class="footer">
     <p>&copy; yjkim &ndash;
         Built with <a href="https://github.com/PurePelicanTheme/pure-single">Pure Theme</a>
         for <a href="http://blog.getpelican.com/">Pelican</a>
     </p>
-</footer>
-      </ul>
+</footer>        </div>
     </div>
-  </div>
     </div>
     <script>
         var $top = $('.go-top');
