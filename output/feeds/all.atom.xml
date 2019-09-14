@@ -10,8 +10,8 @@
 &lt;/li&gt;
 &lt;li&gt;깃 저장소의 설정을 변경한다. 예시로 유저명, 메일등을 설정 할 수 있다. &lt;/li&gt;
 &lt;/ul&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;git config --global user.name &lt;span class="s2"&gt;&amp;quot;yjkim1@ntels.com&amp;quot;&lt;/span&gt; 
-git config --global user.email &lt;span class="s2"&gt;&amp;quot;yjkim1@ntels.com&amp;quot;&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;git config --global user.name &lt;span class="s2"&gt;&amp;quot;yjkim1@gmail.com&amp;quot;&lt;/span&gt; 
+git config --global user.email &lt;span class="s2"&gt;&amp;quot;yjkim1@gamil.com&amp;quot;&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
 
 
