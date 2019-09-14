@@ -60,19 +60,19 @@
                 </header>
             </section>
             <h1>how to gnome desktop install</h1>
-<div class="highlight"><pre><span></span>gnome desktop install 
-sudo yum update  
-yum group list  
-yum groupinstall &quot;GNOME Desktop&quot; &quot;Graphical Administration Tools&quot; 
-ln -sf /lib/systemd/system/runlevel5.target /etc/systemd/system/default.target 
-sudo reboot 
+<div class="highlight"><pre><span></span>$ gnome desktop install 
+$ sudo yum update  
+$ yum group list  
+$ yum groupinstall <span class="s2">&quot;GNOME Desktop&quot;</span> <span class="s2">&quot;Graphical Administration Tools&quot;</span> 
+$ ln -sf /lib/systemd/system/runlevel5.target /etc/systemd/system/default.target 
+$ sudo reboot 
 </pre></div>
 
 
 <h1>tiger vnc install</h1>
-<div class="highlight"><pre><span></span>yum install tigervnc-server 
-vncserver 
-# geometry : resolution 
+<div class="highlight"><pre><span></span>$ yum install tigervnc-server 
+$ vncserver 
+<span class="c1"># modify option -&gt; geometry : resolution </span>
 </pre></div>
             <a href="#" class="go-top">Go Top</a>
 <footer class="footer">
