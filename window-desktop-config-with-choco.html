@@ -7,14 +7,21 @@
 
         <link rel="alternate"  href="https://seaofnight.github.io/feeds/all.atom.xml" type="application/atom+xml" title="yjkim blog Full Atom Feed"/>
 
-        <title>desktop tag // yjkim blog // Man of few words...</title>
+        <title>window-desktop-config-with-choco // yjkim blog // Man of few words...</title>
 
 
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/pure/0.3.0/pure-min.css">
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.1.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="https://seaofnight.github.io/theme/css/pure.css">
+    <link rel="stylesheet" href="https://seaofnight.github.io/theme/css/pygments.css">
 
     <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/fitvids/1.0.1/jquery.fitvids.min.js"></script>
+    <script>
+        $(document).ready(function(){
+            $(".content").fitVids();
+        });
+    </script>
 </head>
 
 <body>
@@ -42,44 +49,45 @@
         </div>
     <div class="pure-u">
         <div class="content">
-            <!-- A wrapper for all the blog posts -->
-            <div class="posts">
-                <h1 class="content-subhead">
-Posts tagged 'desktop'                </h1>
-                    <section class="post">
-                        <header class="post-header">
-                            <h3><a class="post-title" href="https://seaofnight.github.io/window-desktop-config-with-choco.html">window-desktop-config-with-choco</a></h3>
-                            <p class="post-meta"><p>window,desktop</p></p>
-                            <p class="post-meta">
-                                in <a href="https://seaofnight.github.io/category/window.html">window</a> &middot; 일 15 9월 2019
-                            </p>
-                        </header>
-                    </section>
-                    <section class="post">
-                        <header class="post-header">
-                            <h3><a class="post-title" href="https://seaofnight.github.io/centos-desktop-setting.html">centos-desktop-setting</a></h3>
-                            <p class="post-meta"><p>centos,desktop</p></p>
-                            <p class="post-meta">
-                                in <a href="https://seaofnight.github.io/category/centos.html">centos</a> &middot; 토 14 9월 2019
-                            </p>
-                        </header>
-                    </section>
-<div class="pagination-wrapper content-subhead">
-    <div class="pagination">
-        <div class="pagination-left">
-                &nbsp;
-        </div>
-        <span>Page 1 / 1</span>
-        <div class="pagination-right">
-        </div>
-    </div>
-</div><footer class="footer">
+            <section class="post">
+                <header class="post-header">
+                    <h1>window-desktop-config-with-choco</h1>
+                        <p class="post-meta">
+                            // under                                 <a class="post-category" href="https://seaofnight.github.io/tag/window.html">window</a>
+                                <a class="post-category" href="https://seaofnight.github.io/tag/desktop.html">desktop</a>
+                        </p>
+                </header>
+            </section>
+            <h1>개요</h1>
+<ul>
+<li>PC 가 이상하거나 하면 window10 에서 제공해주는 포멧이 너무 강력하기 때문에 설정 했던 방법애 대하여 간략하게 기록해둔다. </li>
+</ul>
+<h1>choco install</h1>
+<ul>
+<li>window 에는 package manager 가 centos 의 yum, arch 의 pacman 과 동일하게 choco 라는 관리도구가 있다. </li>
+<li>설치를 진행해줘야한다. 윈도에서 제공하는것들이 아니다보니.. </li>
+</ul>
+<div class="highlight"><pre><span></span>$ Set-ExecutionPolicy Bypass -Scope Process -Force<span class="p">;</span> iex <span class="o">((</span>New-Object System.Net.WebClient<span class="o">)</span>.DownloadString<span class="o">(</span><span class="s1">&#39;https://chocolatey.org/install.ps1&#39;</span><span class="o">))</span> 
+</pre></div>
+
+
+<h1>choco 를 통한 어플리케이션 설치</h1>
+<div class="highlight"><pre><span></span># 브라우저 설치 
+choco install -y chrome firefox   
+# 가상화 도구 설치 
+choco install -y virtualbox vagrant 
+# terminal, rdp 설치 
+choco install -y putty filezilla ultravnc  
+# picpick 스크린샷, vscode, minikube 는 개발용 툴 
+choco install -y picpick.portable vscode minikube 
+</pre></div>
+            <a href="#" class="go-top">Go Top</a>
+<footer class="footer">
     <p>&copy; yjkim &ndash;
         Built with <a href="https://github.com/PurePelicanTheme/pure-single">Pure Theme</a>
         for <a href="http://blog.getpelican.com/">Pelican</a>
     </p>
-</footer>            </div>
-        </div>
+</footer>        </div>
     </div>
     </div>
     <script>
