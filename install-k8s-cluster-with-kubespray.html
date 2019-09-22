@@ -7,14 +7,21 @@
 
         <link rel="alternate"  href="https://seaofnight.github.io/feeds/all.atom.xml" type="application/atom+xml" title="yjkim blog Full Atom Feed"/>
 
-        <title>pelican tag // yjkim blog // Man of few words...</title>
+        <title>install-k8s-cluster-with-kubespray // yjkim blog // Man of few words...</title>
 
 
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/pure/0.3.0/pure-min.css">
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.1.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="https://seaofnight.github.io/theme/css/pure.css">
+    <link rel="stylesheet" href="https://seaofnight.github.io/theme/css/pygments.css">
 
     <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/fitvids/1.0.1/jquery.fitvids.min.js"></script>
+    <script>
+        $(document).ready(function(){
+            $(".content").fitVids();
+        });
+    </script>
 </head>
 
 <body>
@@ -42,44 +49,35 @@
         </div>
     <div class="pure-u">
         <div class="content">
-            <!-- A wrapper for all the blog posts -->
-            <div class="posts">
-                <h1 class="content-subhead">
-Posts tagged 'pelican'                </h1>
-                    <section class="post">
-                        <header class="post-header">
-                            <h3><a class="post-title" href="https://seaofnight.github.io/markdown-supporting-test.html">markdown-supporting-test</a></h3>
-                            <p class="post-meta"><p>markdown,pelican</p></p>
-                            <p class="post-meta">
-                                in <a href="https://seaofnight.github.io/category/kubernetes.html">kubernetes</a> &middot; 토 21 9월 2019
-                            </p>
-                        </header>
-                    </section>
-                    <section class="post">
-                        <header class="post-header">
-                            <h3><a class="post-title" href="https://seaofnight.github.io/pelican-blog-setting.html">python pelican blog config</a></h3>
-                            <p class="post-meta"><p>pelican</p></p>
-                            <p class="post-meta">
-                                in <a href="https://seaofnight.github.io/category/python.html">Python</a> &middot; 토 14 9월 2019
-                            </p>
-                        </header>
-                    </section>
-<div class="pagination-wrapper content-subhead">
-    <div class="pagination">
-        <div class="pagination-left">
-                &nbsp;
-        </div>
-        <span>Page 1 / 1</span>
-        <div class="pagination-right">
-        </div>
-    </div>
-</div><footer class="footer">
+            <section class="post">
+                <header class="post-header">
+                    <h1>install-k8s-cluster-with-kubespray</h1>
+                        <p class="post-meta">
+                            // under                                 <a class="post-category" href="https://seaofnight.github.io/tag/kubernetes.html">kubernetes</a>
+                                <a class="post-category" href="https://seaofnight.github.io/tag/kubespray.html">kubespray</a>
+                        </p>
+                </header>
+            </section>
+            <h1>개요</h1>
+<p>오늘은 K8s Cluster 을 간략하게 생성 해보는 예제를 기록해 보려고 한다. 
+Cluster 생성은 Kubespray 프로젝트를 이용하여 생성할 예정이다. </p>
+<h1>클러스터 정보</h1>
+<ul>
+<li>vm 생성 : vagrant </li>
+<li>호스트 정보 <ul>
+<li>k8s-master : 10.0.3.2</li>
+<li>k8s-node1 : 10.0.3.3</li>
+<li>k8s-node2  : 10.0.3.4</li>
+</ul>
+</li>
+</ul>
+            <a href="#" class="go-top">Go Top</a>
+<footer class="footer">
     <p>&copy; yjkim &ndash;
         Built with <a href="https://github.com/PurePelicanTheme/pure-single">Pure Theme</a>
         for <a href="http://blog.getpelican.com/">Pelican</a>
     </p>
-</footer>            </div>
-        </div>
+</footer>        </div>
     </div>
     </div>
     <script>
