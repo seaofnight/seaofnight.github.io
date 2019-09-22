@@ -11,7 +11,121 @@ Cluster 생성은 Kubespray 프로젝트를 이용하여 생성할 예정이다.
 &lt;li&gt;k8s-node2  : 10.0.3.4&lt;/li&gt;
 &lt;/ul&gt;
 &lt;/li&gt;
-&lt;/ul&gt;</content><category term="kubernetes"></category><category term="kubespray"></category></entry><entry><title>markdown-supporting-test</title><link href="https://seaofnight.github.io/markdown-supporting-test.html" rel="alternate"></link><published>2019-09-21T14:20:00+09:00</published><updated>2019-09-21T14:20:00+09:00</updated><author><name>yjkim</name></author><id>tag:seaofnight.github.io,2019-09-21:/markdown-supporting-test.html</id><summary type="html">&lt;p&gt;markdown,pelican&lt;/p&gt;</summary><content type="html">&lt;h1&gt;개요&lt;/h1&gt;
+&lt;li&gt;single master, 2 node &lt;/li&gt;
+&lt;/ul&gt;
+&lt;h1&gt;사전 설치&lt;/h1&gt;
+&lt;ul&gt;
+&lt;li&gt;사전설치 요소에는 아래와 같다. &lt;ul&gt;
+&lt;li&gt;pip 설치 &lt;/li&gt;
+&lt;li&gt;kubespray 프로젝트 클론 &lt;/li&gt;
+&lt;li&gt;ansible 설치 : pip install 하면 설치됨  &lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;나머지 sshd, user account,  host 설정은 skip 한다. &lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ sudo yum install -y git python-pip 
+$ git clone https://github.com/kubernetes-sigs/kubespray
+$ &lt;span class="nb"&gt;cd&lt;/span&gt; kubespray 
+$ pip install  -r requirements.txt
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;ul&gt;
+&lt;li&gt;ssh fingerprint 관련 설정을 해준다. &lt;/li&gt;
+&lt;li&gt;아래는 쉘 파일 내용이니 붙여 넣기한후에 실행 해주면 된다. &lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="k"&gt;function&lt;/span&gt; append_hosts_info&lt;span class="o"&gt;(){&lt;/span&gt;
+cat &lt;span class="s"&gt;&amp;lt;&amp;lt; EOF &amp;gt;&amp;gt; /etc/hosts&lt;/span&gt;
+&lt;span class="s"&gt;# kubernetes nodes&lt;/span&gt;
+&lt;span class="s"&gt;10.0.3.2 k8s-master1&lt;/span&gt;
+&lt;span class="s"&gt;10.0.3.3 k8s-worker1&lt;/span&gt;
+&lt;span class="s"&gt;10.0.3.4 k8s-worker2&lt;/span&gt;
+&lt;span class="s"&gt;EOF&lt;/span&gt;
+&lt;span class="o"&gt;}&lt;/span&gt;
+
+
+&lt;span class="k"&gt;function&lt;/span&gt; generate_ssh_key&lt;span class="o"&gt;(){&lt;/span&gt;
+
+ cat /dev/zero &lt;span class="p"&gt;|&lt;/span&gt; ssh-keygen -q -N &lt;span class="s2"&gt;&amp;quot;&amp;quot;&lt;/span&gt;
+
+&lt;span class="o"&gt;}&lt;/span&gt;
+
+&lt;span class="k"&gt;function&lt;/span&gt; deploy_ssh_key_all_nodes&lt;span class="o"&gt;(){&lt;/span&gt;
+
+ &lt;span class="k"&gt;for&lt;/span&gt; i in &lt;span class="k"&gt;$(&lt;/span&gt;cat /etc/hosts &lt;span class="p"&gt;|&lt;/span&gt; tail -n &lt;span class="m"&gt;3&lt;/span&gt; &lt;span class="p"&gt;|&lt;/span&gt; awk &lt;span class="s1"&gt;&amp;#39;{print $2}&amp;#39;&lt;/span&gt;&lt;span class="k"&gt;)&lt;/span&gt; &lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="k"&gt;do&lt;/span&gt;
+  ssh-keyscan -t rsa &lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="nv"&gt;$i&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt; &amp;gt;&amp;gt; ~/.ssh/known_hosts
+  sshpass -p &lt;span class="s2"&gt;&amp;quot;vagrant&amp;quot;&lt;/span&gt; ssh-copy-id -i /root/.ssh/id_rsa.pub root@&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="nv"&gt;$i&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;
+  ssh &lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="nv"&gt;$i&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt; hostname
+ &lt;span class="k"&gt;done&lt;/span&gt;
+
+
+&lt;span class="o"&gt;}&lt;/span&gt;
+
+
+main&lt;span class="o"&gt;(){&lt;/span&gt;
+
+ append_hosts_info
+ generate_ssh_key
+ deploy_ssh_key_all_nodes
+
+&lt;span class="o"&gt;}&lt;/span&gt;
+
+main
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h1&gt;설치 하고자 할 cluster 설정&lt;/h1&gt;
+&lt;ul&gt;
+&lt;li&gt;kubespray 를 이용하여 cluster를 정의 하려면 inventory 파일을 수정해 주어야 한다. &lt;/li&gt;
+&lt;li&gt;kubespary 의 인벤토리 파일은 inventory 파일의 sample 폴더를 참고 하면 된다. &lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ cp -rfp inventory/sample inventory/mycluster
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h1&gt;inventory 설정&lt;/h1&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ cat &lt;span class="s"&gt;&amp;lt;&amp;lt; EOF &amp;gt; kubespray/inventory/mycluster/hosts.ini&lt;/span&gt;
+&lt;span class="s"&gt;[all]&lt;/span&gt;
+&lt;span class="s"&gt;k8s-master ansible_host=10.0.3.2 ip=10.0.3.2 etcd_member_name=etcd1&lt;/span&gt;
+&lt;span class="s"&gt;k8s-node1 ansible_host=10.0.3.3 ip=10.0.3.3&lt;/span&gt;
+&lt;span class="s"&gt;k8s-node2 ansible_host=10.0.3.4 ip=10.0.3.4&lt;/span&gt;
+
+&lt;span class="s"&gt;[kube-master]&lt;/span&gt;
+&lt;span class="s"&gt;k8s-master&lt;/span&gt;
+
+&lt;span class="s"&gt;[kube-node]&lt;/span&gt;
+&lt;span class="s"&gt;k8s-master&lt;/span&gt;
+&lt;span class="s"&gt;k8s-node1&lt;/span&gt;
+&lt;span class="s"&gt;k8s-node2&lt;/span&gt;
+
+&lt;span class="s"&gt;[etcd]&lt;/span&gt;
+&lt;span class="s"&gt;k8s-master&lt;/span&gt;
+
+&lt;span class="s"&gt;[k8s-cluster:children]&lt;/span&gt;
+&lt;span class="s"&gt;kube-node&lt;/span&gt;
+&lt;span class="s"&gt;kube-master&lt;/span&gt;
+
+&lt;span class="s"&gt;EOF&lt;/span&gt;
+
+$ cat kubespray/inventory/mycluster/hosts.ini
+
+&lt;span class="c1"&gt;# network 가 flannel -&amp;gt; calico 로 변경해주는 스크립트이다. &lt;/span&gt;
+$ sed -i &lt;span class="s1"&gt;&amp;#39;s/kube_network_plugin: flannel/kube_network_plugin: calico/&amp;#39;&lt;/span&gt; kubespray/inventory/mycluster/group_vars/k8s-cluster/k8s-cluster.yml
+
+&lt;span class="c1"&gt;# external lb 가 있을경우에는 해당 IP 를 요기 추가해주어야된다. &lt;/span&gt;
+ &lt;span class="nb"&gt;echo&lt;/span&gt; -e &lt;span class="s2"&gt;&amp;quot;supplementary_addresses_in_ssl_keys: [192.168.0.1]&amp;quot;&lt;/span&gt; &amp;gt;&amp;gt; kubespray/inventory/mycluster/group_vars/k8s-cluster/k8s-cluster.yml
+
+&lt;span class="c1"&gt;# multus 를 사용할 경우엔 실행 시켜주면 된다. &lt;/span&gt;
+sed -i &lt;span class="s1"&gt;&amp;#39;s/kube_network_plugin_multus: false/kube_network_plugin_multus: true/&amp;#39;&lt;/span&gt; kubespray/inventory/mycluster/group_vars/k8s-cluster/k8s-cluster.yml
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h1&gt;설치&lt;/h1&gt;
+&lt;ul&gt;
+&lt;li&gt;인벤토리 설정이 정상적으로 진행되었다면 설치를 진행한다. &lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ ansible-playbook -b -i inventory/mycluster/host.ini cluster.yml 
+&lt;/pre&gt;&lt;/div&gt;</content><category term="kubernetes"></category><category term="kubespray"></category></entry><entry><title>markdown-supporting-test</title><link href="https://seaofnight.github.io/markdown-supporting-test.html" rel="alternate"></link><published>2019-09-21T14:20:00+09:00</published><updated>2019-09-21T14:20:00+09:00</updated><author><name>yjkim</name></author><id>tag:seaofnight.github.io,2019-09-21:/markdown-supporting-test.html</id><summary type="html">&lt;p&gt;markdown,pelican&lt;/p&gt;</summary><content type="html">&lt;h1&gt;개요&lt;/h1&gt;
 &lt;ul&gt;
 &lt;li&gt;본 페이지는 블로그 테마를 받았는데 테마에서 마크다운을 얼마나 지원하는지 확인하기 위한 페이지 이다. &lt;/li&gt;
 &lt;li&gt;아래부터 정상적으로 보이는것을 기준으로 문서 작성에 활용할 예정이다. &lt;/li&gt;
