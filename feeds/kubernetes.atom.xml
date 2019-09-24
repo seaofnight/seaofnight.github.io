@@ -47,12 +47,14 @@ sudo tar -C /usr/local -xzf go1.*
 
 
 &lt;ul&gt;
-&lt;li&gt;기타 유용한 CLI 툴 &lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;기타 유용한 CLI 툴 &lt;/p&gt;
+&lt;ul&gt;
 &lt;li&gt;kubens &lt;/li&gt;
 &lt;li&gt;kube ps1&lt;/li&gt;
 &lt;li&gt;k9S&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;k8s stern&lt;/p&gt;
+&lt;li&gt;k8s stern&lt;/li&gt;
+&lt;/ul&gt;
 &lt;/li&gt;
 &lt;li&gt;
 &lt;p&gt;KIND Create Cluster &lt;/p&gt;
