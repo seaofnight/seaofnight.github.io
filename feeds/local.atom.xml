@@ -1,5 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>yjkim blog - local</title><link href="https://seaofnight.github.io/" rel="alternate"></link><link href="https://seaofnight.github.io/feeds/local.atom.xml" rel="self"></link><id>https://seaofnight.github.io/</id><updated>2019-09-14T18:20:00+09:00</updated><entry><title>manjaro-local-setting</title><link href="https://seaofnight.github.io/manjaro-local-setting.html" rel="alternate"></link><published>2019-09-14T18:20:00+09:00</published><updated>2019-09-14T18:20:00+09:00</updated><author><name>yjkim</name></author><id>tag:seaofnight.github.io,2019-09-14:/manjaro-local-setting.html</id><summary type="html">&lt;p&gt;local&lt;/p&gt;</summary><content type="html">&lt;h1&gt;oh-my-zsh install&lt;/h1&gt;
+<feed xmlns="http://www.w3.org/2005/Atom"><title>yjkim blog - local</title><link href="https://seaofnight.github.io/" rel="alternate"></link><link href="https://seaofnight.github.io/feeds/local.atom.xml" rel="self"></link><id>https://seaofnight.github.io/</id><updated>2019-09-14T18:20:00+09:00</updated><entry><title>manjaro-local-setting</title><link href="https://seaofnight.github.io/manjaro-local-setting.html" rel="alternate"></link><published>2019-09-14T18:20:00+09:00</published><updated>2019-09-14T18:20:00+09:00</updated><author><name>yjkim</name></author><id>tag:seaofnight.github.io,2019-09-14:/manjaro-local-setting.html</id><summary type="html">&lt;p&gt;local&lt;/p&gt;</summary><content type="html">&lt;h1&gt;한글 설정&lt;/h1&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="c1"&gt;# 폰트 다운로드 &lt;/span&gt;
+$ pacman -S terminus-font noto-fonts-cjk ttf-dejavu ibus-hangul 
+$ fc-match -s monospace
+$ cat &amp;lt;&amp;lt;EOF &amp;gt; &lt;span class="p"&gt;|&lt;/span&gt; /etc/xprofile  
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h1&gt;oh-my-zsh install&lt;/h1&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;chsh -s &lt;span class="sb"&gt;`&lt;/span&gt;which zsh&lt;span class="sb"&gt;`&lt;/span&gt;
 &lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="nv"&gt;$SHELL&lt;/span&gt; 
 curl -L https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh &lt;span class="p"&gt;|&lt;/span&gt; sh

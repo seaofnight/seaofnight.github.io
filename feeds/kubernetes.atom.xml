@@ -1,5 +1,91 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>yjkim blog - kubernetes</title><link href="https://seaofnight.github.io/" rel="alternate"></link><link href="https://seaofnight.github.io/feeds/kubernetes.atom.xml" rel="self"></link><id>https://seaofnight.github.io/</id><updated>2019-09-22T14:20:00+09:00</updated><entry><title>install-k8s-cluster-with-kubespray</title><link href="https://seaofnight.github.io/install-k8s-cluster-with-kubespray.html" rel="alternate"></link><published>2019-09-22T14:20:00+09:00</published><updated>2019-09-22T14:20:00+09:00</updated><author><name>yjkim</name></author><id>tag:seaofnight.github.io,2019-09-22:/install-k8s-cluster-with-kubespray.html</id><summary type="html">&lt;p&gt;kubernetes, kubespray&lt;/p&gt;</summary><content type="html">&lt;h1&gt;개요&lt;/h1&gt;
+<feed xmlns="http://www.w3.org/2005/Atom"><title>yjkim blog - kubernetes</title><link href="https://seaofnight.github.io/" rel="alternate"></link><link href="https://seaofnight.github.io/feeds/kubernetes.atom.xml" rel="self"></link><id>https://seaofnight.github.io/</id><updated>2019-09-24T21:20:00+09:00</updated><entry><title>kubernetes-user-group-review</title><link href="https://seaofnight.github.io/kubernetes-user-group-review.html" rel="alternate"></link><published>2019-09-24T21:20:00+09:00</published><updated>2019-09-24T21:20:00+09:00</updated><author><name>yjkim</name></author><id>tag:seaofnight.github.io,2019-09-24:/kubernetes-user-group-review.html</id><summary type="html">&lt;p&gt;kubernetes, user&lt;/p&gt;</summary><content type="html">&lt;h1&gt;개요&lt;/h1&gt;
+&lt;ul&gt;
+&lt;li&gt;신청한지 1달조금 넘게 된 쿠버네티스 코리아 유저그룹 밋업을 금일 방문하였다. &lt;/li&gt;
+&lt;li&gt;Kubernetes in Docker, KIND 를 독고혁님이 핸즈온으로 소개 및 교육이있었으며 &lt;/li&gt;
+&lt;li&gt;Kubernetes SIG 모임의 ClusterAPI 의 설명이 있었다. &lt;/li&gt;
+&lt;/ul&gt;
+&lt;h1&gt;KIND Handon&lt;/h1&gt;
+&lt;ul&gt;
+&lt;li&gt;KIND 공식 : https://kind.sigs.k8s.io/docs/user/quick-start/&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;독고혁님의 자료 : https://github.com/protess/k8scc&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Kubectl 설치 &lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="c1"&gt;### download kubectl 1.16.0&lt;/span&gt;
+curl -LO https://storage.googleapis.com/kubernetes-release/release/v1.16.0/bin/darwin/amd64/kubectl
+chmod -x ./kubectl
+mv ./kubectl /usr/local/bin/kubectl
+&lt;span class="c1"&gt;### if kubectl isn&amp;#39;t executable&lt;/span&gt;
+chmod &lt;span class="m"&gt;755&lt;/span&gt; /usr/local/bin/kubectl
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;ul&gt;
+&lt;li&gt;KIND 사전 준비사항 &lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="c1"&gt;# Golang 설치 &lt;/span&gt;
+curl -LO https://dl.google.com/go/go1.13.linux-amd64.tar.gz &lt;span class="p"&gt;|&lt;/span&gt; 
+sudo tar -C /usr/local -xzf go1.*
+
+&lt;span class="c1"&gt;# 환경변수 설정&lt;/span&gt;
+&lt;span class="nv"&gt;GO111MODULE&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;on&amp;quot;&lt;/span&gt; go get sigs.k8s.io/kind@v0.5.1
+&lt;span class="nb"&gt;export&lt;/span&gt; &lt;span class="nv"&gt;PATH&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="nv"&gt;$PATH&lt;/span&gt;&lt;span class="s2"&gt;:&lt;/span&gt;&lt;span class="k"&gt;$(&lt;/span&gt;go env GOPATH&lt;span class="k"&gt;)&lt;/span&gt;&lt;span class="s2"&gt;/bin&amp;quot;&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;ul&gt;
+&lt;li&gt;Alias &lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="nb"&gt;alias&lt;/span&gt; &lt;span class="nv"&gt;k&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;kubectl&amp;#39;&lt;/span&gt;
+
+&lt;span class="nb"&gt;alias&lt;/span&gt; &lt;span class="nv"&gt;chrome&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;/Applications/Google\\ \\Chrome.app/Contents/MacOS/Google\\ \\Chrome&amp;quot;&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;ul&gt;
+&lt;li&gt;기타 유용한 CLI 툴 &lt;/li&gt;
+&lt;li&gt;kubens &lt;/li&gt;
+&lt;li&gt;kube ps1&lt;/li&gt;
+&lt;li&gt;k9S&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;k8s stern&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;KIND Create Cluster &lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="c1"&gt;# kind  도 stdin 방식을 지원하는지는 모르겠지만 우선 내용을 기록하기 위하여 아래와 같이 작성을 해본다. &lt;/span&gt;
+cat &lt;span class="s"&gt;&amp;lt;&amp;lt;EOF | kind create cluster --name kind-m --config - &lt;/span&gt;
+&lt;span class="s"&gt;---&lt;/span&gt;
+&lt;span class="s"&gt;kind: Cluster&lt;/span&gt;
+&lt;span class="s"&gt;apiVersion: kind.sigs.k8s.io/v1alpha3&lt;/span&gt;
+&lt;span class="s"&gt;nodes:&lt;/span&gt;
+&lt;span class="s"&gt;- role: control-plane&lt;/span&gt;
+&lt;span class="s"&gt;- role: worker&lt;/span&gt;
+&lt;span class="s"&gt;- role: worker&lt;/span&gt;
+&lt;span class="s"&gt;---&lt;/span&gt;
+&lt;span class="s"&gt;EOF&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;ul&gt;
+&lt;li&gt;Kubernetes Pattern &lt;ul&gt;
+&lt;li&gt;https://www.oreilly.com/library/view/kubernetes-patterns/9781492050278/&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h1&gt;ClusterAPI&lt;/h1&gt;
+&lt;ul&gt;
+&lt;li&gt;쿠버네티스 클러스터 노드의 부트스트래핑과 머신프로비저닝을 분리&lt;/li&gt;
+&lt;li&gt;쿠버네티스의 배포및 Provider를 CRD 로 관리할수 있도록 하게 한다. &lt;/li&gt;
+&lt;li&gt;우선 대충 나도 소화는 해야할것 같다 &lt;/li&gt;
+&lt;li&gt;오늘 있는 일들을 메모 형식으로 기록해 놓고 추후에 자세하게 포스팅..&lt;/li&gt;
+&lt;li&gt;https://cluster-api.sigs.k8s.io/user/quick-start.html&lt;/li&gt;
+&lt;/ul&gt;</content><category term="kubernetes"></category><category term="user"></category></entry><entry><title>install-k8s-cluster-with-kubespray</title><link href="https://seaofnight.github.io/install-k8s-cluster-with-kubespray.html" rel="alternate"></link><published>2019-09-22T14:20:00+09:00</published><updated>2019-09-22T14:20:00+09:00</updated><author><name>yjkim</name></author><id>tag:seaofnight.github.io,2019-09-22:/install-k8s-cluster-with-kubespray.html</id><summary type="html">&lt;p&gt;kubernetes, kubespray&lt;/p&gt;</summary><content type="html">&lt;h1&gt;개요&lt;/h1&gt;
 &lt;p&gt;오늘은 K8s Cluster 을 간략하게 생성 해보는 예제를 기록해 보려고 한다. 
 Cluster 생성은 Kubespray 프로젝트를 이용하여 생성할 예정이다. &lt;/p&gt;
 &lt;h1&gt;클러스터 정보&lt;/h1&gt;

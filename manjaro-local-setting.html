@@ -57,7 +57,15 @@
                         </p>
                 </header>
             </section>
-            <h1>oh-my-zsh install</h1>
+            <h1>한글 설정</h1>
+<div class="highlight"><pre><span></span><span class="c1"># 폰트 다운로드 </span>
+$ pacman -S terminus-font noto-fonts-cjk ttf-dejavu ibus-hangul 
+$ fc-match -s monospace
+$ cat &lt;&lt;EOF &gt; <span class="p">|</span> /etc/xprofile  
+</pre></div>
+
+
+<h1>oh-my-zsh install</h1>
 <div class="highlight"><pre><span></span>chsh -s <span class="sb">`</span>which zsh<span class="sb">`</span>
 <span class="nb">echo</span> <span class="nv">$SHELL</span> 
 curl -L https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh <span class="p">|</span> sh
