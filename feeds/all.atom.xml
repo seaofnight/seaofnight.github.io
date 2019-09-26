@@ -87,6 +87,11 @@ cat &lt;span class="s"&gt;&amp;lt;&amp;lt;EOF | kind create cluster --name kind-
 &lt;li&gt;우선 대충 나도 소화는 해야할것 같다 &lt;/li&gt;
 &lt;li&gt;오늘 있는 일들을 메모 형식으로 기록해 놓고 추후에 자세하게 포스팅..&lt;/li&gt;
 &lt;li&gt;https://cluster-api.sigs.k8s.io/user/quick-start.html&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h1&gt;Kubernetes SIG&lt;/h1&gt;
+&lt;ul&gt;
+&lt;li&gt;쿠버네티스 유저 그룹이 화요일마다 슬렉에서 모인다고 한다. &lt;/li&gt;
+&lt;li&gt;kubernetes.slack.com 에서 kr-dev, kr-user 에 화요일마다. 9시반에 진행된다고 하니 잘 참석하는게..&lt;/li&gt;
 &lt;/ul&gt;</content><category term="kubernetes"></category><category term="user"></category></entry><entry><title>install-k8s-cluster-with-kubespray</title><link href="https://seaofnight.github.io/install-k8s-cluster-with-kubespray.html" rel="alternate"></link><published>2019-09-22T14:20:00+09:00</published><updated>2019-09-22T14:20:00+09:00</updated><author><name>yjkim</name></author><id>tag:seaofnight.github.io,2019-09-22:/install-k8s-cluster-with-kubespray.html</id><summary type="html">&lt;p&gt;kubernetes, kubespray&lt;/p&gt;</summary><content type="html">&lt;h1&gt;개요&lt;/h1&gt;
 &lt;p&gt;오늘은 K8s Cluster 을 간략하게 생성 해보는 예제를 기록해 보려고 한다. 
 Cluster 생성은 Kubespray 프로젝트를 이용하여 생성할 예정이다. &lt;/p&gt;
@@ -113,8 +118,7 @@ Cluster 생성은 Kubespray 프로젝트를 이용하여 생성할 예정이다.
 &lt;/ul&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ sudo yum install -y git python-pip 
 $ git clone https://github.com/kubernetes-sigs/kubespray
-$ &lt;span class="nb"&gt;cd&lt;/span&gt; kubespray 
-$ pip install  -r requirements.txt
+$ pip install  -r kubespray/requirements.txt
 &lt;/pre&gt;&lt;/div&gt;
 
 
