@@ -152,6 +152,23 @@ $ git push --delete origin gh
 </ul>
 </li>
 </ul>
+<h1>local 에서 repo 만들어서 remote 로 올리기</h1>
+<div class="highlight"><pre><span></span><span class="c1"># init 로 프로젝트 생성 </span>
+git init 
+
+<span class="c1"># 설정정보 등록 </span>
+git config --global user.name <span class="s2">&quot;yjkim&quot;</span>
+git config --global user.email seaofnight@hanmail.net
+
+<span class="c1"># remote 정보 등록, 해당 remote 가 public 사이트이면 프로젝트 생성해야함. e.g github</span>
+git remote add origin https://github.com/seaofnight/vitess-example.git
+
+<span class="c1"># 병합하기 위하여 pull</span>
+git pull origin master
+
+<span class="c1"># 업로드 </span>
+git push origin master
+</pre></div>
             <a href="#" class="go-top">Go Top</a>
 <footer class="footer">
     <p>&copy; yjkim &ndash;

@@ -92,7 +92,141 @@ cat &lt;span class="s"&gt;&amp;lt;&amp;lt;EOF | kind create cluster --name kind-
 &lt;ul&gt;
 &lt;li&gt;쿠버네티스 유저 그룹이 화요일마다 슬렉에서 모인다고 한다. &lt;/li&gt;
 &lt;li&gt;kubernetes.slack.com 에서 kr-dev, kr-user 에 화요일마다. 9시반에 진행된다고 하니 잘 참석하는게..&lt;/li&gt;
-&lt;/ul&gt;</content><category term="kubernetes"></category><category term="user"></category></entry><entry><title>install-k8s-cluster-with-kubespray</title><link href="https://seaofnight.github.io/install-k8s-cluster-with-kubespray.html" rel="alternate"></link><published>2019-09-22T14:20:00+09:00</published><updated>2019-09-22T14:20:00+09:00</updated><author><name>yjkim</name></author><id>tag:seaofnight.github.io,2019-09-22:/install-k8s-cluster-with-kubespray.html</id><summary type="html">&lt;p&gt;kubernetes, kubespray&lt;/p&gt;</summary><content type="html">&lt;h1&gt;개요&lt;/h1&gt;
+&lt;/ul&gt;</content><category term="kubernetes"></category><category term="user"></category></entry><entry><title>vagrant-install</title><link href="https://seaofnight.github.io/vagrant-install.html" rel="alternate"></link><published>2019-09-24T21:20:00+09:00</published><updated>2019-09-24T21:20:00+09:00</updated><author><name>yjkim</name></author><id>tag:seaofnight.github.io,2019-09-24:/vagrant-install.html</id><summary type="html">&lt;p&gt;vagrant,virtualbox&lt;/p&gt;</summary><content type="html">&lt;h1&gt;개요&lt;/h1&gt;
+&lt;ul&gt;
+&lt;li&gt;로컬 PC vagrant 를 설치&lt;/li&gt;
+&lt;li&gt;vagrant 를 통한 버추얼 박스에 리소스 부여 방법 등을 설명하겠다. &lt;/li&gt;
+&lt;/ul&gt;
+&lt;h1&gt;Vagrant 설치&lt;/h1&gt;
+&lt;ul&gt;
+&lt;li&gt;본인 PC 은 Manjaro Linux 라서 크게 어려움이 있지는 않았다. &lt;ul&gt;
+&lt;li&gt;윈도우키 "software" 입력 후 pacman 화면에서 vagrant 를 입력하여 설치 버튼을 클릭하면 끝난다. &lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ sudo pacman -Sy virtualbox virtualbox-host-modules net-tools
+$ sudo vagrant -v 
+Vagrant &lt;span class="m"&gt;2&lt;/span&gt;.2.5
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h1&gt;vagrant 리소스 할당 방법&lt;/h1&gt;
+&lt;ul&gt;
+&lt;li&gt;Vagrant 는 공식홈페이지의 메뉴얼에 나온 내용대로 &lt;em&gt;vagrant init&lt;/em&gt; 하면 &lt;em&gt;VagrantFile&lt;/em&gt; 이 생성이된다.&lt;/li&gt;
+&lt;li&gt;이 파일에 VM 의 스펙과 리소스 할당 등을 적어서 vagrant up 하면된다. &lt;/li&gt;
+&lt;li&gt;Vagrant 는 Ruby 로 작성이 되어있어서 당연히 Ruby 와 친숙해지면 더 잘 운영할 수 있을것이다.&lt;/li&gt;
+&lt;li&gt;우선 가지고 있는 소스의 내용을 적고 부분부분 설명을 하겠다. &lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="o"&gt;[&lt;/span&gt;root@di7-03 vagrant&lt;span class="o"&gt;]&lt;/span&gt;&lt;span class="c1"&gt;# cat Vagrantfile &lt;/span&gt;
+&lt;span class="c1"&gt;# -*- mode: ruby -*-&lt;/span&gt;
+&lt;span class="c1"&gt;# vi: set ft=ruby :&lt;/span&gt;
+
+require &lt;span class="s1"&gt;&amp;#39;ipaddr&amp;#39;&lt;/span&gt;
+load &lt;span class="s1"&gt;&amp;#39;./config.rb&amp;#39;&lt;/span&gt;
+&lt;span class="nv"&gt;image&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;centos/7&amp;quot;&lt;/span&gt;
+
+def nodeIP&lt;span class="o"&gt;(&lt;/span&gt;ips, id&lt;span class="o"&gt;)&lt;/span&gt;
+  &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="o"&gt;((&lt;/span&gt;IPAddr.new ips&lt;span class="o"&gt;)&lt;/span&gt;&lt;span class="p"&gt;|&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="m"&gt;2&lt;/span&gt;+id&lt;span class="o"&gt;))&lt;/span&gt;.to_s&lt;span class="o"&gt;()&lt;/span&gt;
+end
+
+Vagrant.configure&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;2&amp;quot;&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="k"&gt;do&lt;/span&gt; &lt;span class="p"&gt;|&lt;/span&gt;config&lt;span class="p"&gt;|&lt;/span&gt;
+    config.ssh.insert_key &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nb"&gt;false&lt;/span&gt;
+    config.vm.synced_folder &lt;span class="s2"&gt;&amp;quot;.&amp;quot;&lt;/span&gt;, &lt;span class="s2"&gt;&amp;quot;/vagrant&amp;quot;&lt;/span&gt;, owner: &lt;span class="s2"&gt;&amp;quot;vagrant&amp;quot;&lt;/span&gt;, group: &lt;span class="s2"&gt;&amp;quot;vagrant&amp;quot;&lt;/span&gt;, rsync__auto: true, type: &lt;span class="s2"&gt;&amp;quot;virtualbox&amp;quot;&lt;/span&gt;
+
+    &lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="m"&gt;0&lt;/span&gt;..&lt;span class="nv"&gt;$worker_count&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt;.each &lt;span class="k"&gt;do&lt;/span&gt; &lt;span class="p"&gt;|&lt;/span&gt;index&lt;span class="p"&gt;|&lt;/span&gt;
+        &lt;span class="nv"&gt;node_name&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;vitess%d&amp;quot;&lt;/span&gt; % index
+
+        config.vm.define node_name &lt;span class="k"&gt;do&lt;/span&gt; &lt;span class="p"&gt;|&lt;/span&gt;node&lt;span class="p"&gt;|&lt;/span&gt;
+            node.vm.box &lt;span class="o"&gt;=&lt;/span&gt; image
+            node.vm.hostname &lt;span class="o"&gt;=&lt;/span&gt; node_name
+
+            &lt;span class="c1"&gt;# multiple eth interface &lt;/span&gt;
+            node.vm.network :private_network, ip: nodeIP&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="nv"&gt;$cluster_ips&lt;/span&gt;, index&lt;span class="o"&gt;)&lt;/span&gt;
+            node.vm.network :private_network, ip: nodeIP&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="nv"&gt;$manage_ips&lt;/span&gt;, index&lt;span class="o"&gt;)&lt;/span&gt;
+&lt;span class="c1"&gt;#           node.vm.network :private_network, ip: nodeIP($private_ips, index)&lt;/span&gt;
+
+            node.vm.provider :virtualbox &lt;span class="k"&gt;do&lt;/span&gt; &lt;span class="p"&gt;|&lt;/span&gt;vb&lt;span class="p"&gt;|&lt;/span&gt;
+                vb.name &lt;span class="o"&gt;=&lt;/span&gt; node_name
+                vb.cpus &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="m"&gt;8&lt;/span&gt; 
+                vb.memory &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="m"&gt;8192&lt;/span&gt; 
+                vb.customize &lt;span class="o"&gt;[&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;modifyvm&amp;quot;&lt;/span&gt;, :id, &lt;span class="s2"&gt;&amp;quot;--natdnshostresolver1&amp;quot;&lt;/span&gt;, &lt;span class="s2"&gt;&amp;quot;on&amp;quot;&lt;/span&gt;&lt;span class="o"&gt;]&lt;/span&gt;
+
+                &lt;span class="c1"&gt;# disk save path on barematal &lt;/span&gt;
+                &lt;span class="nv"&gt;disk&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;/data/storage/&amp;quot;&lt;/span&gt;
+                disk &lt;span class="s"&gt;&amp;lt;&amp;lt; node_name &lt;/span&gt;
+&lt;span class="s"&gt;                disk &amp;lt;&amp;lt; &amp;quot;/sdb.vdi&amp;quot;&lt;/span&gt;
+
+&lt;span class="s"&gt;                unless File.exist?(disk)&lt;/span&gt;
+&lt;span class="s"&gt;                        vb.customize [&amp;#39;createhd&amp;#39;, &amp;#39;--filename&amp;#39;, disk, &amp;#39;--variant&amp;#39;, &amp;#39;Fixed&amp;#39;, &amp;#39;--size&amp;#39;, $disk_size_mb * 1024]&lt;/span&gt;
+&lt;span class="s"&gt;                end&lt;/span&gt;
+&lt;span class="s"&gt;                vb.customize [&amp;#39;storageattach&amp;#39;, :id,  &amp;#39;--storagectl&amp;#39;, &amp;#39;IDE&amp;#39;, &amp;#39;--port&amp;#39;, 1, &amp;#39;--device&amp;#39;, 0, &amp;#39;--type&amp;#39;, &amp;#39;hdd&amp;#39;, &amp;#39;--medium&amp;#39;, disk]&lt;/span&gt;
+&lt;span class="s"&gt;            end&lt;/span&gt;
+
+&lt;span class="s"&gt;            # provision script &lt;/span&gt;
+&lt;span class="s"&gt;            node.vm.provision &amp;quot;shell&amp;quot;, &lt;/span&gt;
+&lt;span class="s"&gt;                name: &amp;quot;Base Installation (scripts/base.sh)&amp;quot;,&lt;/span&gt;
+&lt;span class="s"&gt;                path: &amp;quot;scripts/base.sh&amp;quot;&lt;/span&gt;
+
+&lt;span class="s"&gt;        end&lt;/span&gt;
+&lt;span class="s"&gt;    end&lt;/span&gt;
+&lt;span class="s"&gt;end&lt;/span&gt;
+&lt;span class="s"&gt;```sh&lt;/span&gt;
+
+
+&lt;span class="s"&gt;* CPU, Memory 설정 &lt;/span&gt;
+&lt;span class="s"&gt;```sh &lt;/span&gt;
+
+&lt;span class="s"&gt;    node.vm.provider :virtualbox do |vb|&lt;/span&gt;
+&lt;span class="s"&gt;        vb.name = node_name&lt;/span&gt;
+        &lt;span class="c1"&gt;# CPU 8 Core&lt;/span&gt;
+        vb.cpus &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="m"&gt;8&lt;/span&gt; 
+        &lt;span class="c1"&gt;# Memory 8192 mb&lt;/span&gt;
+        vb.memory &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="m"&gt;8192&lt;/span&gt; 
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;ul&gt;
+&lt;li&gt;Disk 설정 &lt;ul&gt;
+&lt;li&gt;Disk 설정의 경우 Virtualbox 의 VM 저장공간과 동일하게 저장하면 되겠다. &lt;/li&gt;
+&lt;li&gt;본인의 비루한 루비 언어실력으로 String contain 수준이 저렇지만 아래와 같이 사용하면 된다. &lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;    &lt;span class="c1"&gt;# disk save path on barematal &lt;/span&gt;
+    &lt;span class="nv"&gt;disk&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;/data/storage/&amp;quot;&lt;/span&gt;
+    disk &lt;span class="s"&gt;&amp;lt;&amp;lt; node_n&lt;/span&gt;ame 
+    disk &amp;lt;&amp;lt; &lt;span class="s2"&gt;&amp;quot;/sdb.vdi&amp;quot;&lt;/span&gt;
+
+    unless File.exist?&lt;span class="o"&gt;(&lt;/span&gt;disk&lt;span class="o"&gt;)&lt;/span&gt;
+            vb.customize &lt;span class="o"&gt;[&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;createhd&amp;#39;&lt;/span&gt;, &lt;span class="s1"&gt;&amp;#39;--filename&amp;#39;&lt;/span&gt;, disk, &lt;span class="s1"&gt;&amp;#39;--variant&amp;#39;&lt;/span&gt;, &lt;span class="s1"&gt;&amp;#39;Fixed&amp;#39;&lt;/span&gt;, &lt;span class="s1"&gt;&amp;#39;--size&amp;#39;&lt;/span&gt;, &lt;span class="nv"&gt;$disk_size_mb&lt;/span&gt; * &lt;span class="m"&gt;1024&lt;/span&gt;&lt;span class="o"&gt;]&lt;/span&gt;
+    end
+    vb.customize &lt;span class="o"&gt;[&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;storageattach&amp;#39;&lt;/span&gt;, :id,  &lt;span class="s1"&gt;&amp;#39;--storagectl&amp;#39;&lt;/span&gt;, &lt;span class="s1"&gt;&amp;#39;IDE&amp;#39;&lt;/span&gt;, &lt;span class="s1"&gt;&amp;#39;--port&amp;#39;&lt;/span&gt;, &lt;span class="m"&gt;1&lt;/span&gt;, &lt;span class="s1"&gt;&amp;#39;--device&amp;#39;&lt;/span&gt;, &lt;span class="m"&gt;0&lt;/span&gt;, &lt;span class="s1"&gt;&amp;#39;--type&amp;#39;&lt;/span&gt;, &lt;span class="s1"&gt;&amp;#39;hdd&amp;#39;&lt;/span&gt;, &lt;span class="s1"&gt;&amp;#39;--medium&amp;#39;&lt;/span&gt;, disk&lt;span class="o"&gt;]&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;ul&gt;
+&lt;li&gt;Network 할당 &lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="c1"&gt;# Ruby 의 IPAddr 함수 사용  &lt;/span&gt;
+def nodeIP&lt;span class="o"&gt;(&lt;/span&gt;ips, id&lt;span class="o"&gt;)&lt;/span&gt;
+  &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="o"&gt;((&lt;/span&gt;IPAddr.new ips&lt;span class="o"&gt;)&lt;/span&gt;&lt;span class="p"&gt;|&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="m"&gt;2&lt;/span&gt;+id&lt;span class="o"&gt;))&lt;/span&gt;.to_s&lt;span class="o"&gt;()&lt;/span&gt;
+end
+
+&lt;span class="c1"&gt;# Network 할당 &lt;/span&gt;
+node.vm.network :private_network, ip: nodeIP&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="nv"&gt;$cluster_ips&lt;/span&gt;, index&lt;span class="o"&gt;)&lt;/span&gt;
+node.vm.network :private_network, ip: nodeIP&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="nv"&gt;$manage_ips&lt;/span&gt;, index&lt;span class="o"&gt;)&lt;/span&gt;
+node.vm.network :private_network, ip: nodeIP&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="nv"&gt;$private_ips&lt;/span&gt;, index&lt;span class="o"&gt;)&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;ul&gt;
+&lt;li&gt;Provision Shell 실행 &lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;    &lt;span class="c1"&gt;# provision script &lt;/span&gt;
+    node.vm.provision &lt;span class="s2"&gt;&amp;quot;shell&amp;quot;&lt;/span&gt;, 
+        name: &lt;span class="s2"&gt;&amp;quot;Base Installation (scripts/base.sh)&amp;quot;&lt;/span&gt;,
+        path: &lt;span class="s2"&gt;&amp;quot;scripts/base.sh&amp;quot;&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;</content><category term="vagrant"></category><category term="virtualbox"></category></entry><entry><title>install-k8s-cluster-with-kubespray</title><link href="https://seaofnight.github.io/install-k8s-cluster-with-kubespray.html" rel="alternate"></link><published>2019-09-22T14:20:00+09:00</published><updated>2019-09-22T14:20:00+09:00</updated><author><name>yjkim</name></author><id>tag:seaofnight.github.io,2019-09-22:/install-k8s-cluster-with-kubespray.html</id><summary type="html">&lt;p&gt;kubernetes, kubespray&lt;/p&gt;</summary><content type="html">&lt;h1&gt;개요&lt;/h1&gt;
 &lt;p&gt;오늘은 K8s Cluster 을 간략하게 생성 해보는 예제를 기록해 보려고 한다. 
 Cluster 생성은 Kubespray 프로젝트를 이용하여 생성할 예정이다. &lt;/p&gt;
 &lt;h1&gt;클러스터 정보&lt;/h1&gt;
@@ -724,7 +858,24 @@ $ git push --delete origin gh
 &lt;li&gt;git 원격 레포에 있는 내용을 가져오는 명령이다.&lt;/li&gt;
 &lt;/ul&gt;
 &lt;/li&gt;
-&lt;/ul&gt;</content><category term="git"></category></entry><entry><title>manjaro-local-setting</title><link href="https://seaofnight.github.io/manjaro-local-setting.html" rel="alternate"></link><published>2019-09-14T18:20:00+09:00</published><updated>2019-09-14T18:20:00+09:00</updated><author><name>yjkim</name></author><id>tag:seaofnight.github.io,2019-09-14:/manjaro-local-setting.html</id><summary type="html">&lt;p&gt;local&lt;/p&gt;</summary><content type="html">&lt;h1&gt;한글 설정&lt;/h1&gt;
+&lt;/ul&gt;
+&lt;h1&gt;local 에서 repo 만들어서 remote 로 올리기&lt;/h1&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="c1"&gt;# init 로 프로젝트 생성 &lt;/span&gt;
+git init 
+
+&lt;span class="c1"&gt;# 설정정보 등록 &lt;/span&gt;
+git config --global user.name &lt;span class="s2"&gt;&amp;quot;yjkim&amp;quot;&lt;/span&gt;
+git config --global user.email seaofnight@hanmail.net
+
+&lt;span class="c1"&gt;# remote 정보 등록, 해당 remote 가 public 사이트이면 프로젝트 생성해야함. e.g github&lt;/span&gt;
+git remote add origin https://github.com/seaofnight/vitess-example.git
+
+&lt;span class="c1"&gt;# 병합하기 위하여 pull&lt;/span&gt;
+git pull origin master
+
+&lt;span class="c1"&gt;# 업로드 &lt;/span&gt;
+git push origin master
+&lt;/pre&gt;&lt;/div&gt;</content><category term="git"></category></entry><entry><title>manjaro-local-setting</title><link href="https://seaofnight.github.io/manjaro-local-setting.html" rel="alternate"></link><published>2019-09-14T18:20:00+09:00</published><updated>2019-09-14T18:20:00+09:00</updated><author><name>yjkim</name></author><id>tag:seaofnight.github.io,2019-09-14:/manjaro-local-setting.html</id><summary type="html">&lt;p&gt;local&lt;/p&gt;</summary><content type="html">&lt;h1&gt;한글 설정&lt;/h1&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="c1"&gt;# 폰트 다운로드 &lt;/span&gt;
 $ pacman -S terminus-font noto-fonts-cjk ttf-dejavu ibus-hangul 
 $ fc-match -s monospace

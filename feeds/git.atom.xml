@@ -93,4 +93,21 @@ $ git push --delete origin gh
 &lt;li&gt;git 원격 레포에 있는 내용을 가져오는 명령이다.&lt;/li&gt;
 &lt;/ul&gt;
 &lt;/li&gt;
-&lt;/ul&gt;</content><category term="git"></category></entry></feed>
+&lt;/ul&gt;
+&lt;h1&gt;local 에서 repo 만들어서 remote 로 올리기&lt;/h1&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="c1"&gt;# init 로 프로젝트 생성 &lt;/span&gt;
+git init 
+
+&lt;span class="c1"&gt;# 설정정보 등록 &lt;/span&gt;
+git config --global user.name &lt;span class="s2"&gt;&amp;quot;yjkim&amp;quot;&lt;/span&gt;
+git config --global user.email seaofnight@hanmail.net
+
+&lt;span class="c1"&gt;# remote 정보 등록, 해당 remote 가 public 사이트이면 프로젝트 생성해야함. e.g github&lt;/span&gt;
+git remote add origin https://github.com/seaofnight/vitess-example.git
+
+&lt;span class="c1"&gt;# 병합하기 위하여 pull&lt;/span&gt;
+git pull origin master
+
+&lt;span class="c1"&gt;# 업로드 &lt;/span&gt;
+git push origin master
+&lt;/pre&gt;&lt;/div&gt;</content><category term="git"></category></entry></feed>
