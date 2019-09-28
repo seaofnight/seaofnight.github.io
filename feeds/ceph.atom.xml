@@ -1,0 +1,257 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom"><title>yjkim blog - ceph</title><link href="https://seaofnight.github.io/" rel="alternate"></link><link href="https://seaofnight.github.io/feeds/ceph.atom.xml" rel="self"></link><id>https://seaofnight.github.io/</id><updated>2019-09-26T21:20:00+09:00</updated><entry><title>ceph-install-with-ansible</title><link href="https://seaofnight.github.io/ceph-install-with-ansible.html" rel="alternate"></link><published>2019-09-26T21:20:00+09:00</published><updated>2019-09-26T21:20:00+09:00</updated><author><name>yjkim</name></author><id>tag:seaofnight.github.io,2019-09-26:/ceph-install-with-ansible.html</id><summary type="html">&lt;p&gt;ceph,storage&lt;/p&gt;</summary><content type="html">&lt;h1&gt;개요&lt;/h1&gt;
+&lt;ul&gt;
+&lt;li&gt;회사에서 Ceph 를 계속 스터디를 하고 있었으나. K8s Cluster 에 올려놓고 사용만 하고있었지 Baremetal 에 올려 사용하지는 않고있었다. &lt;/li&gt;
+&lt;li&gt;자세하게 사용하기도 해야할 뿐더러 여러가지 옵션을 테스트 및 운용하기 위한 클러스터 구축을 정리하기 위하여 본 포스팅을 정리한다. &lt;/li&gt;
+&lt;li&gt;Ceph 설치방법은 Ceph-ansible 이며  stable-3.2 버전을 이용하여 설치 하였다. &lt;/li&gt;
+&lt;li&gt;설치 노드는 &lt;ul&gt;
+&lt;li&gt;mon 1, osd 3, mgr 1 이며 mon1 과 mgr1, osd1 이 같은 호스트에 배포가 되었다. &lt;/li&gt;
+&lt;li&gt;ceph0 10.0.3.2 8cpu 16gb ram, /dev/sdb 300gb&lt;/li&gt;
+&lt;li&gt;ceph1 10.0.3.3 8cpu 16gb ram, /dev/sdb 300gb&lt;/li&gt;
+&lt;li&gt;ceph2 10.0.3.4 8cpu 16gb ram, /dev/sdb 300gb &lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h1&gt;ceph prerequirements&lt;/h1&gt;
+&lt;ul&gt;
+&lt;li&gt;3node 부팅 Vagrant 로 부팅하면서 /dev/sdb/ 를 생성하도록 하였으며 lvm, fs 생성은 하지 않았다.&lt;/li&gt;
+&lt;li&gt;ssh fingerprint 설정&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="c1"&gt;# 이방법으로 패스워드 yes, 패스워드 일일이 쳤음 &lt;/span&gt;
+ssh-keygen 
+ssh-copy-id ceph0
+ssh-copy-id ceph1
+ssh-copy-id ceph2
+
+&lt;span class="c1"&gt;# 핑거프린트 검증용 각 호스트 접속 조회 확인  &lt;/span&gt;
+ssh root@ceph0 hostname
+ssh root@ceph1 hostname
+ssh root@ceph2 hostname
+
+
+&lt;span class="c1"&gt;# 다른방법으로는 sshpass 가 있다고 한다. 아래와 같이 사용하면 된다. &lt;/span&gt;
+yum install -y sshpass
+&lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;passwd-content&amp;quot;&lt;/span&gt; ~/passwd
+sshpass -f ~/passwd ssh-copy-id root@ceph0
+ssh root@ceph0 hostname 
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;ul&gt;
+&lt;li&gt;ceph 설치 전 사전 준비 &lt;ul&gt;
+&lt;li&gt;Pip, git Clone, 의존성 파일을 받아준다. &lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;yum install -y git python-pip sshpass &lt;span class="o"&gt;&amp;amp;&amp;amp;&lt;/span&gt; 
+git clone https://github.com/ceph/ceph-ansible.git &lt;span class="o"&gt;&amp;amp;&amp;amp;&lt;/span&gt; &lt;span class="se"&gt;\&lt;/span&gt;
+&lt;span class="nb"&gt;cd&lt;/span&gt; ceph-ansible &lt;span class="o"&gt;&amp;amp;&amp;amp;&lt;/span&gt; &lt;span class="se"&gt;\&lt;/span&gt;
+git checkout  stable-3.2 &lt;span class="o"&gt;&amp;amp;&amp;amp;&lt;/span&gt; &lt;span class="se"&gt;\&lt;/span&gt;
+pip install -r requirements.txt 
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;ul&gt;
+&lt;li&gt;/etc/hosts 설정&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;cat &lt;span class="s"&gt;&amp;lt;&amp;lt;EOF&amp;gt;&amp;gt; /etc/hosts&lt;/span&gt;
+
+&lt;span class="s"&gt;10.0.3.2 ceph0&lt;/span&gt;
+&lt;span class="s"&gt;10.0.3.3 ceph1&lt;/span&gt;
+&lt;span class="s"&gt;10.0.3.4 ceph2&lt;/span&gt;
+
+&lt;span class="s"&gt;EOF&lt;/span&gt;
+
+&lt;span class="c1"&gt;# 검증하기위한 조회 &lt;/span&gt;
+cat /etc/hosts
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h1&gt;ceph ansible install&lt;/h1&gt;
+&lt;ul&gt;
+&lt;li&gt;inventory 작성 &lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;cat &lt;span class="s"&gt;&amp;lt;&amp;lt; EOF | tee inventory.ini&lt;/span&gt;
+&lt;span class="s"&gt;[mons]&lt;/span&gt;
+&lt;span class="s"&gt;ceph0&lt;/span&gt;
+
+&lt;span class="s"&gt;[mgrs]&lt;/span&gt;
+&lt;span class="s"&gt;ceph0&lt;/span&gt;
+
+&lt;span class="s"&gt;[osds]&lt;/span&gt;
+&lt;span class="s"&gt;ceph0&lt;/span&gt;
+&lt;span class="s"&gt;ceph1&lt;/span&gt;
+&lt;span class="s"&gt;ceph2&lt;/span&gt;
+
+&lt;span class="s"&gt;[grafana-server]&lt;/span&gt;
+&lt;span class="s"&gt;ceph0&lt;/span&gt;
+
+&lt;span class="s"&gt;[all:children]&lt;/span&gt;
+&lt;span class="s"&gt;mons&lt;/span&gt;
+&lt;span class="s"&gt;osds&lt;/span&gt;
+&lt;span class="s"&gt;mgrs&lt;/span&gt;
+&lt;span class="s"&gt;EOF&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;ul&gt;
+&lt;li&gt;extra-vars.yml 파일 작성 &lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;cat &lt;span class="s"&gt;&amp;lt;&amp;lt;EOF | tee extra.yaml&lt;/span&gt;
+&lt;span class="s"&gt;# ceph&lt;/span&gt;
+&lt;span class="s"&gt;monitor_interface: eth1&lt;/span&gt;
+&lt;span class="s"&gt;monitor_address: 10.0.3.2&lt;/span&gt;
+&lt;span class="s"&gt;public_network: 10.0.3.0/24&lt;/span&gt;
+&lt;span class="s"&gt;cluster_network: 10.0.3.0/24&lt;/span&gt;
+
+&lt;span class="s"&gt;ceph_origin: repository&lt;/span&gt;
+&lt;span class="s"&gt;ceph_repository: community&lt;/span&gt;
+&lt;span class="s"&gt;ceph_stable_release: luminous&lt;/span&gt;
+
+&lt;span class="s"&gt;ceph_conf_overrides:&lt;/span&gt;
+&lt;span class="s"&gt;  global:&lt;/span&gt;
+&lt;span class="s"&gt;    mon_allow_pool_delete: true&lt;/span&gt;
+&lt;span class="s"&gt;    osd_pool_default_size: 1&lt;/span&gt;
+&lt;span class="s"&gt;    osd_pool_default_min_size: 1&lt;/span&gt;
+&lt;span class="s"&gt;    osd_pg_stat_report_internal_max: 1&lt;/span&gt;
+&lt;span class="s"&gt;  osd:&lt;/span&gt;
+&lt;span class="s"&gt;    osd_min_pg_log_entries: 10&lt;/span&gt;
+&lt;span class="s"&gt;    osd_max_pg_log_entries: 10&lt;/span&gt;
+&lt;span class="s"&gt;    osd_pg_log_dups_tracked: 10&lt;/span&gt;
+&lt;span class="s"&gt;    osd_pg_log_trim_min: 10&lt;/span&gt;
+
+&lt;span class="s"&gt;osd_objectstore: bluestore&lt;/span&gt;
+&lt;span class="s"&gt;#lvm_volumes:&lt;/span&gt;
+&lt;span class="s"&gt;#  - data: /dev/sda&lt;/span&gt;
+&lt;span class="s"&gt;#  - data: /dev/sdb&lt;/span&gt;
+&lt;span class="s"&gt;osd_scenario: collocated&lt;/span&gt;
+&lt;span class="s"&gt;dmcrypt: true&lt;/span&gt;
+&lt;span class="s"&gt;devices:&lt;/span&gt;
+&lt;span class="s"&gt;  - /dev/sdb&lt;/span&gt;
+
+&lt;span class="s"&gt;openstack_config: true&lt;/span&gt;
+&lt;span class="s"&gt;kube_pool:&lt;/span&gt;
+&lt;span class="s"&gt;  name: &amp;quot;kube&amp;quot;&lt;/span&gt;
+&lt;span class="s"&gt;  pg_num: 64&lt;/span&gt;
+&lt;span class="s"&gt;  pgp_num: 64&lt;/span&gt;
+&lt;span class="s"&gt;  rule_name: &amp;quot;replicated_rule&amp;quot;&lt;/span&gt;
+&lt;span class="s"&gt;  type: 1&lt;/span&gt;
+&lt;span class="s"&gt;  erasure_profile: &amp;quot;&amp;quot;&lt;/span&gt;
+&lt;span class="s"&gt;  expected_num_objects: &amp;quot;&amp;quot;&lt;/span&gt;
+&lt;span class="s"&gt;  application: &amp;quot;rbd&amp;quot;&lt;/span&gt;
+&lt;span class="s"&gt;openstack_glance_pool:&lt;/span&gt;
+&lt;span class="s"&gt;  name: &amp;quot;images&amp;quot;&lt;/span&gt;
+&lt;span class="s"&gt;  pg_num: 64&lt;/span&gt;
+&lt;span class="s"&gt;  pgp_num: 64&lt;/span&gt;
+&lt;span class="s"&gt;  rule_name: &amp;quot;replicated_rule&amp;quot;&lt;/span&gt;
+&lt;span class="s"&gt;  type: 1&lt;/span&gt;
+&lt;span class="s"&gt;  erasure_profile: &amp;quot;&amp;quot;&lt;/span&gt;
+&lt;span class="s"&gt;  expected_num_objects: &amp;quot;&amp;quot;&lt;/span&gt;
+&lt;span class="s"&gt;openstack_cinder_pool:&lt;/span&gt;
+&lt;span class="s"&gt;  name: &amp;quot;volumes&amp;quot;&lt;/span&gt;
+&lt;span class="s"&gt;  pg_num: 64&lt;/span&gt;
+&lt;span class="s"&gt;  pgp_num: 64&lt;/span&gt;
+&lt;span class="s"&gt;  rule_name: &amp;quot;replicated_rule&amp;quot;&lt;/span&gt;
+&lt;span class="s"&gt;  type: 1&lt;/span&gt;
+&lt;span class="s"&gt;  erasure_profile: &amp;quot;&amp;quot;&lt;/span&gt;
+&lt;span class="s"&gt;  expected_num_objects: &amp;quot;&amp;quot;&lt;/span&gt;
+&lt;span class="s"&gt;openstack_cinder_backup_pool:&lt;/span&gt;
+&lt;span class="s"&gt;  name: &amp;quot;backups&amp;quot;&lt;/span&gt;
+&lt;span class="s"&gt;  pg_num: 2&lt;/span&gt;
+&lt;span class="s"&gt;  pgp_num: 2&lt;/span&gt;
+&lt;span class="s"&gt;  rule_name: &amp;quot;replicated_rule&amp;quot;&lt;/span&gt;
+&lt;span class="s"&gt;  type: 1&lt;/span&gt;
+&lt;span class="s"&gt;  erasure_profile: &amp;quot;&amp;quot;&lt;/span&gt;
+&lt;span class="s"&gt;  expected_num_objects: &amp;quot;&amp;quot;&lt;/span&gt;
+&lt;span class="s"&gt;openstack_nova_vms_pool:&lt;/span&gt;
+&lt;span class="s"&gt;  name: &amp;quot;vms&amp;quot;&lt;/span&gt;
+&lt;span class="s"&gt;  pg_num: 64&lt;/span&gt;
+&lt;span class="s"&gt;  pgp_num: 64&lt;/span&gt;
+&lt;span class="s"&gt;  rule_name: &amp;quot;replicated_rule&amp;quot;&lt;/span&gt;
+&lt;span class="s"&gt;  type: 1&lt;/span&gt;
+&lt;span class="s"&gt;  erasure_profile: &amp;quot;&amp;quot;&lt;/span&gt;
+&lt;span class="s"&gt;  expected_num_objects: &amp;quot;&amp;quot;&lt;/span&gt;
+&lt;span class="s"&gt;  application: &amp;quot;rbd&amp;quot;&lt;/span&gt;
+
+&lt;span class="s"&gt;openstack_pools:&lt;/span&gt;
+&lt;span class="s"&gt;  - &amp;quot;{{ kube_pool }}&amp;quot;&lt;/span&gt;
+&lt;span class="s"&gt;  - &amp;quot;{{ openstack_glance_pool }}&amp;quot;&lt;/span&gt;
+&lt;span class="s"&gt;  - &amp;quot;{{ openstack_cinder_pool }}&amp;quot;&lt;/span&gt;
+&lt;span class="s"&gt;  - &amp;quot;{{ openstack_cinder_backup_pool }}&amp;quot;&lt;/span&gt;
+&lt;span class="s"&gt;  - &amp;quot;{{ openstack_nova_vms_pool }}&amp;quot;&lt;/span&gt;
+&lt;span class="s"&gt;EOF&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;ul&gt;
+&lt;li&gt;ping 체크 &lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;ansible -b -i inventory.ini -m ping all
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;ul&gt;
+&lt;li&gt;ansible playbook site 스크립트를 실행하여 설치 &lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt; cp site.yml.sample site.yml
+
+&lt;span class="nv"&gt;INVENTORY&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;-i inventory.ini&amp;quot;&lt;/span&gt;
+&lt;span class="nv"&gt;EXTRA&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;-e @extra.yaml&amp;quot;&lt;/span&gt;
+&lt;span class="nv"&gt;OPTION&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;-b -vvvv&amp;quot;&lt;/span&gt;
+&lt;span class="nv"&gt;PLAY&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;site.yml&amp;quot;&lt;/span&gt;
+ansible-playbook &lt;span class="nv"&gt;$INVENTORY&lt;/span&gt; &lt;span class="nv"&gt;$EXTRA&lt;/span&gt; &lt;span class="nv"&gt;$PLAY&lt;/span&gt; &lt;span class="nv"&gt;$OPTION&lt;/span&gt; 
+&lt;span class="c1"&gt;# ansible-playbook -b -vvvv -i inventory.ini -e @extra.yaml site.yaml&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h1&gt;ceph ansible remove&lt;/h1&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;cat &lt;span class="s"&gt;&amp;lt;&amp;lt; EOF | tee purge=cluster.sh &lt;/span&gt;
+&lt;span class="s"&gt;#!/bin/bash &lt;/span&gt;
+&lt;span class="s"&gt;set -ex &lt;/span&gt;
+&lt;span class="s"&gt;INVENTORY=&amp;quot;-i inventory.ini&amp;quot;&lt;/span&gt;
+&lt;span class="s"&gt;EXTRA=&amp;quot;-e @extra.yaml&amp;quot;&lt;/span&gt;
+&lt;span class="s"&gt;PLAY=&amp;quot;infrastructure-playbooks/purge-cluster.yml&amp;quot;&lt;/span&gt;
+&lt;span class="s"&gt;OPTION=&amp;quot;-b -vvv&amp;quot;&lt;/span&gt;
+&lt;span class="s"&gt;ansible-playbook $INVENTORY $EXTRA $PLAY $OPTION &lt;/span&gt;
+&lt;span class="s"&gt;EOF&lt;/span&gt;
+chmod +x &lt;span class="nv"&gt;purge&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;cluster.sh  &lt;span class="o"&gt;&amp;amp;&amp;amp;&lt;/span&gt; &lt;span class="nv"&gt;purge&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;cluster.sh
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h1&gt;주로 발생한 Error&lt;/h1&gt;
+&lt;ul&gt;
+&lt;li&gt;/etc/ceph.conf 의 mon host 값 문제 &lt;ul&gt;
+&lt;li&gt;ceph-ansible 4.0 버전의 Source 는 task 파일의 Jinja template 를 확인해보면 &lt;/li&gt;
+&lt;li&gt;mon 호스트를 루프 돌면서 호스트 정보를 찍어주는데 &lt;/li&gt;
+&lt;li&gt;mon v2, v1 버전을 마이그래이션 하는 소스가 들어가있다.&lt;/li&gt;
+&lt;li&gt;그렇기때문에 git 다운받고 checkout stable-3.2 버전으로 실행시키며&lt;/li&gt;
+&lt;li&gt;extra.yaml 에 monitor_address 값을 넣어준다. &lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;에러내용 &lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;fatal: &lt;span class="o"&gt;[&lt;/span&gt;mon1&lt;span class="o"&gt;]&lt;/span&gt;: FAILED! &lt;span class="o"&gt;=&lt;/span&gt;&amp;gt; 
+  msg: &lt;span class="p"&gt;|&lt;/span&gt;-
+    The conditional check &lt;span class="s1"&gt;&amp;#39;(ceph_health_raw.stdout != &amp;quot;&amp;quot;) and (ceph_health_raw.stdout | default(&amp;#39;&lt;/span&gt;&lt;span class="o"&gt;{}&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;) | from_json)[&amp;#39;&lt;/span&gt;state&lt;span class="s1"&gt;&amp;#39;] in [&amp;#39;&lt;/span&gt;leader&lt;span class="s1"&gt;&amp;#39;, &amp;#39;&lt;/span&gt;peon&lt;span class="s1"&gt;&amp;#39;]&lt;/span&gt;
+&lt;span class="s1"&gt;    &amp;#39;&lt;/span&gt; failed. The error was: No JSON object could be decoded
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;ul&gt;
+&lt;li&gt;조치사항 &lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="c1"&gt;#조치 1 branch checkout &lt;/span&gt;
+$ git checkout stable-3.2
+
+$ vi extre.yaml
+---
+&lt;span class="c1"&gt;# extra.yaml &lt;/span&gt;
+monitor_interface: eth1
+&lt;span class="c1"&gt;#monitor_address: 10.0.3.2 ## 조치 2 여기부분&lt;/span&gt;
+public_network: &lt;span class="m"&gt;10&lt;/span&gt;.0.3.0/24
+cluster_network: &lt;span class="m"&gt;10&lt;/span&gt;.0.3.0/24
+---
+
+* 참고  : https://github.com/ceph/ceph-ansible/issues/3948
+* 참고2 : http://lists.ceph.com/pipermail/ceph-users-ceph.com/2019-February/032801.html
+&lt;/pre&gt;&lt;/div&gt;</content><category term="ceph"></category><category term="storage"></category></entry></feed>
