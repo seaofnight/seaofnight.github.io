@@ -7,14 +7,21 @@
 
         <link rel="alternate"  href="https://seaofnight.github.io/feeds/all.atom.xml" type="application/atom+xml" title="yjkim blog Full Atom Feed"/>
 
-        <title>Categories | yjkim blog // Man of few words...</title>
+        <title>centos-desktop-setting // yjkim blog // Man of few words...</title>
 
 
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/pure/0.3.0/pure-min.css">
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.1.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="https://seaofnight.github.io/theme/css/pure.css">
+    <link rel="stylesheet" href="https://seaofnight.github.io/theme/css/pygments.css">
 
     <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/fitvids/1.0.1/jquery.fitvids.min.js"></script>
+    <script>
+        $(document).ready(function(){
+            $(".content").fitVids();
+        });
+    </script>
 </head>
 
 <body>
@@ -40,23 +47,34 @@
                 </div>
             </div>
         </div>
-    <div class="pure-u-1">
+    <div class="pure-u">
         <div class="content">
-            <h1 class="content-subhead">All Categories</h1>
-            <ul>
-                    <li><a href="https://seaofnight.github.io/category/centos.html">centos</a></li>
-                    <li><a href="https://seaofnight.github.io/category/ceph.html">ceph</a></li>
-                    <li><a href="https://seaofnight.github.io/category/firewalld.html">firewalld</a></li>
-                    <li><a href="https://seaofnight.github.io/category/git.html">git</a></li>
-                    <li><a href="https://seaofnight.github.io/category/golang.html">golang</a></li>
-                    <li><a href="https://seaofnight.github.io/category/kubernetes.html">kubernetes</a></li>
-                    <li><a href="https://seaofnight.github.io/category/local.html">local</a></li>
-                    <li><a href="https://seaofnight.github.io/category/python.html">Python</a></li>
-                    <li><a href="https://seaofnight.github.io/category/vagrant.html">vagrant</a></li>
-                    <li><a href="https://seaofnight.github.io/category/virsh.html">virsh</a></li>
-                    <li><a href="https://seaofnight.github.io/category/vitess.html">vitess</a></li>
-                    <li><a href="https://seaofnight.github.io/category/window.html">window</a></li>
-            </ul>
+            <section class="post">
+                <header class="post-header">
+                    <h1>centos-desktop-setting</h1>
+                        <p class="post-meta">
+                            // under                                 <a class="post-category" href="https://seaofnight.github.io/tag/linux.html">linux</a>
+                                <a class="post-category" href="https://seaofnight.github.io/tag/centos.html">centos</a>
+                                <a class="post-category" href="https://seaofnight.github.io/tag/desktop.html">desktop</a>
+                        </p>
+                </header>
+            </section>
+            <h1>how to gnome desktop install</h1>
+<div class="highlight"><pre><span></span>$ gnome desktop install 
+$ sudo yum update  
+$ yum group list  
+$ yum groupinstall <span class="s2">&quot;GNOME Desktop&quot;</span> <span class="s2">&quot;Graphical Administration Tools&quot;</span> 
+$ ln -sf /lib/systemd/system/runlevel5.target /etc/systemd/system/default.target 
+$ sudo reboot 
+</pre></div>
+
+
+<h1>tiger vnc install</h1>
+<div class="highlight"><pre><span></span>$ yum install -y tigervnc-server 
+$ vncserver 
+<span class="c1"># modify option -&gt; geometry : resolution </span>
+</pre></div>
+            <a href="#" class="go-top">Go Top</a>
 <footer class="footer">
     <p>&copy; yjkim &ndash;
         Built with <a href="https://github.com/PurePelicanTheme/pure-single">Pure Theme</a>

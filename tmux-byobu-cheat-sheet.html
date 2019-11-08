@@ -7,14 +7,21 @@
 
         <link rel="alternate"  href="https://seaofnight.github.io/feeds/all.atom.xml" type="application/atom+xml" title="yjkim blog Full Atom Feed"/>
 
-        <title>Categories | yjkim blog // Man of few words...</title>
+        <title>tmux-byobu-cheat-sheet // yjkim blog // Man of few words...</title>
 
 
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/pure/0.3.0/pure-min.css">
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.1.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="https://seaofnight.github.io/theme/css/pure.css">
+    <link rel="stylesheet" href="https://seaofnight.github.io/theme/css/pygments.css">
 
     <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/fitvids/1.0.1/jquery.fitvids.min.js"></script>
+    <script>
+        $(document).ready(function(){
+            $(".content").fitVids();
+        });
+    </script>
 </head>
 
 <body>
@@ -40,23 +47,81 @@
                 </div>
             </div>
         </div>
-    <div class="pure-u-1">
+    <div class="pure-u">
         <div class="content">
-            <h1 class="content-subhead">All Categories</h1>
-            <ul>
-                    <li><a href="https://seaofnight.github.io/category/centos.html">centos</a></li>
-                    <li><a href="https://seaofnight.github.io/category/ceph.html">ceph</a></li>
-                    <li><a href="https://seaofnight.github.io/category/firewalld.html">firewalld</a></li>
-                    <li><a href="https://seaofnight.github.io/category/git.html">git</a></li>
-                    <li><a href="https://seaofnight.github.io/category/golang.html">golang</a></li>
-                    <li><a href="https://seaofnight.github.io/category/kubernetes.html">kubernetes</a></li>
-                    <li><a href="https://seaofnight.github.io/category/local.html">local</a></li>
-                    <li><a href="https://seaofnight.github.io/category/python.html">Python</a></li>
-                    <li><a href="https://seaofnight.github.io/category/vagrant.html">vagrant</a></li>
-                    <li><a href="https://seaofnight.github.io/category/virsh.html">virsh</a></li>
-                    <li><a href="https://seaofnight.github.io/category/vitess.html">vitess</a></li>
-                    <li><a href="https://seaofnight.github.io/category/window.html">window</a></li>
-            </ul>
+            <section class="post">
+                <header class="post-header">
+                    <h1>tmux-byobu-cheat-sheet</h1>
+                        <p class="post-meta">
+                            // under                                 <a class="post-category" href="https://seaofnight.github.io/tag/tmux.html">tmux</a>
+                                <a class="post-category" href="https://seaofnight.github.io/tag/byobu.html">byobu</a>
+                                <a class="post-category" href="https://seaofnight.github.io/tag/cheat-sheet.html">cheat-sheet</a>
+                        </p>
+                </header>
+            </section>
+            <h1>tmux</h1>
+<ul>
+<li>
+<p>개요 </p>
+<ul>
+<li>tmux 는 screen 멀티플렉서 프로그램으로 gnu환경에서 terminal 을 분리 활용 할 수 있는 프로그램이다. </li>
+<li>tmux 는 단축키를 이용하기위하 호출하는 명령어가 있는데 기본적으로 Ctrl + b 를 누르면 단축키가 입력 가능하다. </li>
+</ul>
+</li>
+<li>
+<p>shoutcut</p>
+</li>
+</ul>
+<div class="highlight"><pre><span></span># 스크롤 
+Ctrl + b [
+# 화면 종분할 
+Ctrl + b &quot;
+# 화면 횡분할
+Ctrl + b %
+
+# 입력 커서의 화면이동 
+Ctrl + b 화살키 (1번만 이동)
+
+# 화면 다음화면으로 
+Ctrl + b o 
+
+# 화면 사이즈 조절 방법 
+
+(ctrl + b, :) 
+## 하단 입력창에 타이핑
+resize-pane -L 10 
+            -R 10 
+            -D 10 
+            -U 10 
+
+# 화면 레이아웃 변경 
+ctrl + b, spacebar 
+</pre></div>
+
+
+<h1>byobu</h1>
+<ul>
+<li>byobu 는 백엔드로 screen, tmux 등 스크린 멀티플렉서를 내장하여 실행하도록 되어있으며 </li>
+<li>단축키가 screen, tmux에 비하여 심플하다. </li>
+<li>그래서 우선 로컬PC에는 byobu 개발용 서버에는 screen or tmux 중에 하나를 깔고 실행하며 운영에는.. 깔지 않는다. </li>
+</ul>
+<div class="highlight"><pre><span></span><span class="c1"># new window </span>
+F2
+
+<span class="c1"># next window </span>
+F4
+
+<span class="c1"># preous window </span>
+F3 
+
+<span class="c1"># 화면 분할</span>
+Ctrl + F2 
+Shift + F2 
+
+<span class="c1"># 여러 화면에 동일 Command 입력 </span>
+Shift + F9
+</pre></div>
+            <a href="#" class="go-top">Go Top</a>
 <footer class="footer">
     <p>&copy; yjkim &ndash;
         Built with <a href="https://github.com/PurePelicanTheme/pure-single">Pure Theme</a>

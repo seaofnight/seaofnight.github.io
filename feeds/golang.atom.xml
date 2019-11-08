@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom"><title>yjkim blog - golang</title><link href="https://seaofnight.github.io/" rel="alternate"></link><link href="https://seaofnight.github.io/feeds/golang.atom.xml" rel="self"></link><id>https://seaofnight.github.io/</id><updated>2019-09-27T21:20:00+09:00</updated><entry><title>wine-in-docker-with-kakaotalk</title><link href="https://seaofnight.github.io/wine-in-docker-with-kakaotalk.html" rel="alternate"></link><published>2019-09-27T21:20:00+09:00</published><updated>2019-09-27T21:20:00+09:00</updated><author><name>yjkim</name></author><id>tag:seaofnight.github.io,2019-09-27:/wine-in-docker-with-kakaotalk.html</id><summary type="html">&lt;p&gt;kakaotalk,docker,local&lt;/p&gt;</summary><content type="html">&lt;h1&gt;overview&lt;/h1&gt;
+&lt;p&gt;kakaotalk 리눅스 버전이 지원이 안되는데 이어형님이 인터넷에 친절하게 카카오톡을 도커로 실행 시켜주는 방법을 포스팅해주셨다. 
+와인을 도커에서 실행하고 카카오톡에 필요한 의존성 라이브러리들을 설치한후에 
+그 도커 이미지를 한개의 바이너리 파일로 만드는 부분을 포스팅 하였는데...&lt;/p&gt;
+&lt;p&gt;우선 도커위에 와인을 실행하는 부분 까지만 설정이 되었으며 스테틱 컨테이너는 시간을 좀 두어야겠다. &lt;/p&gt;
+&lt;h3&gt;도커 실행 부분&lt;/h3&gt;
+&lt;ol&gt;
+&lt;li&gt;Dockerfile 파일을 참고해보면 와인트릭, 나눔폰트 등을 받고 endpoint.sh 를 실행 &lt;/li&gt;
+&lt;li&gt;endpoint.sh 에서 kakaotalk 을 받아서 실행해준다. &lt;/li&gt;
+&lt;/ol&gt;
+&lt;h3&gt;실행시 문제 나오는 부분&lt;/h3&gt;
+&lt;ol&gt;
+&lt;li&gt;한글 변환 문제 &lt;ul&gt;
+&lt;li&gt;아래 환경변수로 들어가는 부분을 리눅스에 어떤 한글 변환기를 사용했느냐에 맞추어서 설정을 해준다. &lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;display 출력문제 &lt;ul&gt;
+&lt;li&gt;linux 의 docker에서 윈도우 프로그램을 돌리는데에는 이해가 조금 필요하다. &lt;/li&gt;
+&lt;li&gt;간단하게 모두 오픈하도록 설정한다. &lt;ul&gt;
+&lt;li&gt;이부분 -&amp;gt;&amp;gt; xhost +local:root&lt;/li&gt;
+&lt;li&gt;재부팅하면 사라진다. &lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;sound 관련되어서 pulseaudio 이미지를 사용하여 올리게 되었는데 없는것이랑 있는것이랑 차이가?&lt;ul&gt;
+&lt;li&gt;간혈적으로 죽는 현상이 자주 발생되어서 조금 더 디버깅을 해봐야겠다. &lt;/li&gt;
+&lt;li&gt;pulseaudio 사용 안하고 kakaotalk 에서 알람을 끄면 죽진 않음 &lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h1&gt;docker&lt;/h1&gt;
+&lt;ul&gt;
+&lt;li&gt;Dockerfile&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;/run/me/y/1/06/k/dockerfiles/kakaotalk-wine  master !1 ?1  cat Dockerfile                          ✔  11:47:59
+# Run Kakaotalk using wine
+#
+#       if [[ ! -d &amp;quot;&lt;span class="cp"&gt;${&lt;/span&gt;&lt;span class="n"&gt;HOME&lt;/span&gt;&lt;span class="cp"&gt;}&lt;/span&gt;/.wine&amp;quot; ]]; then
+#               mkdir -p &amp;quot;&lt;span class="cp"&gt;${&lt;/span&gt;&lt;span class="n"&gt;HOME&lt;/span&gt;&lt;span class="cp"&gt;}&lt;/span&gt;/.wine&amp;quot;
+#       fi
+#
+#       docker run -d \
+#               -e &amp;quot;GTK_IM_MODULE=uim&amp;quot; \
+#               -e &amp;quot;XMODIFIERS=@im=uim&amp;quot; \
+#               -e &amp;quot;QT_IM_MODULE=uim&amp;quot; \
+#               -e &amp;quot;DISPLAY=unix&lt;span class="nv"&gt;$DISPLAY&lt;/span&gt;&amp;quot; \
+#               -v /etc/localtime:/etc/localtime:ro \
+#               -v /tmp/.X11-unix:/tmp/.X11-unix \
+#               -v &amp;quot;&lt;span class="nv"&gt;$HOME&lt;/span&gt;/.wine:/home/wine/.wine&amp;quot; \
+#               --link pulseaudio:pulseaudio \
+#               -e PULSE_SERVER=pulseaudio \
+#               --hostname kakao \
+#               --name kakao \
+#               leoh0/kakao
+FROM alpine:3.9
+RUN echo &amp;#39;x86&amp;#39; &amp;gt; /etc/apk/arch &lt;span class="err"&gt;&amp;amp;&amp;amp;&lt;/span&gt; \
+apk --no-cache add \
+ca-certificates \
+wget \
+wine \
+zenity
+RUN wget https://raw.githubusercontent.com/Winetricks/winetricks/master/src/winetricks &lt;span class="err"&gt;&amp;amp;&amp;amp;&lt;/span&gt; \
+chmod +x ./winetricks &lt;span class="err"&gt;&amp;amp;&amp;amp;&lt;/span&gt; \
+mv ./winetricks /usr/local/bin/
+RUN mkdir -p /usr/share/fonts/NanumFont &lt;span class="err"&gt;&amp;amp;&amp;amp;&lt;/span&gt; \
+cd /usr/share/fonts/ &lt;span class="err"&gt;&amp;amp;&amp;amp;&lt;/span&gt; \
+wget http://cdn.naver.com/naver/NanumFont/fontfiles/NanumFont_TTF_ALL.zip &lt;span class="err"&gt;&amp;amp;&amp;amp;&lt;/span&gt; \
+unzip NanumFont_TTF_ALL.zip -d NanumFont &lt;span class="err"&gt;&amp;amp;&amp;amp;&lt;/span&gt; \
+rm -f NanumFont_TTF_ALL.zip
+ENV LANG=ko_KR.UTF-8 \
+LANGUAGE=ko_KR.UTF-8 \
+HOME=/home/wine
+RUN adduser -u 1000 -D wine &lt;span class="err"&gt;&amp;amp;&amp;amp;&lt;/span&gt; \
+mkdir -p &lt;span class="nv"&gt;$HOME&lt;/span&gt;/.wine &lt;span class="err"&gt;&amp;amp;&amp;amp;&lt;/span&gt; \
+chown -R wine.wine &lt;span class="nv"&gt;$HOME&lt;/span&gt;
+WORKDIR /home/wine
+USER wine
+COPY entrypoint.sh /usr/local/bin/entrypoint.sh
+ENTRYPOINT [ &amp;quot;/usr/local/bin/entrypoint.sh&amp;quot; ]
+
+
+/run/me/y/1/06/k/dockerfiles/kakaotalk-wine  master !1 ?1  cat entrypoint.sh                       ✔  11:48:01
+#!/bin/sh
+set -e
+(
+if [ ! -e &amp;quot;&lt;span class="nv"&gt;$HOME&lt;/span&gt;/.wine/drive_c/Program Files/Kakao/KakaoTalk/KakaoTalk.exe&amp;quot; ]; then
+echo &amp;quot;Install wineboot&amp;quot;
+WINEARCH=win32 WINEPREFIX=~/.wine wine wineboot
+winetricks -q d3dx11_43 gdiplus richtx32 msxml6 \
+&lt;span class="err"&gt;&amp;amp;&amp;amp;&lt;/span&gt; winetricks win7
+wget http://app.pc.kakao.com/talk/win32/KakaoTalk_Setup.exe \
+&lt;span class="err"&gt;&amp;amp;&amp;amp;&lt;/span&gt; wine KakaoTalk_Setup.exe
+fi
+)
+exec wine &amp;quot;&lt;span class="nv"&gt;$HOME&lt;/span&gt;/.wine/drive_c/Program Files/Kakao/KakaoTalk/KakaoTalk.exe&amp;quot;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;docker pulseaudio&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;https://github.com/jessfraz/dockerfiles&lt;/li&gt;
+&lt;li&gt;https://github.com/leoh0/dockerfiles&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;docker run &lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;xhost +local:root
+
+docker run -d  &lt;span class="se"&gt;\&lt;/span&gt;
+-v /etc/localtime:/etc/localtime:ro &lt;span class="se"&gt;\&lt;/span&gt;
+--device /dev/snd &lt;span class="se"&gt;\&lt;/span&gt;
+-p &lt;span class="m"&gt;4713&lt;/span&gt;:4713 &lt;span class="se"&gt;\&lt;/span&gt;
+--restart always &lt;span class="se"&gt;\&lt;/span&gt;
+--group-add audio &lt;span class="se"&gt;\&lt;/span&gt;
+--name pulseaudio &lt;span class="se"&gt;\&lt;/span&gt;
+jess/pulseaudio
+
+docker run -d &lt;span class="se"&gt;\&lt;/span&gt;
+-e &lt;span class="s2"&gt;&amp;quot;GTK_IM_MODULE=uim&amp;quot;&lt;/span&gt; &lt;span class="se"&gt;\&lt;/span&gt;
+-e &lt;span class="s2"&gt;&amp;quot;XMODIFIERS=@im=uim&amp;quot;&lt;/span&gt; &lt;span class="se"&gt;\&lt;/span&gt;
+-e &lt;span class="s2"&gt;&amp;quot;QT_IM_MODULE=uim&amp;quot;&lt;/span&gt; &lt;span class="se"&gt;\&lt;/span&gt;
+-e &lt;span class="s2"&gt;&amp;quot;DISPLAY=unix&lt;/span&gt;&lt;span class="nv"&gt;$DISPLAY&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt; &lt;span class="se"&gt;\&lt;/span&gt;
+-v /etc/localtime:/etc/localtime:ro &lt;span class="se"&gt;\&lt;/span&gt;
+-v /tmp/.X11-unix:/tmp/.X11-unix &lt;span class="se"&gt;\&lt;/span&gt;
+-v &lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="nv"&gt;$HOME&lt;/span&gt;&lt;span class="s2"&gt;/.wine:/home/wine/.wine&amp;quot;&lt;/span&gt; &lt;span class="se"&gt;\&lt;/span&gt;
+--link pulseaudio:pulseaudio &lt;span class="se"&gt;\&lt;/span&gt;
+-e &lt;span class="nv"&gt;PULSE_SERVER&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;pulseaudio &lt;span class="se"&gt;\&lt;/span&gt;
+--hostname kakao &lt;span class="se"&gt;\&lt;/span&gt;
+--name kakao &lt;span class="se"&gt;\&lt;/span&gt;
+--restart always &lt;span class="se"&gt;\&lt;/span&gt;
+kakaotalk:latest
+&lt;/pre&gt;&lt;/div&gt;</content><category term="kakaotalk"></category><category term="docker"></category><category term="local"></category></entry><entry><title>golang-localsetting</title><link href="https://seaofnight.github.io/golang-localsetting.html" rel="alternate"></link><published>2019-09-26T21:20:00+09:00</published><updated>2019-09-26T21:20:00+09:00</updated><author><name>yjkim</name></author><id>tag:seaofnight.github.io,2019-09-26:/golang-localsetting.html</id><summary type="html">&lt;p&gt;golang,local&lt;/p&gt;</summary><content type="html">&lt;h1&gt;go-lang download&lt;/h1&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;wget https://dl.google.com/go/go1.13.1.linux-amd64.tar.gz
+tar xvf go1.13* 
+mv go /usr/local
+&lt;/pre&gt;&lt;/div&gt;</content><category term="golang"></category><category term="local"></category></entry></feed>

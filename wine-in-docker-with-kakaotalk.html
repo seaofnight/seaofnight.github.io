@@ -1,0 +1,234 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="yjkim blog, Man of few words...">
+
+        <link rel="alternate"  href="https://seaofnight.github.io/feeds/all.atom.xml" type="application/atom+xml" title="yjkim blog Full Atom Feed"/>
+
+        <title>wine-in-docker-with-kakaotalk // yjkim blog // Man of few words...</title>
+
+
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/pure/0.3.0/pure-min.css">
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.1.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://seaofnight.github.io/theme/css/pure.css">
+    <link rel="stylesheet" href="https://seaofnight.github.io/theme/css/pygments.css">
+
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/fitvids/1.0.1/jquery.fitvids.min.js"></script>
+    <script>
+        $(document).ready(function(){
+            $(".content").fitVids();
+        });
+    </script>
+</head>
+
+<body>
+    <div class="pure-g-r" id="layout">
+        <div class="sidebar pure-u">
+            <div class="cover-img" style="background-image: url('/images/sidebar.jpg')">
+                <div class="cover-body">
+                    <header class="header">
+                        <hgroup>
+                            <h1 class="brand-main"><a href="https://seaofnight.github.io">yjkim blog</a></h1>
+                            <p class="tagline">Man of few words...</p>
+                                <p class="links"><a href="/archives.html">Archives</a></p>
+                                <p class="social">
+                                    <a href="">
+                                        <i class="fa fa-twitter fa-3x"></i>
+                                    </a>
+                                    <a href="https://github.com/seaofnight">
+                                        <i class="fa fa-github fa-3x"></i>
+                                    </a>
+                                </p>
+                        </hgroup>
+                    </header>
+                </div>
+            </div>
+        </div>
+    <div class="pure-u">
+        <div class="content">
+            <section class="post">
+                <header class="post-header">
+                    <h1>wine-in-docker-with-kakaotalk</h1>
+                        <p class="post-meta">
+                            // under                                 <a class="post-category" href="https://seaofnight.github.io/tag/kakaotalk.html">kakaotalk</a>
+                                <a class="post-category" href="https://seaofnight.github.io/tag/docker.html">docker</a>
+                                <a class="post-category" href="https://seaofnight.github.io/tag/local.html">local</a>
+                        </p>
+                </header>
+            </section>
+            <h1>overview</h1>
+<p>kakaotalk 리눅스 버전이 지원이 안되는데 이어형님이 인터넷에 친절하게 카카오톡을 도커로 실행 시켜주는 방법을 포스팅해주셨다. 
+와인을 도커에서 실행하고 카카오톡에 필요한 의존성 라이브러리들을 설치한후에 
+그 도커 이미지를 한개의 바이너리 파일로 만드는 부분을 포스팅 하였는데...</p>
+<p>우선 도커위에 와인을 실행하는 부분 까지만 설정이 되었으며 스테틱 컨테이너는 시간을 좀 두어야겠다. </p>
+<h3>도커 실행 부분</h3>
+<ol>
+<li>Dockerfile 파일을 참고해보면 와인트릭, 나눔폰트 등을 받고 endpoint.sh 를 실행 </li>
+<li>endpoint.sh 에서 kakaotalk 을 받아서 실행해준다. </li>
+</ol>
+<h3>실행시 문제 나오는 부분</h3>
+<ol>
+<li>한글 변환 문제 <ul>
+<li>아래 환경변수로 들어가는 부분을 리눅스에 어떤 한글 변환기를 사용했느냐에 맞추어서 설정을 해준다. </li>
+</ul>
+</li>
+<li>display 출력문제 <ul>
+<li>linux 의 docker에서 윈도우 프로그램을 돌리는데에는 이해가 조금 필요하다. </li>
+<li>간단하게 모두 오픈하도록 설정한다. <ul>
+<li>이부분 -&gt;&gt; xhost +local:root</li>
+<li>재부팅하면 사라진다. </li>
+</ul>
+</li>
+</ul>
+</li>
+<li>sound 관련되어서 pulseaudio 이미지를 사용하여 올리게 되었는데 없는것이랑 있는것이랑 차이가?<ul>
+<li>간혈적으로 죽는 현상이 자주 발생되어서 조금 더 디버깅을 해봐야겠다. </li>
+<li>pulseaudio 사용 안하고 kakaotalk 에서 알람을 끄면 죽진 않음 </li>
+</ul>
+</li>
+</ol>
+<h1>docker</h1>
+<ul>
+<li>Dockerfile</li>
+</ul>
+<div class="highlight"><pre><span></span>/run/me/y/1/06/k/dockerfiles/kakaotalk-wine  master !1 ?1  cat Dockerfile                          ✔  11:47:59
+# Run Kakaotalk using wine
+#
+#       if [[ ! -d &quot;<span class="cp">${</span><span class="n">HOME</span><span class="cp">}</span>/.wine&quot; ]]; then
+#               mkdir -p &quot;<span class="cp">${</span><span class="n">HOME</span><span class="cp">}</span>/.wine&quot;
+#       fi
+#
+#       docker run -d \
+#               -e &quot;GTK_IM_MODULE=uim&quot; \
+#               -e &quot;XMODIFIERS=@im=uim&quot; \
+#               -e &quot;QT_IM_MODULE=uim&quot; \
+#               -e &quot;DISPLAY=unix<span class="nv">$DISPLAY</span>&quot; \
+#               -v /etc/localtime:/etc/localtime:ro \
+#               -v /tmp/.X11-unix:/tmp/.X11-unix \
+#               -v &quot;<span class="nv">$HOME</span>/.wine:/home/wine/.wine&quot; \
+#               --link pulseaudio:pulseaudio \
+#               -e PULSE_SERVER=pulseaudio \
+#               --hostname kakao \
+#               --name kakao \
+#               leoh0/kakao
+FROM alpine:3.9
+RUN echo &#39;x86&#39; &gt; /etc/apk/arch <span class="err">&amp;&amp;</span> \
+apk --no-cache add \
+ca-certificates \
+wget \
+wine \
+zenity
+RUN wget https://raw.githubusercontent.com/Winetricks/winetricks/master/src/winetricks <span class="err">&amp;&amp;</span> \
+chmod +x ./winetricks <span class="err">&amp;&amp;</span> \
+mv ./winetricks /usr/local/bin/
+RUN mkdir -p /usr/share/fonts/NanumFont <span class="err">&amp;&amp;</span> \
+cd /usr/share/fonts/ <span class="err">&amp;&amp;</span> \
+wget http://cdn.naver.com/naver/NanumFont/fontfiles/NanumFont_TTF_ALL.zip <span class="err">&amp;&amp;</span> \
+unzip NanumFont_TTF_ALL.zip -d NanumFont <span class="err">&amp;&amp;</span> \
+rm -f NanumFont_TTF_ALL.zip
+ENV LANG=ko_KR.UTF-8 \
+LANGUAGE=ko_KR.UTF-8 \
+HOME=/home/wine
+RUN adduser -u 1000 -D wine <span class="err">&amp;&amp;</span> \
+mkdir -p <span class="nv">$HOME</span>/.wine <span class="err">&amp;&amp;</span> \
+chown -R wine.wine <span class="nv">$HOME</span>
+WORKDIR /home/wine
+USER wine
+COPY entrypoint.sh /usr/local/bin/entrypoint.sh
+ENTRYPOINT [ &quot;/usr/local/bin/entrypoint.sh&quot; ]
+
+
+/run/me/y/1/06/k/dockerfiles/kakaotalk-wine  master !1 ?1  cat entrypoint.sh                       ✔  11:48:01
+#!/bin/sh
+set -e
+(
+if [ ! -e &quot;<span class="nv">$HOME</span>/.wine/drive_c/Program Files/Kakao/KakaoTalk/KakaoTalk.exe&quot; ]; then
+echo &quot;Install wineboot&quot;
+WINEARCH=win32 WINEPREFIX=~/.wine wine wineboot
+winetricks -q d3dx11_43 gdiplus richtx32 msxml6 \
+<span class="err">&amp;&amp;</span> winetricks win7
+wget http://app.pc.kakao.com/talk/win32/KakaoTalk_Setup.exe \
+<span class="err">&amp;&amp;</span> wine KakaoTalk_Setup.exe
+fi
+)
+exec wine &quot;<span class="nv">$HOME</span>/.wine/drive_c/Program Files/Kakao/KakaoTalk/KakaoTalk.exe&quot;
+</pre></div>
+
+
+<ul>
+<li>
+<p>docker pulseaudio</p>
+<ul>
+<li>https://github.com/jessfraz/dockerfiles</li>
+<li>https://github.com/leoh0/dockerfiles</li>
+</ul>
+</li>
+<li>
+<p>docker run </p>
+</li>
+</ul>
+<div class="highlight"><pre><span></span>xhost +local:root
+
+docker run -d  <span class="se">\</span>
+-v /etc/localtime:/etc/localtime:ro <span class="se">\</span>
+--device /dev/snd <span class="se">\</span>
+-p <span class="m">4713</span>:4713 <span class="se">\</span>
+--restart always <span class="se">\</span>
+--group-add audio <span class="se">\</span>
+--name pulseaudio <span class="se">\</span>
+jess/pulseaudio
+
+docker run -d <span class="se">\</span>
+-e <span class="s2">&quot;GTK_IM_MODULE=uim&quot;</span> <span class="se">\</span>
+-e <span class="s2">&quot;XMODIFIERS=@im=uim&quot;</span> <span class="se">\</span>
+-e <span class="s2">&quot;QT_IM_MODULE=uim&quot;</span> <span class="se">\</span>
+-e <span class="s2">&quot;DISPLAY=unix</span><span class="nv">$DISPLAY</span><span class="s2">&quot;</span> <span class="se">\</span>
+-v /etc/localtime:/etc/localtime:ro <span class="se">\</span>
+-v /tmp/.X11-unix:/tmp/.X11-unix <span class="se">\</span>
+-v <span class="s2">&quot;</span><span class="nv">$HOME</span><span class="s2">/.wine:/home/wine/.wine&quot;</span> <span class="se">\</span>
+--link pulseaudio:pulseaudio <span class="se">\</span>
+-e <span class="nv">PULSE_SERVER</span><span class="o">=</span>pulseaudio <span class="se">\</span>
+--hostname kakao <span class="se">\</span>
+--name kakao <span class="se">\</span>
+--restart always <span class="se">\</span>
+kakaotalk:latest
+</pre></div>
+            <a href="#" class="go-top">Go Top</a>
+<footer class="footer">
+    <p>&copy; yjkim &ndash;
+        Built with <a href="https://github.com/PurePelicanTheme/pure-single">Pure Theme</a>
+        for <a href="http://blog.getpelican.com/">Pelican</a>
+    </p>
+</footer>        </div>
+    </div>
+    </div>
+    <script>
+        var $top = $('.go-top');
+
+        // Show or hide the sticky footer button
+        $(window).scroll(function() {
+            if ($(this).scrollTop() > 200) {
+                $top.fadeIn(200);
+            } else {
+                $top.fadeOut(200);
+            }
+        });
+
+        // Animate the scroll to top
+        $top.click(function(event) {
+            event.preventDefault();
+            $('html, body').animate({scrollTop: 0}, 300);
+        })
+
+        // Makes sure that the href="#" attached to the <a> elements
+        // don't scroll you back up the page.
+        $('body').on('click', 'a[href="#"]', function(event) {
+            event.preventDefault();
+        });
+    </script>
+
+</body>
+</html>

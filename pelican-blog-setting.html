@@ -1,0 +1,159 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="yjkim blog, Man of few words...">
+
+        <link rel="alternate"  href="https://seaofnight.github.io/feeds/all.atom.xml" type="application/atom+xml" title="yjkim blog Full Atom Feed"/>
+
+        <title>python pelican blog config // yjkim blog // Man of few words...</title>
+
+
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/pure/0.3.0/pure-min.css">
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.1.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://seaofnight.github.io/theme/css/pure.css">
+    <link rel="stylesheet" href="https://seaofnight.github.io/theme/css/pygments.css">
+
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/fitvids/1.0.1/jquery.fitvids.min.js"></script>
+    <script>
+        $(document).ready(function(){
+            $(".content").fitVids();
+        });
+    </script>
+</head>
+
+<body>
+    <div class="pure-g-r" id="layout">
+        <div class="sidebar pure-u">
+            <div class="cover-img" style="background-image: url('/images/sidebar.jpg')">
+                <div class="cover-body">
+                    <header class="header">
+                        <hgroup>
+                            <h1 class="brand-main"><a href="https://seaofnight.github.io">yjkim blog</a></h1>
+                            <p class="tagline">Man of few words...</p>
+                                <p class="links"><a href="/archives.html">Archives</a></p>
+                                <p class="social">
+                                    <a href="">
+                                        <i class="fa fa-twitter fa-3x"></i>
+                                    </a>
+                                    <a href="https://github.com/seaofnight">
+                                        <i class="fa fa-github fa-3x"></i>
+                                    </a>
+                                </p>
+                        </hgroup>
+                    </header>
+                </div>
+            </div>
+        </div>
+    <div class="pure-u">
+        <div class="content">
+            <section class="post">
+                <header class="post-header">
+                    <h1>python pelican blog config</h1>
+                        <p class="post-meta">
+                            // under                                 <a class="post-category" href="https://seaofnight.github.io/tag/pelican.html">pelican</a>
+                                <a class="post-category" href="https://seaofnight.github.io/tag/publishing.html">publishing</a>
+                        </p>
+                </header>
+            </section>
+            <h1>install pelican dependency</h1>
+<div class="highlight"><pre><span></span><span class="c1"># virtualenv  </span>
+$ sudo pip install virtualenv
+
+<span class="c1"># pelican plugin </span>
+$ pip install pelican ghp-import Markdown typogrify pelican
+</pre></div>
+
+
+<h1>activate pelican venv</h1>
+<div class="highlight"><pre><span></span>$ mkdir blog <span class="o">&amp;&amp;</span> <span class="nb">cd</span> blog
+$ virtualenv -p python3 venv
+$ <span class="nb">source</span> venv/bin/activate
+</pre></div>
+
+
+<h1>start pelican blog with pelican-quick-start</h1>
+<div class="highlight"><pre><span></span>$ pelican-quickstart
+
+ <span class="o">(</span>venv<span class="o">)</span> î‚° yjkim@yjkim-pc î‚° ~/workspaces/blog î‚° pelican-quickstart
+Welcome to pelican-quickstart v4.1.1.
+
+This script will <span class="nb">help</span> you create a new Pelican-based website.                                                          
+
+Please answer the following questions so this script can generate the files               
+needed by Pelican.                                                                                                     
+
+
+&gt; Where <span class="k">do</span> you want to create your new web site? <span class="o">[</span>.<span class="o">]</span>                                                                   
+&gt; What will be the title of this web site? yjkim blog                                                                  
+&gt; Who will be the author of this web site? yjkim                                                                       
+&gt; What will be the default language of this web site? <span class="o">[</span>ko<span class="o">]</span> ko                             
+&gt; Do you want to specify a URL prefix? e.g., https://example.com   <span class="o">(</span>Y/n<span class="o">)</span> n                
+&gt; Do you want to <span class="nb">enable</span> article pagination? <span class="o">(</span>Y/n<span class="o">)</span> Y                                                                    
+&gt; How many articles per page <span class="k">do</span> you want? <span class="o">[</span><span class="m">10</span><span class="o">]</span>                                                                         
+&gt; What is your <span class="nb">time</span> zone? <span class="o">[</span>Europe/Paris<span class="o">]</span> Asia/Seoul                                                                    
+&gt; Do you want to generate a tasks.py/Makefile to automate generation and publishing? <span class="o">(</span>Y/n<span class="o">)</span> Y
+&gt; Do you want to upload your website using FTP? <span class="o">(</span>y/N<span class="o">)</span> n                                                                
+&gt; Do you want to upload your website using SSH? <span class="o">(</span>y/N<span class="o">)</span> n                                                                
+&gt; Do you want to upload your website using Dropbox? <span class="o">(</span>y/N<span class="o">)</span> n                                                            
+&gt; Do you want to upload your website using S3? <span class="o">(</span>y/N<span class="o">)</span> n                                                                 
+&gt; Do you want to upload your website using Rackspace Cloud Files? <span class="o">(</span>y/N<span class="o">)</span> n                                              
+&gt; Do you want to upload your website using GitHub Pages? <span class="o">(</span>y/N<span class="o">)</span> Y            
+&gt; Is this your personal page <span class="o">(</span>username.github.io<span class="o">)</span>? <span class="o">(</span>y/N<span class="o">)</span> Y                                                             
+Done. Your new project is available at /home/yjkim/workspaces/blog    
+</pre></div>
+
+
+<h1>install pelican themes</h1>
+<ul>
+<li>pelican 은 다른 블로그 생성기와 마찬가지로 theme 를 여러 사람들이 제작해놓은 사이트 들이 있기에 참조하여서 만들어 주면 된다. </li>
+</ul>
+<div class="highlight"><pre><span></span>$ git clone --recursive https://github.com/getpelican/pelican-themes
+</pre></div>
+
+
+<h1>install pelican plugin</h1>
+<ul>
+<li>요기는 추가로 정리 예정 </li>
+<li>추천하는 plugin 이 있어보임 </li>
+<li>https://github.com/getpelican/pelican-plugins</li>
+<li>https://www.sysadminnotes.ca/worknotes/useful-pelican-plugins.html</li>
+</ul>
+            <a href="#" class="go-top">Go Top</a>
+<footer class="footer">
+    <p>&copy; yjkim &ndash;
+        Built with <a href="https://github.com/PurePelicanTheme/pure-single">Pure Theme</a>
+        for <a href="http://blog.getpelican.com/">Pelican</a>
+    </p>
+</footer>        </div>
+    </div>
+    </div>
+    <script>
+        var $top = $('.go-top');
+
+        // Show or hide the sticky footer button
+        $(window).scroll(function() {
+            if ($(this).scrollTop() > 200) {
+                $top.fadeIn(200);
+            } else {
+                $top.fadeOut(200);
+            }
+        });
+
+        // Animate the scroll to top
+        $top.click(function(event) {
+            event.preventDefault();
+            $('html, body').animate({scrollTop: 0}, 300);
+        })
+
+        // Makes sure that the href="#" attached to the <a> elements
+        // don't scroll you back up the page.
+        $('body').on('click', 'a[href="#"]', function(event) {
+            event.preventDefault();
+        });
+    </script>
+
+</body>
+</html>

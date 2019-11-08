@@ -1,0 +1,357 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="yjkim blog, Man of few words...">
+
+        <link rel="alternate"  href="https://seaofnight.github.io/feeds/all.atom.xml" type="application/atom+xml" title="yjkim blog Full Atom Feed"/>
+
+        <title>ceph-install-with-ansible // yjkim blog // Man of few words...</title>
+
+
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/pure/0.3.0/pure-min.css">
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.1.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://seaofnight.github.io/theme/css/pure.css">
+    <link rel="stylesheet" href="https://seaofnight.github.io/theme/css/pygments.css">
+
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/fitvids/1.0.1/jquery.fitvids.min.js"></script>
+    <script>
+        $(document).ready(function(){
+            $(".content").fitVids();
+        });
+    </script>
+</head>
+
+<body>
+    <div class="pure-g-r" id="layout">
+        <div class="sidebar pure-u">
+            <div class="cover-img" style="background-image: url('/images/sidebar.jpg')">
+                <div class="cover-body">
+                    <header class="header">
+                        <hgroup>
+                            <h1 class="brand-main"><a href="https://seaofnight.github.io">yjkim blog</a></h1>
+                            <p class="tagline">Man of few words...</p>
+                                <p class="links"><a href="/archives.html">Archives</a></p>
+                                <p class="social">
+                                    <a href="">
+                                        <i class="fa fa-twitter fa-3x"></i>
+                                    </a>
+                                    <a href="https://github.com/seaofnight">
+                                        <i class="fa fa-github fa-3x"></i>
+                                    </a>
+                                </p>
+                        </hgroup>
+                    </header>
+                </div>
+            </div>
+        </div>
+    <div class="pure-u">
+        <div class="content">
+            <section class="post">
+                <header class="post-header">
+                    <h1>ceph-install-with-ansible</h1>
+                        <p class="post-meta">
+                            // under                                 <a class="post-category" href="https://seaofnight.github.io/tag/ceph.html">ceph</a>
+                                <a class="post-category" href="https://seaofnight.github.io/tag/storage.html">storage</a>
+                        </p>
+                </header>
+            </section>
+            <h1>개요</h1>
+<ul>
+<li>회사에서 Ceph 를 계속 스터디를 하고 있었으나. K8s Cluster 에 올려놓고 사용만 하고있었지 Baremetal 에 올려 사용하지는 않고있었다. </li>
+<li>자세하게 사용하기도 해야할 뿐더러 여러가지 옵션을 테스트 및 운용하기 위한 클러스터 구축을 정리하기 위하여 본 포스팅을 정리한다. </li>
+<li>Ceph 설치방법은 Ceph-ansible 이며  stable-3.2 버전을 이용하여 설치 하였다. </li>
+<li>설치 노드는 <ul>
+<li>mon 1, osd 3, mgr 1 이며 mon1 과 mgr1, osd1 이 같은 호스트에 배포가 되었다. </li>
+<li>ceph0 10.0.3.2 8cpu 16gb ram, /dev/sdb 300gb</li>
+<li>ceph1 10.0.3.3 8cpu 16gb ram, /dev/sdb 300gb</li>
+<li>ceph2 10.0.3.4 8cpu 16gb ram, /dev/sdb 300gb </li>
+</ul>
+</li>
+</ul>
+<h1>ceph prerequirements</h1>
+<ul>
+<li>3node 부팅 Vagrant 로 부팅하면서 /dev/sdb/ 를 생성하도록 하였으며 lvm, fs 생성은 하지 않았다.</li>
+<li>ssh fingerprint 설정</li>
+</ul>
+<div class="highlight"><pre><span></span><span class="c1"># 이방법으로 패스워드 yes, 패스워드 일일이 쳤음 </span>
+ssh-keygen 
+ssh-copy-id ceph0
+ssh-copy-id ceph1
+ssh-copy-id ceph2
+
+<span class="c1"># 핑거프린트 검증용 각 호스트 접속 조회 확인  </span>
+ssh root@ceph0 hostname
+ssh root@ceph1 hostname
+ssh root@ceph2 hostname
+
+
+<span class="c1"># 다른방법으로는 sshpass 가 있다고 한다. 아래와 같이 사용하면 된다. </span>
+yum install -y sshpass
+<span class="nb">echo</span> <span class="s2">&quot;passwd-content&quot;</span> ~/passwd
+sshpass -f ~/passwd ssh-copy-id root@ceph0
+ssh root@ceph0 hostname 
+</pre></div>
+
+
+<ul>
+<li>ceph 설치 전 사전 준비 <ul>
+<li>Pip, git Clone, 의존성 파일을 받아준다. </li>
+</ul>
+</li>
+</ul>
+<div class="highlight"><pre><span></span>yum install -y git python-pip sshpass <span class="o">&amp;&amp;</span> 
+git clone https://github.com/ceph/ceph-ansible.git <span class="o">&amp;&amp;</span> <span class="se">\</span>
+<span class="nb">cd</span> ceph-ansible <span class="o">&amp;&amp;</span> <span class="se">\</span>
+git checkout  stable-3.2 <span class="o">&amp;&amp;</span> <span class="se">\</span>
+pip install -r requirements.txt 
+</pre></div>
+
+
+<ul>
+<li>/etc/hosts 설정</li>
+</ul>
+<div class="highlight"><pre><span></span>cat <span class="s">&lt;&lt;EOF&gt;&gt; /etc/hosts</span>
+
+<span class="s">10.0.3.2 ceph0</span>
+<span class="s">10.0.3.3 ceph1</span>
+<span class="s">10.0.3.4 ceph2</span>
+
+<span class="s">EOF</span>
+
+<span class="c1"># 검증하기위한 조회 </span>
+cat /etc/hosts
+
+<span class="c1"># ceph </span>
+firewall-cmd --permanent --new-service <span class="m">3300</span> <span class="o">&amp;&amp;</span> <span class="se">\</span>
+  firewall-cmd --permanent --new-service <span class="m">6789</span> <span class="o">&amp;&amp;</span> <span class="se">\</span>
+  firewall-cmd --reload
+</pre></div>
+
+
+<h1>ceph ansible install</h1>
+<ul>
+<li>inventory 작성 </li>
+</ul>
+<div class="highlight"><pre><span></span>cat <span class="s">&lt;&lt; EOF | tee inventory.ini</span>
+<span class="s">[mons]</span>
+<span class="s">ceph0</span>
+
+<span class="s">[mgrs]</span>
+<span class="s">ceph0</span>
+
+<span class="s">[osds]</span>
+<span class="s">ceph0</span>
+<span class="s">ceph1</span>
+<span class="s">ceph2</span>
+
+<span class="s">[grafana-server]</span>
+<span class="s">ceph0</span>
+
+<span class="s">[all:children]</span>
+<span class="s">mons</span>
+<span class="s">osds</span>
+<span class="s">mgrs</span>
+<span class="s">EOF</span>
+</pre></div>
+
+
+<ul>
+<li>extra-vars.yml 파일 작성 </li>
+</ul>
+<div class="highlight"><pre><span></span>cat <span class="s">&lt;&lt;EOF | tee extra.yaml</span>
+<span class="s"># ceph</span>
+<span class="s">monitor_interface: eth1</span>
+<span class="s">monitor_address: 10.0.3.2</span>
+<span class="s">public_network: 10.0.3.0/24</span>
+<span class="s">cluster_network: 10.0.3.0/24</span>
+
+<span class="s">ceph_origin: repository</span>
+<span class="s">ceph_repository: community</span>
+<span class="s">ceph_stable_release: luminous</span>
+
+<span class="s">ceph_conf_overrides:</span>
+<span class="s">  global:</span>
+<span class="s">    mon_allow_pool_delete: true</span>
+<span class="s">    osd_pool_default_size: 1</span>
+<span class="s">    osd_pool_default_min_size: 1</span>
+<span class="s">    osd_pg_stat_report_internal_max: 1</span>
+<span class="s">  osd:</span>
+<span class="s">    osd_min_pg_log_entries: 10</span>
+<span class="s">    osd_max_pg_log_entries: 10</span>
+<span class="s">    osd_pg_log_dups_tracked: 10</span>
+<span class="s">    osd_pg_log_trim_min: 10</span>
+
+<span class="s">osd_objectstore: bluestore</span>
+<span class="s">#lvm_volumes:</span>
+<span class="s">#  - data: /dev/sda</span>
+<span class="s">#  - data: /dev/sdb</span>
+<span class="s">osd_scenario: collocated</span>
+<span class="s">dmcrypt: true</span>
+<span class="s">devices:</span>
+<span class="s">  - /dev/sdb</span>
+
+<span class="s">openstack_config: true</span>
+<span class="s">kube_pool:</span>
+<span class="s">  name: &quot;kube&quot;</span>
+<span class="s">  pg_num: 64</span>
+<span class="s">  pgp_num: 64</span>
+<span class="s">  rule_name: &quot;replicated_rule&quot;</span>
+<span class="s">  type: 1</span>
+<span class="s">  erasure_profile: &quot;&quot;</span>
+<span class="s">  expected_num_objects: &quot;&quot;</span>
+<span class="s">  application: &quot;rbd&quot;</span>
+<span class="s">openstack_glance_pool:</span>
+<span class="s">  name: &quot;images&quot;</span>
+<span class="s">  pg_num: 64</span>
+<span class="s">  pgp_num: 64</span>
+<span class="s">  rule_name: &quot;replicated_rule&quot;</span>
+<span class="s">  type: 1</span>
+<span class="s">  erasure_profile: &quot;&quot;</span>
+<span class="s">  expected_num_objects: &quot;&quot;</span>
+<span class="s">openstack_cinder_pool:</span>
+<span class="s">  name: &quot;volumes&quot;</span>
+<span class="s">  pg_num: 64</span>
+<span class="s">  pgp_num: 64</span>
+<span class="s">  rule_name: &quot;replicated_rule&quot;</span>
+<span class="s">  type: 1</span>
+<span class="s">  erasure_profile: &quot;&quot;</span>
+<span class="s">  expected_num_objects: &quot;&quot;</span>
+<span class="s">openstack_cinder_backup_pool:</span>
+<span class="s">  name: &quot;backups&quot;</span>
+<span class="s">  pg_num: 2</span>
+<span class="s">  pgp_num: 2</span>
+<span class="s">  rule_name: &quot;replicated_rule&quot;</span>
+<span class="s">  type: 1</span>
+<span class="s">  erasure_profile: &quot;&quot;</span>
+<span class="s">  expected_num_objects: &quot;&quot;</span>
+<span class="s">openstack_nova_vms_pool:</span>
+<span class="s">  name: &quot;vms&quot;</span>
+<span class="s">  pg_num: 64</span>
+<span class="s">  pgp_num: 64</span>
+<span class="s">  rule_name: &quot;replicated_rule&quot;</span>
+<span class="s">  type: 1</span>
+<span class="s">  erasure_profile: &quot;&quot;</span>
+<span class="s">  expected_num_objects: &quot;&quot;</span>
+<span class="s">  application: &quot;rbd&quot;</span>
+
+<span class="s">openstack_pools:</span>
+<span class="s">  - &quot;{{ kube_pool }}&quot;</span>
+<span class="s">  - &quot;{{ openstack_glance_pool }}&quot;</span>
+<span class="s">  - &quot;{{ openstack_cinder_pool }}&quot;</span>
+<span class="s">  - &quot;{{ openstack_cinder_backup_pool }}&quot;</span>
+<span class="s">  - &quot;{{ openstack_nova_vms_pool }}&quot;</span>
+<span class="s">EOF</span>
+</pre></div>
+
+
+<ul>
+<li>ping 체크 </li>
+</ul>
+<div class="highlight"><pre><span></span>ansible -b -i inventory.ini -m ping all
+</pre></div>
+
+
+<ul>
+<li>ansible playbook site 스크립트를 실행하여 설치 </li>
+</ul>
+<div class="highlight"><pre><span></span> cp site.yml.sample site.yml
+
+<span class="nv">INVENTORY</span><span class="o">=</span><span class="s2">&quot;-i inventory.ini&quot;</span>
+<span class="nv">EXTRA</span><span class="o">=</span><span class="s2">&quot;-e @extra.yaml&quot;</span>
+<span class="nv">OPTION</span><span class="o">=</span><span class="s2">&quot;-b -vvvv&quot;</span>
+<span class="nv">PLAY</span><span class="o">=</span><span class="s2">&quot;site.yml&quot;</span>
+ansible-playbook <span class="nv">$INVENTORY</span> <span class="nv">$EXTRA</span> <span class="nv">$PLAY</span> <span class="nv">$OPTION</span> 
+<span class="c1"># ansible-playbook -b -vvvv -i inventory.ini -e @extra.yaml site.yaml</span>
+</pre></div>
+
+
+<h1>ceph ansible remove</h1>
+<div class="highlight"><pre><span></span>cat <span class="s">&lt;&lt; EOF | tee purge=cluster.sh </span>
+<span class="s">#!/bin/bash </span>
+<span class="s">set -ex </span>
+<span class="s">INVENTORY=&quot;-i inventory.ini&quot;</span>
+<span class="s">EXTRA=&quot;-e @extra.yaml&quot;</span>
+<span class="s">PLAY=&quot;infrastructure-playbooks/purge-cluster.yml&quot;</span>
+<span class="s">OPTION=&quot;-b -vvv&quot;</span>
+<span class="s">ansible-playbook $INVENTORY $EXTRA $PLAY $OPTION </span>
+<span class="s">EOF</span>
+chmod +x <span class="nv">purge</span><span class="o">=</span>cluster.sh  <span class="o">&amp;&amp;</span> <span class="nv">purge</span><span class="o">=</span>cluster.sh
+</pre></div>
+
+
+<h1>주로 발생한 Error</h1>
+<ul>
+<li>/etc/ceph.conf 의 mon host 값 문제 <ul>
+<li>ceph-ansible 4.0 버전의 Source 는 task 파일의 Jinja template 를 확인해보면 </li>
+<li>mon 호스트를 루프 돌면서 호스트 정보를 찍어주는데 </li>
+<li>mon v2, v1 버전을 마이그래이션 하는 소스가 들어가있다.</li>
+<li>그렇기때문에 git 다운받고 checkout stable-3.2 버전으로 실행시키며</li>
+<li>extra.yaml 에 monitor_address 값을 넣어준다. </li>
+</ul>
+</li>
+<li>에러내용 </li>
+</ul>
+<div class="highlight"><pre><span></span>fatal: <span class="o">[</span>mon1<span class="o">]</span>: FAILED! <span class="o">=</span>&gt; 
+  msg: <span class="p">|</span>-
+    The conditional check <span class="s1">&#39;(ceph_health_raw.stdout != &quot;&quot;) and (ceph_health_raw.stdout | default(&#39;</span><span class="o">{}</span><span class="s1">&#39;) | from_json)[&#39;</span>state<span class="s1">&#39;] in [&#39;</span>leader<span class="s1">&#39;, &#39;</span>peon<span class="s1">&#39;]</span>
+<span class="s1">    &#39;</span> failed. The error was: No JSON object could be decoded
+</pre></div>
+
+
+<ul>
+<li>조치사항 </li>
+</ul>
+<div class="highlight"><pre><span></span><span class="c1">#조치 1 branch checkout </span>
+$ git checkout stable-3.2
+
+$ vi extre.yaml
+---
+<span class="c1"># extra.yaml </span>
+monitor_interface: eth1
+<span class="c1">#monitor_address: 10.0.3.2 ## 조치 2 여기부분</span>
+public_network: <span class="m">10</span>.0.3.0/24
+cluster_network: <span class="m">10</span>.0.3.0/24
+---
+
+* 참고  : https://github.com/ceph/ceph-ansible/issues/3948
+* 참고2 : http://lists.ceph.com/pipermail/ceph-users-ceph.com/2019-February/032801.html
+</pre></div>
+            <a href="#" class="go-top">Go Top</a>
+<footer class="footer">
+    <p>&copy; yjkim &ndash;
+        Built with <a href="https://github.com/PurePelicanTheme/pure-single">Pure Theme</a>
+        for <a href="http://blog.getpelican.com/">Pelican</a>
+    </p>
+</footer>        </div>
+    </div>
+    </div>
+    <script>
+        var $top = $('.go-top');
+
+        // Show or hide the sticky footer button
+        $(window).scroll(function() {
+            if ($(this).scrollTop() > 200) {
+                $top.fadeIn(200);
+            } else {
+                $top.fadeOut(200);
+            }
+        });
+
+        // Animate the scroll to top
+        $top.click(function(event) {
+            event.preventDefault();
+            $('html, body').animate({scrollTop: 0}, 300);
+        })
+
+        // Makes sure that the href="#" attached to the <a> elements
+        // don't scroll you back up the page.
+        $('body').on('click', 'a[href="#"]', function(event) {
+            event.preventDefault();
+        });
+    </script>
+
+</body>
+</html>

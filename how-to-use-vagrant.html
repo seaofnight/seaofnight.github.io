@@ -1,0 +1,231 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="yjkim blog, Man of few words...">
+
+        <link rel="alternate"  href="https://seaofnight.github.io/feeds/all.atom.xml" type="application/atom+xml" title="yjkim blog Full Atom Feed"/>
+
+        <title>how-to-use-vagrant // yjkim blog // Man of few words...</title>
+
+
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/pure/0.3.0/pure-min.css">
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.1.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://seaofnight.github.io/theme/css/pure.css">
+    <link rel="stylesheet" href="https://seaofnight.github.io/theme/css/pygments.css">
+
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/fitvids/1.0.1/jquery.fitvids.min.js"></script>
+    <script>
+        $(document).ready(function(){
+            $(".content").fitVids();
+        });
+    </script>
+</head>
+
+<body>
+    <div class="pure-g-r" id="layout">
+        <div class="sidebar pure-u">
+            <div class="cover-img" style="background-image: url('/images/sidebar.jpg')">
+                <div class="cover-body">
+                    <header class="header">
+                        <hgroup>
+                            <h1 class="brand-main"><a href="https://seaofnight.github.io">yjkim blog</a></h1>
+                            <p class="tagline">Man of few words...</p>
+                                <p class="links"><a href="/archives.html">Archives</a></p>
+                                <p class="social">
+                                    <a href="">
+                                        <i class="fa fa-twitter fa-3x"></i>
+                                    </a>
+                                    <a href="https://github.com/seaofnight">
+                                        <i class="fa fa-github fa-3x"></i>
+                                    </a>
+                                </p>
+                        </hgroup>
+                    </header>
+                </div>
+            </div>
+        </div>
+    <div class="pure-u">
+        <div class="content">
+            <section class="post">
+                <header class="post-header">
+                    <h1>how-to-use-vagrant</h1>
+                        <p class="post-meta">
+                            // under                                 <a class="post-category" href="https://seaofnight.github.io/tag/vagrant.html">vagrant</a>
+                                <a class="post-category" href="https://seaofnight.github.io/tag/virtualbox.html">virtualbox</a>
+                        </p>
+                </header>
+            </section>
+            <h1>개요</h1>
+<ul>
+<li>로컬 PC vagrant 를 설치</li>
+<li>vagrant 를 통한 버추얼 박스에 리소스 부여 방법 등을 설명하겠다. </li>
+</ul>
+<h1>Vagrant 설치</h1>
+<ul>
+<li>본인 PC 은 Manjaro Linux 라서 크게 어려움이 있지는 않았다. <ul>
+<li>윈도우키 "software" 입력 후 pacman 화면에서 vagrant 를 입력하여 설치 버튼을 클릭하면 끝난다. </li>
+</ul>
+</li>
+</ul>
+<div class="highlight"><pre><span></span>$ sudo pacman -Sy virtualbox virtualbox-host-modules net-tools
+$ sudo vagrant -v 
+Vagrant <span class="m">2</span>.2.5
+</pre></div>
+
+
+<h1>vagrant 리소스 할당 방법</h1>
+<ul>
+<li>Vagrant 는 공식홈페이지의 메뉴얼에 나온 내용대로 <em>vagrant init</em> 하면 <em>VagrantFile</em> 이 생성이된다.</li>
+<li>이 파일에 VM 의 스펙과 리소스 할당 등을 적어서 vagrant up 하면된다. </li>
+<li>Vagrant 는 Ruby 로 작성이 되어있어서 당연히 Ruby 와 친숙해지면 더 잘 운영할 수 있을것이다.</li>
+<li>우선 가지고 있는 소스의 내용을 적고 부분부분 설명을 하겠다. </li>
+</ul>
+<div class="highlight"><pre><span></span><span class="o">[</span>root@di7-03 vagrant<span class="o">]</span><span class="c1"># cat Vagrantfile </span>
+<span class="c1"># -*- mode: ruby -*-</span>
+<span class="c1"># vi: set ft=ruby :</span>
+
+require <span class="s1">&#39;ipaddr&#39;</span>
+load <span class="s1">&#39;./config.rb&#39;</span>
+<span class="nv">image</span> <span class="o">=</span> <span class="s2">&quot;centos/7&quot;</span>
+
+def nodeIP<span class="o">(</span>ips, id<span class="o">)</span>
+  <span class="k">return</span> <span class="o">((</span>IPAddr.new ips<span class="o">)</span><span class="p">|</span><span class="o">(</span><span class="m">2</span>+id<span class="o">))</span>.to_s<span class="o">()</span>
+end
+
+Vagrant.configure<span class="o">(</span><span class="s2">&quot;2&quot;</span><span class="o">)</span> <span class="k">do</span> <span class="p">|</span>config<span class="p">|</span>
+    config.ssh.insert_key <span class="o">=</span> <span class="nb">false</span>
+    config.vm.synced_folder <span class="s2">&quot;.&quot;</span>, <span class="s2">&quot;/vagrant&quot;</span>, owner: <span class="s2">&quot;vagrant&quot;</span>, group: <span class="s2">&quot;vagrant&quot;</span>, rsync__auto: true, type: <span class="s2">&quot;virtualbox&quot;</span>
+
+    <span class="o">(</span><span class="m">0</span>..<span class="nv">$worker_count</span><span class="o">)</span>.each <span class="k">do</span> <span class="p">|</span>index<span class="p">|</span>
+        <span class="nv">node_name</span> <span class="o">=</span> <span class="s2">&quot;vitess%d&quot;</span> % index
+
+        config.vm.define node_name <span class="k">do</span> <span class="p">|</span>node<span class="p">|</span>
+            node.vm.box <span class="o">=</span> image
+            node.vm.hostname <span class="o">=</span> node_name
+
+            <span class="c1"># multiple eth interface </span>
+            node.vm.network :private_network, ip: nodeIP<span class="o">(</span><span class="nv">$cluster_ips</span>, index<span class="o">)</span>
+            node.vm.network :private_network, ip: nodeIP<span class="o">(</span><span class="nv">$manage_ips</span>, index<span class="o">)</span>
+<span class="c1">#           node.vm.network :private_network, ip: nodeIP($private_ips, index)</span>
+
+            node.vm.provider :virtualbox <span class="k">do</span> <span class="p">|</span>vb<span class="p">|</span>
+                vb.name <span class="o">=</span> node_name
+                vb.cpus <span class="o">=</span> <span class="m">8</span> 
+                vb.memory <span class="o">=</span> <span class="m">8192</span> 
+                vb.customize <span class="o">[</span><span class="s2">&quot;modifyvm&quot;</span>, :id, <span class="s2">&quot;--natdnshostresolver1&quot;</span>, <span class="s2">&quot;on&quot;</span><span class="o">]</span>
+
+                <span class="c1"># disk save path on barematal </span>
+                <span class="nv">disk</span> <span class="o">=</span> <span class="s2">&quot;/data/storage/&quot;</span>
+                disk <span class="s">&lt;&lt; node_name </span>
+<span class="s">                disk &lt;&lt; &quot;/sdb.vdi&quot;</span>
+
+<span class="s">                unless File.exist?(disk)</span>
+<span class="s">                        vb.customize [&#39;createhd&#39;, &#39;--filename&#39;, disk, &#39;--variant&#39;, &#39;Fixed&#39;, &#39;--size&#39;, $disk_size_mb * 1024]</span>
+<span class="s">                end</span>
+<span class="s">                vb.customize [&#39;storageattach&#39;, :id,  &#39;--storagectl&#39;, &#39;IDE&#39;, &#39;--port&#39;, 1, &#39;--device&#39;, 0, &#39;--type&#39;, &#39;hdd&#39;, &#39;--medium&#39;, disk]</span>
+<span class="s">            end</span>
+
+<span class="s">            # provision script </span>
+<span class="s">            node.vm.provision &quot;shell&quot;, </span>
+<span class="s">                name: &quot;Base Installation (scripts/base.sh)&quot;,</span>
+<span class="s">                path: &quot;scripts/base.sh&quot;</span>
+
+<span class="s">        end</span>
+<span class="s">    end</span>
+<span class="s">end</span>
+<span class="s">```sh</span>
+
+
+<span class="s">* CPU, Memory 설정 </span>
+<span class="s">```sh </span>
+
+<span class="s">    node.vm.provider :virtualbox do |vb|</span>
+<span class="s">        vb.name = node_name</span>
+        <span class="c1"># CPU 8 Core</span>
+        vb.cpus <span class="o">=</span> <span class="m">8</span> 
+        <span class="c1"># Memory 8192 mb</span>
+        vb.memory <span class="o">=</span> <span class="m">8192</span> 
+</pre></div>
+
+
+<ul>
+<li>Disk 설정 <ul>
+<li>Disk 설정의 경우 Virtualbox 의 VM 저장공간과 동일하게 저장하면 되겠다. </li>
+<li>본인의 비루한 루비 언어실력으로 String contain 수준이 저렇지만 아래와 같이 사용하면 된다. </li>
+</ul>
+</li>
+</ul>
+<div class="highlight"><pre><span></span>    <span class="c1"># disk save path on barematal </span>
+    <span class="nv">disk</span> <span class="o">=</span> <span class="s2">&quot;/data/storage/&quot;</span>
+    disk <span class="s">&lt;&lt; node_n</span>ame 
+    disk &lt;&lt; <span class="s2">&quot;/sdb.vdi&quot;</span>
+
+    unless File.exist?<span class="o">(</span>disk<span class="o">)</span>
+            vb.customize <span class="o">[</span><span class="s1">&#39;createhd&#39;</span>, <span class="s1">&#39;--filename&#39;</span>, disk, <span class="s1">&#39;--variant&#39;</span>, <span class="s1">&#39;Fixed&#39;</span>, <span class="s1">&#39;--size&#39;</span>, <span class="nv">$disk_size_mb</span> * <span class="m">1024</span><span class="o">]</span>
+    end
+    vb.customize <span class="o">[</span><span class="s1">&#39;storageattach&#39;</span>, :id,  <span class="s1">&#39;--storagectl&#39;</span>, <span class="s1">&#39;IDE&#39;</span>, <span class="s1">&#39;--port&#39;</span>, <span class="m">1</span>, <span class="s1">&#39;--device&#39;</span>, <span class="m">0</span>, <span class="s1">&#39;--type&#39;</span>, <span class="s1">&#39;hdd&#39;</span>, <span class="s1">&#39;--medium&#39;</span>, disk<span class="o">]</span>
+</pre></div>
+
+
+<ul>
+<li>Network 할당 </li>
+</ul>
+<div class="highlight"><pre><span></span><span class="c1"># Ruby 의 IPAddr 함수 사용  </span>
+def nodeIP<span class="o">(</span>ips, id<span class="o">)</span>
+  <span class="k">return</span> <span class="o">((</span>IPAddr.new ips<span class="o">)</span><span class="p">|</span><span class="o">(</span><span class="m">2</span>+id<span class="o">))</span>.to_s<span class="o">()</span>
+end
+
+<span class="c1"># Network 할당 </span>
+node.vm.network :private_network, ip: nodeIP<span class="o">(</span><span class="nv">$cluster_ips</span>, index<span class="o">)</span>
+node.vm.network :private_network, ip: nodeIP<span class="o">(</span><span class="nv">$manage_ips</span>, index<span class="o">)</span>
+node.vm.network :private_network, ip: nodeIP<span class="o">(</span><span class="nv">$private_ips</span>, index<span class="o">)</span>
+</pre></div>
+
+
+<ul>
+<li>Provision Shell 실행 </li>
+</ul>
+<div class="highlight"><pre><span></span>    <span class="c1"># provision script </span>
+    node.vm.provision <span class="s2">&quot;shell&quot;</span>, 
+        name: <span class="s2">&quot;Base Installation (scripts/base.sh)&quot;</span>,
+        path: <span class="s2">&quot;scripts/base.sh&quot;</span>
+</pre></div>
+            <a href="#" class="go-top">Go Top</a>
+<footer class="footer">
+    <p>&copy; yjkim &ndash;
+        Built with <a href="https://github.com/PurePelicanTheme/pure-single">Pure Theme</a>
+        for <a href="http://blog.getpelican.com/">Pelican</a>
+    </p>
+</footer>        </div>
+    </div>
+    </div>
+    <script>
+        var $top = $('.go-top');
+
+        // Show or hide the sticky footer button
+        $(window).scroll(function() {
+            if ($(this).scrollTop() > 200) {
+                $top.fadeIn(200);
+            } else {
+                $top.fadeOut(200);
+            }
+        });
+
+        // Animate the scroll to top
+        $top.click(function(event) {
+            event.preventDefault();
+            $('html, body').animate({scrollTop: 0}, 300);
+        })
+
+        // Makes sure that the href="#" attached to the <a> elements
+        // don't scroll you back up the page.
+        $('body').on('click', 'a[href="#"]', function(event) {
+            event.preventDefault();
+        });
+    </script>
+
+</body>
+</html>

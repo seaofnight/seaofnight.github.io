@@ -1,0 +1,262 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="yjkim blog, Man of few words...">
+
+        <link rel="alternate"  href="https://seaofnight.github.io/feeds/all.atom.xml" type="application/atom+xml" title="yjkim blog Full Atom Feed"/>
+
+        <title>install-vitess-on-kubernetes // yjkim blog // Man of few words...</title>
+
+
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/pure/0.3.0/pure-min.css">
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.1.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://seaofnight.github.io/theme/css/pure.css">
+    <link rel="stylesheet" href="https://seaofnight.github.io/theme/css/pygments.css">
+
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/fitvids/1.0.1/jquery.fitvids.min.js"></script>
+    <script>
+        $(document).ready(function(){
+            $(".content").fitVids();
+        });
+    </script>
+</head>
+
+<body>
+    <div class="pure-g-r" id="layout">
+        <div class="sidebar pure-u">
+            <div class="cover-img" style="background-image: url('/images/sidebar.jpg')">
+                <div class="cover-body">
+                    <header class="header">
+                        <hgroup>
+                            <h1 class="brand-main"><a href="https://seaofnight.github.io">yjkim blog</a></h1>
+                            <p class="tagline">Man of few words...</p>
+                                <p class="links"><a href="/archives.html">Archives</a></p>
+                                <p class="social">
+                                    <a href="">
+                                        <i class="fa fa-twitter fa-3x"></i>
+                                    </a>
+                                    <a href="https://github.com/seaofnight">
+                                        <i class="fa fa-github fa-3x"></i>
+                                    </a>
+                                </p>
+                        </hgroup>
+                    </header>
+                </div>
+            </div>
+        </div>
+    <div class="pure-u">
+        <div class="content">
+            <section class="post">
+                <header class="post-header">
+                    <h1>install-vitess-on-kubernetes</h1>
+                        <p class="post-meta">
+                            // under                                 <a class="post-category" href="https://seaofnight.github.io/tag/vitess.html">vitess</a>
+                                <a class="post-category" href="https://seaofnight.github.io/tag/mysql.html">mysql</a>
+                                <a class="post-category" href="https://seaofnight.github.io/tag/database.html">database</a>
+                        </p>
+                </header>
+            </section>
+            <h1>vitess 소개</h1>
+<p>오늘 포스팅 할 내용은 사내에서 사용하지 않기로 한 Vitess 라는 솔루션에 대한 기록 및 조사한 내용을 공유하는 자리를 가지도록 하곘다. </p>
+<p>비교제품군이 있으며 비교제품중에 선택이 되었으므로 사용 안할것 같은 내용은 기록을 하여 남기도록 하겠다. </p>
+<p>Vitess 는 Youtube 에 mysql 을 ScaleOut 하기 위하여 개발이 되었으며 
+제품 소개 자료에서도 Scaleout에 대한 기능에 대하여 강점을 많이 설명을 하는 제품이다. </p>
+<p><img alt="vitess archeture" src="https://vitess.io/docs/overview/img/VitessOverview.png"></p>
+<p>하지만 Mysql 은 아래쪽에 있을뿐 다른 무언가가 많이 붙어 있는것을 볼수 있다. </p>
+<p>붙어 있는 컴포넌트에 대한 대략적인 설명을 하고 가겠다. </p>
+<h3>Component</h3>
+<ul>
+<li>vTgate </li>
+</ul>
+<p>Vitess 의 외부에서 접속 할 수 있는 접점이라고 보면 된다. 
+Vtgate 는 Topology 를 통하여 Sharding Key 정보를 확인 한후에 해당하는 Vtablet에 있는 데이터를 가져오도록 되어있다. 
+Kubernetes 의 외부에 노출은 Service 로 될것이고 
+일반 Baremetal 에 도커나 쌩으로 설치 되었을 시에는 당연이 Port 가 열려있을것이다. 
+Get Start Locally 나 Start with Kubenetes 를 보아도 패키징이 아주 잘되있으며 
+예제로 삼기에도 충분할정도로 자세하고 내공이 보여지도록 구성이 되어있다 </p>
+<p>역시 갓갓 구글 </p>
+<ul>
+<li>Topology </li>
+</ul>
+<p>Topology 는 어떤 것으로 구성할지 선택할 수 있는 옵션들이 있다. 
+일반적으로 예제에서는 ETCD를 이용하여 작성되어있는데 Zookeeper, Consel 등으로 구성할 수 있으며 vTablet 에서 저장하는 Sharding Key 가 어떻게 되느냐 클러스터의 형상이 어떻게 되느냐 등등에 대한 Metadata 가 저장이 되고 관리 되는곳이다. 
+설치시에는 Global 로 1개, Cell 별로 Replica 개수를 지정하여 설치 할 수 있다. </p>
+<ul>
+<li>vTablet</li>
+</ul>
+<p>vTablet 는 Mysql 을 Proxy Server 역활을 해주는 프로세스이며 
+1개의 Mysql Server 당 1개의 vTable 가 붙어서 해당 저장소를 관리 해준다. 
+vTablet 는 Kubernetes 로 설치 될경우에는 
+vtablet, mysql, ganeral-log, error-log,slow-log등 로그 컨테이너와 함께 생성이 되며 
+만약 Monitoring 솔루션인 PMM 과 같이 배포하였을 경우에는 PMM 도 vTable 포드에 포함되어 배포가 된다. </p>
+<ul>
+<li>vtctl</li>
+</ul>
+<p>vtctl 은 topology 를 통하여 Cli 로 vschema, sharding, 혹은 ddl 등을 날릴수 있는 
+cli client tool 이다 
+설치는 vitess 를 build 하면 vtctlclient 가 빌드가 되며 빌드 된 bin 을 사용하여 topology 를 지정한다거나. vtctld kubernetes service 를 지정하여 명령을 날릴수 있다. </p>
+<p>vitess 의 vtctl 은 vtgate 로 명령을 날릴수 있고 vTablet 로도 직접 command 를 날려서 제어할 수 있다. 요청하는 방식은 cli 의 sub command 를 help 하여서 확인 하여야 된다. </p>
+<p>vtctl 은 위에 아키텍쳐 그림에서 보듯이 Dashboard 도 제공을 해 주고 있다. 
+Material 기반의 UI 이며 조금은 개선이 되었으나 아직은 가식성이 좀 떨어지는 면이 있다. </p>
+<h1>install</h1>
+<h3>install 절차</h3>
+<ul>
+<li>사전 조건 </li>
+<li>kubernetes 설치가 되어있어야 된다. 1.15 이상 </li>
+<li>helm chart 를 이용하여 배포 할 예정이다. </li>
+<li>helm chart 는 1.16 버전에 맞추어서 old api remove 가 되어서 deploy, daemon api 를 맞게 정정 해주어야 된다. </li>
+<li>설치 절차 </li>
+<li>topology 인 etcd 설치 </li>
+<li>storage class 생성 </li>
+<li>vitess depoly 의 절차로 설치가 된다. </li>
+</ul>
+<h3>install script</h3>
+<ul>
+<li>create kubernetes namespaces </li>
+</ul>
+<div class="highlight"><pre><span></span>$ kubectl create ns vitess 
+</pre></div>
+
+
+<ul>
+<li>install etcd operator </li>
+</ul>
+<div class="highlight"><pre><span></span><span class="c1"># project 를 clone 해온다. </span>
+$ git clone https://github.com/coreos/etcd-operator.git
+
+<span class="c1"># rbac 를 생성해준다. </span>
+$ ./etcd-operator/example/rbac/create_role.sh --namespace<span class="o">=</span>vitess   
+
+<span class="c1"># etcd operater 을 생성 해준다. </span>
+$ kubectl create -f etcd-operator/example/deployment.yaml
+
+<span class="c1"># 생성 확인 </span>
+$ kubectl get crd <span class="p">|</span> grep etcdcl 
+NAME                                    KIND
+etcdclusters.etcd.database.coreos.com   CustomResourceDefinition.v1beta1.apiextensions.k8s.io
+
+<span class="c1"># etcd operater helm chart 로 생성 </span>
+helm install stable/etcd-operator --name etcd --namespace vitess  <span class="se">\</span>
+  --set customResources.createEtcdClusterCRD<span class="o">=</span><span class="nb">true</span> <span class="se">\</span>
+  --set deployments.backupOperator<span class="o">=</span><span class="nb">false</span> <span class="se">\</span>
+  --set deployments.restoreOperator<span class="o">=</span><span class="nb">false</span> <span class="se">\</span>
+  --set etcdCluster.size<span class="o">=</span><span class="m">1</span>
+</pre></div>
+
+
+<ul>
+<li>create storage class </li>
+</ul>
+<div class="highlight"><pre><span></span><span class="nv">NAME</span><span class="o">=</span>vitess1
+<span class="nv">POOL_NAME</span><span class="o">=</span><span class="nv">$NAME</span>-pool 
+<span class="nv">SC_NAME</span><span class="o">=</span><span class="nv">$NAME</span>-sc
+cat <span class="s">&lt;&lt;EOF | kubectl create -f - </span>
+<span class="s">apiVersion: ceph.rook.io/v1</span>
+<span class="s">kind: CephBlockPool</span>
+<span class="s">metadata:</span>
+<span class="s">  name: $POOL_NAME</span>
+<span class="s">  namespace: rook-ceph</span>
+<span class="s">spec:</span>
+<span class="s">  failureDomain: host</span>
+<span class="s">  replicated:</span>
+<span class="s">    size: 1</span>
+<span class="s">---</span>
+<span class="s">apiVersion: storage.k8s.io/v1</span>
+<span class="s">kind: StorageClass</span>
+<span class="s">metadata:</span>
+<span class="s">   name: $SC_NAME</span>
+<span class="s">provisioner: rook-ceph.rbd.csi.ceph.com</span>
+<span class="s">parameters:</span>
+<span class="s">    clusterID: rook-ceph</span>
+<span class="s">    pool: $POOL_NAME</span>
+<span class="s">    imageFormat: &quot;2&quot;</span>
+<span class="s">    imageFeatures: layering</span>
+<span class="s">    csi.storage.k8s.io/provisioner-secret-name: rook-ceph-csi</span>
+<span class="s">    csi.storage.k8s.io/provisioner-secret-namespace: rook-ceph</span>
+<span class="s">    csi.storage.k8s.io/node-stage-secret-name: rook-ceph-csi</span>
+<span class="s">    csi.storage.k8s.io/node-stage-secret-namespace: rook-ceph</span>
+<span class="s">    csi.storage.k8s.io/fstype: ext4</span>
+<span class="s">reclaimPolicy: Delete</span>
+<span class="s">EOF</span>
+</pre></div>
+
+
+<ul>
+<li>install vitess cluster </li>
+</ul>
+<div class="highlight"><pre><span></span>$ git clone https://github.com/vitessio/vitess.git
+
+$ <span class="nb">cd</span> ~/vitess/example/helm
+
+<span class="c1"># 예제에서 생성하는 초기 vitess cluster 을 생성해준다. </span>
+$ helm install --name vitess --namespace vitess ../../helm/vitess  <span class="se">\</span>
+  -f 101_initial_cluster.yaml --debug
+</pre></div>
+
+
+<h1>vitess client</h1>
+<p>vitess 는 3가지의 Client 옵션을 가지고 있다. </p>
+<ul>
+<li>vtctlclient </li>
+<li>mysql client </li>
+<li>grpc </li>
+<li>vtctl gui </li>
+</ul>
+<p>위에 있는 옵션중에 mysql client 가 적용이 되면 그 외의 나머지 명령도 거의 mysql client 를 지원하는 것들이라서 왠만큼 사용하는데에는 문제가 없을듯 하다. </p>
+<p>vtctlclient, vtctl gui 등은 vschema, vindex, vseq 등등을 정의 설정하는데 사용을 할 수 있다. 
+나머지 vtworker 등은 기록하지 않도록 하겠다. </p>
+<ul>
+<li>vtctlclinet example </li>
+</ul>
+<div class="highlight"><pre><span></span><span class="nv">HOST</span><span class="o">=</span><span class="k">$(</span>kubectl get svc vtctld -o json <span class="p">|</span> jq -r <span class="s2">&quot;.spec.clusterIP&quot;</span><span class="k">)</span>
+<span class="nv">PORT</span><span class="o">=</span><span class="k">$(</span>kubectl get svc vtctld -o json <span class="p">|</span> jq -r <span class="s2">&quot;.spec.ports[1].port&quot;</span><span class="k">)</span>
+
+vtctlclient -server <span class="nv">$HOST</span>:<span class="nv">$PORT</span> GetCellInfoNames   
+vtctlclient -server <span class="nv">$HOST</span>:<span class="nv">$PORT</span> GetCellInfo zone1
+
+vtctlclient -server <span class="nv">$HOST</span>:<span class="nv">$PORT</span> ListAllTablets
+vtctlclient -server <span class="nv">$HOST</span>:<span class="nv">$PORT</span> ListTablets zone1-0794219800
+vtctlclient -server <span class="nv">$HOST</span>:<span class="nv">$PORT</span> GetTablet zone1-0794219800
+vtctlclient -server <span class="nv">$HOST</span>:<span class="nv">$PORT</span> GetKeyspaces  
+vtctlclient -server <span class="nv">$HOST</span>:<span class="nv">$PORT</span> GetKeyspace commerce
+vtctlclient -server <span class="nv">$HOST</span>:<span class="nv">$PORT</span> GetVSchema t
+</pre></div>
+            <a href="#" class="go-top">Go Top</a>
+<footer class="footer">
+    <p>&copy; yjkim &ndash;
+        Built with <a href="https://github.com/PurePelicanTheme/pure-single">Pure Theme</a>
+        for <a href="http://blog.getpelican.com/">Pelican</a>
+    </p>
+</footer>        </div>
+    </div>
+    </div>
+    <script>
+        var $top = $('.go-top');
+
+        // Show or hide the sticky footer button
+        $(window).scroll(function() {
+            if ($(this).scrollTop() > 200) {
+                $top.fadeIn(200);
+            } else {
+                $top.fadeOut(200);
+            }
+        });
+
+        // Animate the scroll to top
+        $top.click(function(event) {
+            event.preventDefault();
+            $('html, body').animate({scrollTop: 0}, 300);
+        })
+
+        // Makes sure that the href="#" attached to the <a> elements
+        // don't scroll you back up the page.
+        $('body').on('click', 'a[href="#"]', function(event) {
+            event.preventDefault();
+        });
+    </script>
+
+</body>
+</html>

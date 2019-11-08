@@ -1,0 +1,207 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="yjkim blog, Man of few words...">
+
+        <link rel="alternate"  href="https://seaofnight.github.io/feeds/all.atom.xml" type="application/atom+xml" title="yjkim blog Full Atom Feed"/>
+
+        <title>manjaro-local-setting // yjkim blog // Man of few words...</title>
+
+
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/pure/0.3.0/pure-min.css">
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.1.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://seaofnight.github.io/theme/css/pure.css">
+    <link rel="stylesheet" href="https://seaofnight.github.io/theme/css/pygments.css">
+
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/fitvids/1.0.1/jquery.fitvids.min.js"></script>
+    <script>
+        $(document).ready(function(){
+            $(".content").fitVids();
+        });
+    </script>
+</head>
+
+<body>
+    <div class="pure-g-r" id="layout">
+        <div class="sidebar pure-u">
+            <div class="cover-img" style="background-image: url('/images/sidebar.jpg')">
+                <div class="cover-body">
+                    <header class="header">
+                        <hgroup>
+                            <h1 class="brand-main"><a href="https://seaofnight.github.io">yjkim blog</a></h1>
+                            <p class="tagline">Man of few words...</p>
+                                <p class="links"><a href="/archives.html">Archives</a></p>
+                                <p class="social">
+                                    <a href="">
+                                        <i class="fa fa-twitter fa-3x"></i>
+                                    </a>
+                                    <a href="https://github.com/seaofnight">
+                                        <i class="fa fa-github fa-3x"></i>
+                                    </a>
+                                </p>
+                        </hgroup>
+                    </header>
+                </div>
+            </div>
+        </div>
+    <div class="pure-u">
+        <div class="content">
+            <section class="post">
+                <header class="post-header">
+                    <h1>manjaro-local-setting</h1>
+                        <p class="post-meta">
+                            // under                                 <a class="post-category" href="https://seaofnight.github.io/tag/local.html">local</a>
+                        </p>
+                </header>
+            </section>
+            <h1>한글 설정</h1>
+<div class="highlight"><pre><span></span><span class="c1"># 폰트 다운로드 </span>
+$ pacman -S terminus-font noto-fonts-cjk ttf-dejavu ibus-hangul 
+$ fc-match -s monospace
+$ cat <span class="s">&lt;&lt;EOF &gt; | /etc/.xprofile  </span>
+
+<span class="s">export GTK_IM_MODULE=ibus</span>
+<span class="s">export XMODIFIERS=@im=ibus</span>
+<span class="s">export QT_IM_MODULE=ibus</span>
+<span class="s">export OOO_FORCE_DESKTOP=&quot;gnome&quot;</span>
+
+<span class="s">ibus-daemon -drx</span>
+<span class="s">EOF</span>
+</pre></div>
+
+
+<h1>oh-my-zsh install</h1>
+<div class="highlight"><pre><span></span>chsh -s <span class="sb">`</span>which zsh<span class="sb">`</span>
+<span class="nb">echo</span> <span class="nv">$SHELL</span> 
+curl -L https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh <span class="p">|</span> sh
+
+<span class="c1"># https://github.com/zsh-users/zsh-syntax-highlighting</span>
+git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ~/.oh-my-zsh/custom/plugins
+<span class="nb">echo</span> <span class="s2">&quot;source </span><span class="si">${</span><span class="p">(q-)PWD</span><span class="si">}</span><span class="s2">/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh&quot;</span> &gt;&gt; <span class="si">${</span><span class="nv">ZDOTDIR</span><span class="k">:-</span><span class="nv">$HOME</span><span class="si">}</span>/.zshrc
+
+git clone git://github.com/zsh-users/zsh-autosuggestions <span class="nv">$ZSH_CUSTOM</span>/plugins/zsh-autosuggestions
+<span class="nb">source</span> ~/.oh-my-zsh/custom/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh
+
+
+<span class="c1"># local zsh config to root </span>
+ln -s ~/.oh-myz-sh /root
+ln -s ~/.zshrc /root
+</pre></div>
+
+
+<ul>
+<li>theme change </li>
+<li>terminal 환경에서  안깨지는 font 적용 후 확인  </li>
+<li>zsh autosuggestion install </li>
+</ul>
+<h1>byobu install</h1>
+<div class="highlight"><pre><span></span>git clone https://aur.archlinux.org/byobu.git
+<span class="nb">cd</span> byobu
+makepkg
+pacman -U *.xz
+</pre></div>
+
+
+<h1>kvm install</h1>
+<div class="highlight"><pre><span></span><span class="nv">LC_ALL</span><span class="o">=</span>C lscpu <span class="p">|</span> grep Virtualization
+Virtualization: VT-x
+sudo pacman -S virt-manager qemu vde2 ebtables dnsmasq bridge-utils openbsd-netcat
+sudo systemctl <span class="nb">enable</span> libvirtd.service
+sudo systemctl start libvirtd.service
+</pre></div>
+
+
+<h1>virtualbox install</h1>
+<div class="highlight"><pre><span></span>sudo pacman -S virtualbox virtualbox-ext-vnc virtualbox-guest-dkms virtualbox-host-dkms virtualbox-guest-utils virtualbox-guest-iso virtualbox-sdk 
+
+yjkim@yjkim-pc  ~/문서  uname -r
+<span class="m">4</span>.19.66-1-MANJARO
+sudo pacman -S linux419-virtualbox-host-modules
+
+sudo /sbin/vboxconfig
+sudo /sbin/rcvboxdrv setup
+</pre></div>
+
+
+<h1>vscode hangul encodding</h1>
+<div class="highlight"><pre><span></span><span class="nb">type</span> <span class="o">[</span>Ctrl + ,<span class="o">]</span>
+* linux default terminal 에서 한글이 출력되는 font 로 변경 필요 
+setting &gt; editor.fontFamily : <span class="s2">&quot;&quot;</span>DejaVu Sans Mono <span class="k">for</span> Powerline<span class="s2">&quot;&quot;</span>
+</pre></div>
+
+
+<h1>shutdown freeze solving</h1>
+<ul>
+<li>https://forum.manjaro.org/t/how-to-troubleshoot-shutdown-delays/5767</li>
+</ul>
+<h1>install other package</h1>
+<div class="highlight"><pre><span></span>pacman -Ss -no-confirm jq, tree
+</pre></div>
+
+
+<h1>firefox extension</h1>
+<ul>
+<li>translate</li>
+</ul>
+<h1>linux application remove password prompt</h1>
+<ul>
+<li>docker </li>
+</ul>
+<div class="highlight"><pre><span></span>$ sudo usermod -a -G docker <span class="nv">$USER</span>
+</pre></div>
+
+
+<ul>
+<li>libvirtd, virt-manager </li>
+</ul>
+<div class="highlight"><pre><span></span>$ sudo usermod -a -G libvirt <span class="nv">$USER</span>
+</pre></div>
+
+
+<h1>python pip install on manjaro</h1>
+<div class="highlight"><pre><span></span>python2 --version
+Python <span class="m">2</span>.7.16
+python3 --version
+Python <span class="m">3</span>.7.4
+
+sudo pacman -S python-pip --noconfirm
+</pre></div>
+            <a href="#" class="go-top">Go Top</a>
+<footer class="footer">
+    <p>&copy; yjkim &ndash;
+        Built with <a href="https://github.com/PurePelicanTheme/pure-single">Pure Theme</a>
+        for <a href="http://blog.getpelican.com/">Pelican</a>
+    </p>
+</footer>        </div>
+    </div>
+    </div>
+    <script>
+        var $top = $('.go-top');
+
+        // Show or hide the sticky footer button
+        $(window).scroll(function() {
+            if ($(this).scrollTop() > 200) {
+                $top.fadeIn(200);
+            } else {
+                $top.fadeOut(200);
+            }
+        });
+
+        // Animate the scroll to top
+        $top.click(function(event) {
+            event.preventDefault();
+            $('html, body').animate({scrollTop: 0}, 300);
+        })
+
+        // Makes sure that the href="#" attached to the <a> elements
+        // don't scroll you back up the page.
+        $('body').on('click', 'a[href="#"]', function(event) {
+            event.preventDefault();
+        });
+    </script>
+
+</body>
+</html>

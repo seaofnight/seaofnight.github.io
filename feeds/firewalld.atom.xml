@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom"><title>yjkim blog - firewalld</title><link href="https://seaofnight.github.io/" rel="alternate"></link><link href="https://seaofnight.github.io/feeds/firewalld.atom.xml" rel="self"></link><id>https://seaofnight.github.io/</id><updated>2019-09-26T21:20:00+09:00</updated><entry><title>Introduction-firewalld</title><link href="https://seaofnight.github.io/Introduction-firewalld.html" rel="alternate"></link><published>2019-09-26T21:20:00+09:00</published><updated>2019-09-26T21:20:00+09:00</updated><author><name>yjkim</name></author><id>tag:seaofnight.github.io,2019-09-26:/Introduction-firewalld.html</id><summary type="html">&lt;p&gt;firewalld,network,linux&lt;/p&gt;</summary><content type="html">&lt;h1&gt;Firewalld&lt;/h1&gt;
+&lt;h3&gt;Firewalld 의 개념&lt;/h3&gt;
+&lt;h3&gt;Firewalld 의 기능&lt;/h3&gt;
+&lt;h1&gt;Firewalld install&lt;/h1&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ sudo yum install -y firewalld 
+$ sudo systemctl status firewalld 
+$ sudo systemctl start firewalld 
+$ sudo firewall-cmd --state
+output : running 
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h1&gt;Firewalld 사용방법&lt;/h1&gt;
+&lt;ul&gt;
+&lt;li&gt;Zone 조회 &lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="c1"&gt;# Default 조회 &lt;/span&gt;
+$ sudo firewall-cmd --get-default-zone
+
+&lt;span class="c1"&gt;# Active Zone list 조회 &lt;/span&gt;
+$ firewall-cmd --get-active-zones
+
+&lt;span class="c1"&gt;# 특정 Zone 의 정보 조회 &lt;/span&gt;
+$ sudo firewall-cmd --zone&lt;span class="o"&gt;=&lt;/span&gt;home --list-all
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;ul&gt;
+&lt;li&gt;Default Zone 변경 &lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ sudo firewall-cmd --set-default-zone&lt;span class="o"&gt;=&lt;/span&gt;home
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;ul&gt;
+&lt;li&gt;Zone 에 Service 허용 &lt;ul&gt;
+&lt;li&gt;영구와 비영구의 차이는 --reload 시에 비영구 옵션은 사라진다. &lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="c1"&gt;# Http 서비스 허용 &lt;/span&gt;
+$ sudo firewall-cmd --zone&lt;span class="o"&gt;=&lt;/span&gt;public --add-service&lt;span class="o"&gt;=&lt;/span&gt;http
+$ sudo firewall-cmd --zone&lt;span class="o"&gt;=&lt;/span&gt;public --list-services
+output : dhcpv6-client http ssh
+
+&lt;span class="c1"&gt;# Http 서비스 영구 허용 &lt;/span&gt;
+$ sudo firewall-cmd --zone&lt;span class="o"&gt;=&lt;/span&gt;public --permanent --add-service&lt;span class="o"&gt;=&lt;/span&gt;http
+
+&lt;span class="c1"&gt;# Port/protocol 로 허용 &lt;/span&gt;
+$ sudo firewall-cmd --zone&lt;span class="o"&gt;=&lt;/span&gt;public --add-port&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="m"&gt;5000&lt;/span&gt;/tcp
+$ sudo firewall-cmd --zone&lt;span class="o"&gt;=&lt;/span&gt;public --list-ports
+output : &lt;span class="m"&gt;5000&lt;/span&gt;/tcp
+
+&lt;span class="c1"&gt;# Port/protocol 로 영구 허용 &lt;/span&gt;
+$ sudo firewall-cmd --zone&lt;span class="o"&gt;=&lt;/span&gt;public --add-port&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="m"&gt;5000&lt;/span&gt;/tcp
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;ul&gt;
+&lt;li&gt;Firewalld Service Reload &lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;sudo firewall-cmd --reload
+&lt;/pre&gt;&lt;/div&gt;</content><category term="firewalld"></category><category term="network"></category><category term="linux"></category></entry></feed>
