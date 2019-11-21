@@ -249,6 +249,7 @@ ansible-playbook -b -i inventory/mycluster/hosts.ini cluster.yml --list-tags
 
 &lt;span class="c1"&gt;# 설치하고자 하는 플러그인을 태그명에 넣어준다. &lt;/span&gt;
 ansible-playbook -b -i inventory/mycluster/hosts.ini cluster.yml --tags&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;rbd-provisioner,helm,metrics_server&amp;quot;&lt;/span&gt;
+ansible-playbook -b -i inventory/mycluster/hosts.ini cluster.yml --tags&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;ingress_controller&amp;quot;&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;</content><category term="kubernetes"></category><category term="kubespray"></category></entry><entry><title>markdown-supporting-test</title><link href="https://seaofnight.github.io/markdown-supporting-test.html" rel="alternate"></link><published>2019-09-21T14:20:00+09:00</published><updated>2019-09-21T14:20:00+09:00</updated><author><name>yjkim</name></author><id>tag:seaofnight.github.io,2019-09-21:/markdown-supporting-test.html</id><summary type="html">&lt;p&gt;markdown,pelican&lt;/p&gt;</summary><content type="html">&lt;h1&gt;개요&lt;/h1&gt;
 &lt;ul&gt;
 &lt;li&gt;본 페이지는 블로그 테마를 받았는데 테마에서 마크다운을 얼마나 지원하는지 확인하기 위한 페이지 이다. &lt;/li&gt;

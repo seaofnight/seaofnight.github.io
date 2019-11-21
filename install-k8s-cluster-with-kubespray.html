@@ -215,6 +215,7 @@ ansible-playbook -b -i inventory/mycluster/hosts.ini cluster.yml --list-tags
 
 <span class="c1"># 설치하고자 하는 플러그인을 태그명에 넣어준다. </span>
 ansible-playbook -b -i inventory/mycluster/hosts.ini cluster.yml --tags<span class="o">=</span><span class="s2">&quot;rbd-provisioner,helm,metrics_server&quot;</span>
+ansible-playbook -b -i inventory/mycluster/hosts.ini cluster.yml --tags<span class="o">=</span><span class="s2">&quot;ingress_controller&quot;</span>
 </pre></div>
             <a href="#" class="go-top">Go Top</a>
 <footer class="footer">
