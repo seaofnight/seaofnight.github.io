@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>vitess on Dev Blog</title>
+    <link>http://seaofnight.github.io/categories/vitess/</link>
+    <description>Recent content in vitess on Dev Blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <copyright>.</copyright>
+    <lastBuildDate>Mon, 01 Jun 2020 10:58:08 -0400</lastBuildDate>
+    
+	<atom:link href="http://seaofnight.github.io/categories/vitess/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>vitess</title>
+      <link>http://seaofnight.github.io/posts/vitess-install/</link>
+      <pubDate>Mon, 01 Jun 2020 10:58:08 -0400</pubDate>
+      
+      <guid>http://seaofnight.github.io/posts/vitess-install/</guid>
+      <description>vitess 소개 오늘 포스팅 할 내용은 사내에서 사용하지 않기로 한 Vitess 라는 솔루션에 대한 기록 및 조사한 내용을 공유하는 자리를 가지도록 하곘다. 비교제품군이 있으며 비교제품중에 선택이 되었으므로 사용 안할것 같은 내용은 기록을 하여 남기도록 하겠다. Vitess 는 Youtube 에 mysql 을 ScaleOut 하기 위하여 개발이 되었으며 제품 소개 자료에서도 Scaleout에 대한 기능에 대하여 강점을 많이 설명을 하는 제품이다. 하지만 Mysql 은 아래쪽에 있을뿐 다른 무언가가 많이 붙어 있는것을 볼수 있다. 붙어 있는 컴포넌트에 대한 대략적인 설명을 하고 가겠다.</description>
+    </item>
+    
+  </channel>
+</rss>

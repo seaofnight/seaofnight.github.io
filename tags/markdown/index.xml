@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>markdown on Dev Blog</title>
+    <link>http://seaofnight.github.io/tags/markdown/</link>
+    <description>Recent content in markdown on Dev Blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <copyright>.</copyright>
+    <lastBuildDate>Thu, 09 Apr 2020 10:58:08 -0400</lastBuildDate>
+    
+	<atom:link href="http://seaofnight.github.io/tags/markdown/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>markdown</title>
+      <link>http://seaofnight.github.io/posts/markdown-list/</link>
+      <pubDate>Thu, 09 Apr 2020 10:58:08 -0400</pubDate>
+      
+      <guid>http://seaofnight.github.io/posts/markdown-list/</guid>
+      <description>개요  본 페이지는 블로그 테마를 받았는데 테마에서 마크다운을 얼마나 지원하는지 확인하기 위한 페이지 이다. 아래부터 정상적으로 보이는것을 기준으로 문서 작성에 활용할 예정이다.  되는걸로 보이는것  header 1~6 emphasis : bold 만됨 언더스코어 스크래치 안됨 list : 숫자, 특문 됨 링크, 이미지 코딩문법강조 Table 안됨 인라인 html 안됨 line breaking 안됨 youtube video 안됨  Table of Contents Headers
+Emphasis
+Lists
+Links
+Images
+Code and Syntax Highlighting
+Tables
+Blockquotes</description>
+    </item>
+    
+  </channel>
+</rss>

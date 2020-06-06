@@ -1,14 +1,13 @@
 <!DOCTYPE html>
 <html><head>
-	<meta name="generator" content="Hugo 0.72.0" />
-<title>Dev Blog</title>
+<title>firewalld</title>
 
 <meta charset="utf-8">
 <meta name="X-UA-Compatible" content="IE=edge">
 <meta name="google-site-verification" content="">
 <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport">
 <meta content="telephone=no" name="format-detection">
-<meta name="description" content="">
+<meta name="description" content="firewalld commands ">
 <meta name="renderer" content="webkit">
 <meta name="theme-color" content="#ffffff">
 
@@ -40,6 +39,10 @@
 
 
 
+  
+    <script src="http://seaofnight.github.io//js/toc-collapse.js"></script>
+  
+
 
 
 
@@ -52,7 +55,7 @@
 </head><body>
     	<div id="app"><div ref="sideContainer" class="side-container">
     
-    <a class="a-block nav-head active" href="http://seaofnight.github.io/">
+    <a class="a-block nav-head false" href="http://seaofnight.github.io/">
     
         <div class="nav-title">
             Dev Blog
@@ -70,9 +73,11 @@
             
             
             
+                
             
             
-            <a class="a-block nav-link-item false" href="/posts">
+            
+            <a class="a-block nav-link-item active" href="/posts">
                 Archive
             </a>
             
@@ -118,6 +123,78 @@ Ported from <a href="https://mak1t0.cc/" target="_blank" rel="noreferrer noopene
 </div><div ref="extraContainer" class="extra-container">
     
     
+    <div class="toc animated-visibility" :class="{ invisible: scrollY <= 140 }">
+
+
+	<div class="toc-content">
+	
+		
+		
+		
+		<center>- CATALOG -</center>
+		
+		
+		<ul>
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#firewalld" onclick="collapseOthers(`#firewalld-nav`)" id="firewalld-nav">
+									Firewalld
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#firewalld-install" onclick="collapseOthers(`#firewalld-install-nav`)" id="firewalld-install-nav">
+									Firewalld install
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#firewalld-%ec%82%ac%ec%9a%a9%eb%b0%a9%eb%b2%95" onclick="collapseOthers(`#firewalld-사용방법-nav`)" id="firewalld-사용방법-nav">
+									Firewalld 사용방법
+								</a>
+							</li>
+						
+						
+					
+				
+			
+		</ul>
+	</div>
+
+</div>
+    
     <div class="pagination">
         <a id="globalBackToTop" class="pagination-action animated-visibility" href="#top" :class="{ invisible: scrollY == 0 }">
             <i class="material-icons pagination-action-icon">
@@ -135,8 +212,6 @@ Ported from <a href="https://mak1t0.cc/" target="_blank" rel="noreferrer noopene
         </a>
         
         
-        
-        
     </div>
 </div><div class="single-column-drawer-container" ref="drawer"
      v-bind:class="{ 'single-column-drawer-container-active': isDrawerOpen }">
@@ -148,9 +223,11 @@ Ported from <a href="https://mak1t0.cc/" target="_blank" rel="noreferrer noopene
                 
                 
                 
+                    
                 
                 
-                <a class="a-block drawer-menu-item false" href="/posts">
+                
+                <a class="a-block drawer-menu-item active" href="/posts">
                     Archive
                 </a>
                 
@@ -175,6 +252,78 @@ Ported from <a href="https://mak1t0.cc/" target="_blank" rel="noreferrer noopene
                 </a>
                 
             
+            
+            <div class="toc">
+
+
+	<div class="toc-content">
+	
+		
+		
+		
+		<center>- CATALOG -</center>
+		
+		
+		<ul>
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#firewalld" onclick="collapseOthers(`#firewalld-nav`)" id="firewalld-nav">
+									Firewalld
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#firewalld-install" onclick="collapseOthers(`#firewalld-install-nav`)" id="firewalld-install-nav">
+									Firewalld install
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#firewalld-%ec%82%ac%ec%9a%a9%eb%b0%a9%eb%b2%95" onclick="collapseOthers(`#firewalld-사용방법-nav`)" id="firewalld-사용방법-nav">
+									Firewalld 사용방법
+								</a>
+							</li>
+						
+						
+					
+				
+			
+		</ul>
+	</div>
+
+</div>
             
         </div>
     </div>
@@ -216,204 +365,167 @@ Ported from <a href="https://mak1t0.cc/" target="_blank" rel="noreferrer noopene
     </a>
 </div>
             <div id="content">
-
 <div ref="streamContainer" class="stream-container">
-    <div class="post-list-container post-list-container-no-background">
-        
+    <div class="post-list-container post-list-container-shadow">
+        <div class="post">
             
-            <a href="http://seaofnight.github.io/posts/ceph-install-with-ansible/" class="a-block">
-                <div class="post-item-wrapper">
-                    <div class="post-item post-item-no-divider">
-                        <div class="post-item-info-wrapper">
-                            <div class="post-item-title">
-                                ceph ansible simple installation
-                            </div>
-                            <div class="post-item-summary">
-                                ceph-ansible
-                            </div>
-                            <div class="post-item-meta">
-    2020-06-01
-    &emsp;
-    
-    
-    
-    &emsp;
-    
-</div>
+            
+            
 
-                        </div>
+            <div class="post-head-wrapper-text-only"
+                
+            >
+                <div class="post-title">
+                    firewalld
+                    
+                    <div class="post-subtitle">
+                        firewalld commands 
+                    </div>
+                    
+                    <div class="post-meta">
+                        
+                        <time itemprop="datePublished">
+                            2020-06-01 10:58
+                        </time>
+                        
+
+                        
+                            <i class="material-icons" style="">folder</i>
+                                <a href="/categories/">[firewalld]</a>
+                                &nbsp;
+                        
+
+                        
+                            <i class="material-icons" style="">label</i>
+                            
+                                <a href="/tags/firewalld">firewalld</a>
+                                &nbsp;
+                            
+                                <a href="/tags/command">command</a>
+                                &nbsp;
+                            
                         
                         
                     </div>
                 </div>
+            </div>
             
-        
-            
-            <a href="http://seaofnight.github.io/posts/firewalld-command/" class="a-block">
-                <div class="post-item-wrapper">
-                    <div class="post-item post-item-no-divider">
-                        <div class="post-item-info-wrapper">
-                            <div class="post-item-title">
-                                firewalld
-                            </div>
-                            <div class="post-item-summary">
-                                firewalld commands 
-                            </div>
-                            <div class="post-item-meta">
-    2020-06-01
-    &emsp;
-    
-    
-    
-    &emsp;
-    
-</div>
+            <div class="post-body-wrapper">
+                
+                <div class="post-body" v-pre>
+                
+                    <h1 id="firewalld">Firewalld</h1>
+<h1 id="firewalld-install">Firewalld install</h1>
+<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">
+$ sudo yum install -y firewalld 
+$ sudo systemctl status firewalld 
+$ sudo systemctl start firewalld 
+$ sudo firewall-cmd --state
+output : running 
 
-                        </div>
-                        
-                        
-                    </div>
-                </div>
-            
-        
-            
-            <a href="http://seaofnight.github.io/posts/git-command-guide/" class="a-block">
-                <div class="post-item-wrapper">
-                    <div class="post-item post-item-no-divider">
-                        <div class="post-item-info-wrapper">
-                            <div class="post-item-title">
-                                git command guide
-                            </div>
-                            <div class="post-item-summary">
-                                git commands
-                            </div>
-                            <div class="post-item-meta">
-    2020-06-01
-    &emsp;
-    
-    
-    
-    &emsp;
-    
-</div>
 
-                        </div>
-                        
-                        
-                    </div>
-                </div>
-            
-        
-            
-            <a href="http://seaofnight.github.io/posts/vitess-install/" class="a-block">
-                <div class="post-item-wrapper">
-                    <div class="post-item post-item-no-divider">
-                        <div class="post-item-info-wrapper">
-                            <div class="post-item-title">
-                                vitess
-                            </div>
-                            <div class="post-item-summary">
-                                vitess 설치 방법 
-                            </div>
-                            <div class="post-item-meta">
-    2020-06-01
-    &emsp;
-    
-    
-    
-    &emsp;
-    
-</div>
+</code></pre></div><h1 id="firewalld-사용방법">Firewalld 사용방법</h1>
+<ul>
+<li>Zone 조회</li>
+</ul>
+<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh"><span style="color:#228b22"># Default 조회</span> 
+$ sudo firewall-cmd --get-default-zone
 
-                        </div>
-                        
-                        
-                            
-                            <div class="post-item-image-wrapper">
-                            <div class="post-item-image"
-                            
-                                 style="background-image: url('http://seaofnight.github.io/images/vitess18.jpg')"
-                            
-                            ></div>
-                            </div>
-                        
-                    </div>
-                </div>
-            
-        
-            
-            <a href="http://seaofnight.github.io/posts/markdown-list/" class="a-block">
-                <div class="post-item-wrapper">
-                    <div class="post-item post-item-no-divider">
-                        <div class="post-item-info-wrapper">
-                            <div class="post-item-title">
-                                markdown
-                            </div>
-                            <div class="post-item-summary">
-                                markdown
-                            </div>
-                            <div class="post-item-meta">
-    2020-04-09
-    &emsp;
-    
-    
-    
-    &emsp;
-    
-</div>
+<span style="color:#228b22"># Active Zone list 조회</span> 
+$ firewall-cmd --get-active-zones
 
-                        </div>
-                        
-                        
-                            
-                            <div class="post-item-image-wrapper">
-                            <div class="post-item-image"
-                            
-                                 style="background-image: url('http://seaofnight.github.io/images/Pope-Edouard-de-Beaumont-1844.jpg')"
-                            
-                            ></div>
-                            </div>
-                        
-                    </div>
-                </div>
-            
-        
-            
-            <a href="http://seaofnight.github.io/posts/kubernetes-install/" class="a-block">
-                <div class="post-item-wrapper">
-                    <div class="post-item post-item-no-divider">
-                        <div class="post-item-info-wrapper">
-                            <div class="post-item-title">
-                                install-k8s-cluster-with-kubespray
-                            </div>
-                            <div class="post-item-summary">
-                                
-                            </div>
-                            <div class="post-item-meta">
-    2019-09-22
-    &emsp;
-    
-    
-    
-    &emsp;
-    
-</div>
+<span style="color:#228b22"># 특정 Zone 의 정보 조회</span> 
+$ sudo firewall-cmd --zone=home --list-all
 
-                        </div>
-                        
-                        
-                    </div>
+</code></pre></div><ul>
+<li>Default Zone 변경</li>
+</ul>
+<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">$ sudo firewall-cmd --set-default-zone=home
+</code></pre></div><ul>
+<li>Zone 에 Service 허용
+<ul>
+<li>영구와 비영구의 차이는 &ndash;reload 시에 비영구 옵션은 사라진다.</li>
+</ul>
+</li>
+</ul>
+<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh"><span style="color:#228b22"># Http 서비스 허용</span> 
+$ sudo firewall-cmd --zone=public --add-service=http
+$ sudo firewall-cmd --zone=public --list-services
+output : dhcpv6-client http ssh
+
+<span style="color:#228b22"># Http 서비스 영구 허용</span> 
+$ sudo firewall-cmd --zone=public --permanent --add-service=http
+
+<span style="color:#228b22"># Port/protocol 로 허용</span> 
+$ sudo firewall-cmd --zone=public --add-port=5000/tcp
+$ sudo firewall-cmd --zone=public --list-ports
+output : 5000/tcp
+
+<span style="color:#228b22"># Port/protocol 로 영구 허용</span> 
+$ sudo firewall-cmd --zone=public --add-port=5000/tcp
+
+</code></pre></div><ul>
+<li>Firewalld Service Reload</li>
+</ul>
+<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">sudo firewall-cmd --reload
+</code></pre></div><ul>
+<li>firewalld example</li>
+</ul>
+<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">{
+firewall-cmd --permanent --add-port=10250/tcp
+firewall-cmd --permanent --add-port=10255/tcp
+firewall-cmd --permanent --add-port=8472/udp
+firewall-cmd --permanent --add-port=30000-32767/tcp
+firewall-cmd --add-masquerade --permanent
+
+systemctl restart firewalld
+}
+
+{
+firewall-cmd --permanent --add-port=80/tcp
+firewall-cmd --permanent --add-port=443/tcp
+
+systemctl restart firewalld
+}
+
+</code></pre></div>
+                    
+                    <HR width="100%" id="EOF">
+		    <p style="color:#777;">Last modified on 2020-06-01</p>
+                    
                 </div>
+            </div>
             
-        
-        </a>
+            
+            <nav class="post-pagination">
+
+                
+                <a class="newer-posts" href="http://seaofnight.github.io/posts/ceph-install-with-ansible/">
+			Next<br>ceph ansible simple installation
+                </a>
+                
+                
+                
+                <a class="older-posts" href="http://seaofnight.github.io/posts/git-command-guide/">
+			Previous<br>git command guide
+                </a>
+                
+            </nav>
+            <div class="post-comment-wrapper">
+                
+
+
+
+
+
+
+
+            </div>
+        </div>
     </div>
 </div>
 
-            </div>
-
-
-<div id="single-column-footer">
+            </div><div id="single-column-footer">
 Hugo Theme <a href="https://github.com/amazingrise/hugo-theme-diary">Diary</a> by <a href="https://amazingrise.net">Rise</a>
 <br>
 Ported from <a href="https://mak1t0.cc/" target="_blank" rel="noreferrer noopener">Makito</a>'s <a href="https://github.com/SumiMakito/hexo-theme-journal/" target="_blank" rel="noreferrer noopener">Journal.</a> <br>

@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>kubespray on Dev Blog</title>
+    <link>http://seaofnight.github.io/tags/kubespray/</link>
+    <description>Recent content in kubespray on Dev Blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <copyright>.</copyright>
+    <lastBuildDate>Sun, 22 Sep 2019 10:58:08 -0400</lastBuildDate>
+    
+	<atom:link href="http://seaofnight.github.io/tags/kubespray/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>install-k8s-cluster-with-kubespray</title>
+      <link>http://seaofnight.github.io/posts/kubernetes-install/</link>
+      <pubDate>Sun, 22 Sep 2019 10:58:08 -0400</pubDate>
+      
+      <guid>http://seaofnight.github.io/posts/kubernetes-install/</guid>
+      <description>개요 오늘은 K8s Cluster 을 간략하게 생성 해보는 예제를 기록해 보려고 한다. Cluster 생성은 Kubespray 프로젝트를 이용하여 생성할 예정이다.
+클러스터 정보  vm 생성 : vagrant 호스트 정보  k8s-master : 10.0.3.2 k8s-node1 : 10.0.3.3 k8s-node2 : 10.0.3.4   single master, 2 node  사전 설치  사전설치 요소에는 아래와 같다.  pip 설치 kubespray 프로젝트 클론 ansible 설치 : pip install 하면 설치됨   나머지 sshd, user account, host 설정은 skip 한다.</description>
+    </item>
+    
+  </channel>
+</rss>

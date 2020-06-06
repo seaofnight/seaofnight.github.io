@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Posts on Dev Blog</title>
+    <link>http://seaofnight.github.io/posts/</link>
+    <description>Recent content in Posts on Dev Blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <copyright>.</copyright>
+    <lastBuildDate>Mon, 01 Jun 2020 10:58:08 -0400</lastBuildDate>
+    
+	<atom:link href="http://seaofnight.github.io/posts/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>ceph ansible simple installation</title>
+      <link>http://seaofnight.github.io/posts/ceph-install-with-ansible/</link>
+      <pubDate>Mon, 01 Jun 2020 10:58:08 -0400</pubDate>
+      
+      <guid>http://seaofnight.github.io/posts/ceph-install-with-ansible/</guid>
+      <description>개요  회사에서 Ceph 를 계속 스터디를 하고 있었으나. K8s Cluster 에 올려놓고 사용만 하고있었지 Baremetal 에 올려 사용하지는 않고있었다. 자세하게 사용하기도 해야할 뿐더러 여러가지 옵션을 테스트 및 운용하기 위한 클러스터 구축을 정리하기 위하여 본 포스팅을 정리한다. Ceph 설치방법은 Ceph-ansible 이며 stable-3.2 버전을 이용하여 설치 하였다. 설치 노드는  mon 1, osd 3, mgr 1 이며 mon1 과 mgr1, osd1 이 같은 호스트에 배포가 되었다. ceph0 10.0.3.2 8cpu 16gb ram, /dev/sdb 300gb ceph1 10.</description>
+    </item>
+    
+    <item>
+      <title>firewalld</title>
+      <link>http://seaofnight.github.io/posts/firewalld-command/</link>
+      <pubDate>Mon, 01 Jun 2020 10:58:08 -0400</pubDate>
+      
+      <guid>http://seaofnight.github.io/posts/firewalld-command/</guid>
+      <description>Firewalld Firewalld install $ sudo yum install -y firewalld $ sudo systemctl status firewalld $ sudo systemctl start firewalld $ sudo firewall-cmd --state output : running Firewalld 사용방법  Zone 조회  # Default 조회 $ sudo firewall-cmd --get-default-zone # Active Zone list 조회 $ firewall-cmd --get-active-zones # 특정 Zone 의 정보 조회 $ sudo firewall-cmd --zone=home --list-all  Default Zone 변경  $ sudo firewall-cmd --set-default-zone=home  Zone 에 Service 허용  영구와 비영구의 차이는 &amp;ndash;reload 시에 비영구 옵션은 사라진다.</description>
+    </item>
+    
+    <item>
+      <title>git command guide</title>
+      <link>http://seaofnight.github.io/posts/git-command-guide/</link>
+      <pubDate>Mon, 01 Jun 2020 10:58:08 -0400</pubDate>
+      
+      <guid>http://seaofnight.github.io/posts/git-command-guide/</guid>
+      <description>common 명령어   git init
+ 일반 폴더에서 깃 저장소로 만들어 준다.    git config
+ 깃 저장소의 설정을 변경한다. 예시로 유저명, 메일등을 설정 할 수 있다.    $ git config --global user.name &amp;#34;yjkim1@gmail.com&amp;#34; $ git config --global user.email &amp;#34;yjkim1@gamil.com&amp;#34;   git help
+  git status
+  upload, download 관련  git add  git 에 업로드 하기 위하여는 add commit 의 순서를 거치는데 우리가 어떤 파일을 로컬 레포에 저장할 것이다 라는 명령어이다.</description>
+    </item>
+    
+    <item>
+      <title>vitess</title>
+      <link>http://seaofnight.github.io/posts/vitess-install/</link>
+      <pubDate>Mon, 01 Jun 2020 10:58:08 -0400</pubDate>
+      
+      <guid>http://seaofnight.github.io/posts/vitess-install/</guid>
+      <description>vitess 소개 오늘 포스팅 할 내용은 사내에서 사용하지 않기로 한 Vitess 라는 솔루션에 대한 기록 및 조사한 내용을 공유하는 자리를 가지도록 하곘다. 비교제품군이 있으며 비교제품중에 선택이 되었으므로 사용 안할것 같은 내용은 기록을 하여 남기도록 하겠다. Vitess 는 Youtube 에 mysql 을 ScaleOut 하기 위하여 개발이 되었으며 제품 소개 자료에서도 Scaleout에 대한 기능에 대하여 강점을 많이 설명을 하는 제품이다. 하지만 Mysql 은 아래쪽에 있을뿐 다른 무언가가 많이 붙어 있는것을 볼수 있다. 붙어 있는 컴포넌트에 대한 대략적인 설명을 하고 가겠다.</description>
+    </item>
+    
+    <item>
+      <title>markdown</title>
+      <link>http://seaofnight.github.io/posts/markdown-list/</link>
+      <pubDate>Thu, 09 Apr 2020 10:58:08 -0400</pubDate>
+      
+      <guid>http://seaofnight.github.io/posts/markdown-list/</guid>
+      <description>개요  본 페이지는 블로그 테마를 받았는데 테마에서 마크다운을 얼마나 지원하는지 확인하기 위한 페이지 이다. 아래부터 정상적으로 보이는것을 기준으로 문서 작성에 활용할 예정이다.  되는걸로 보이는것  header 1~6 emphasis : bold 만됨 언더스코어 스크래치 안됨 list : 숫자, 특문 됨 링크, 이미지 코딩문법강조 Table 안됨 인라인 html 안됨 line breaking 안됨 youtube video 안됨  Table of Contents Headers
+Emphasis
+Lists
+Links
+Images
+Code and Syntax Highlighting
+Tables
+Blockquotes</description>
+    </item>
+    
+    <item>
+      <title>install-k8s-cluster-with-kubespray</title>
+      <link>http://seaofnight.github.io/posts/kubernetes-install/</link>
+      <pubDate>Sun, 22 Sep 2019 10:58:08 -0400</pubDate>
+      
+      <guid>http://seaofnight.github.io/posts/kubernetes-install/</guid>
+      <description>개요 오늘은 K8s Cluster 을 간략하게 생성 해보는 예제를 기록해 보려고 한다. Cluster 생성은 Kubespray 프로젝트를 이용하여 생성할 예정이다.
+클러스터 정보  vm 생성 : vagrant 호스트 정보  k8s-master : 10.0.3.2 k8s-node1 : 10.0.3.3 k8s-node2 : 10.0.3.4   single master, 2 node  사전 설치  사전설치 요소에는 아래와 같다.  pip 설치 kubespray 프로젝트 클론 ansible 설치 : pip install 하면 설치됨   나머지 sshd, user account, host 설정은 skip 한다.</description>
+    </item>
+    
+  </channel>
+</rss>

@@ -1,0 +1,1151 @@
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Dev Blog</title>
+    <link>http://seaofnight.github.io/</link>
+    <description>Recent content on Dev Blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <copyright>.</copyright>
+    <lastBuildDate>Mon, 01 Jun 2020 10:58:08 -0400</lastBuildDate>
+    
+        <atom:link href="http://seaofnight.github.io/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    
+        <item>
+        <title>ceph ansible simple installation</title>
+        <link>http://seaofnight.github.io/posts/ceph-install-with-ansible/</link>
+        <pubDate>Mon, 01 Jun 2020 10:58:08 -0400</pubDate>
+        
+        <guid>http://seaofnight.github.io/posts/ceph-install-with-ansible/</guid>
+        <description>Dev Blog http://seaofnight.github.io/posts/ceph-install-with-ansible/ -&lt;h1 id=&#34;개요&#34;&gt;개요&lt;/h1&gt;
+&lt;ul&gt;
+&lt;li&gt;회사에서 Ceph 를 계속 스터디를 하고 있었으나. K8s Cluster 에 올려놓고 사용만 하고있었지 Baremetal 에 올려 사용하지는 않고있었다.&lt;/li&gt;
+&lt;li&gt;자세하게 사용하기도 해야할 뿐더러 여러가지 옵션을 테스트 및 운용하기 위한 클러스터 구축을 정리하기 위하여 본 포스팅을 정리한다.&lt;/li&gt;
+&lt;li&gt;Ceph 설치방법은 Ceph-ansible 이며  stable-3.2 버전을 이용하여 설치 하였다.&lt;/li&gt;
+&lt;li&gt;설치 노드는
+&lt;ul&gt;
+&lt;li&gt;mon 1, osd 3, mgr 1 이며 mon1 과 mgr1, osd1 이 같은 호스트에 배포가 되었다.&lt;/li&gt;
+&lt;li&gt;ceph0 10.0.3.2 8cpu 16gb ram, /dev/sdb 300gb&lt;/li&gt;
+&lt;li&gt;ceph1 10.0.3.3 8cpu 16gb ram, /dev/sdb 300gb&lt;/li&gt;
+&lt;li&gt;ceph2 10.0.3.4 8cpu 16gb ram, /dev/sdb 300gb&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h1 id=&#34;ceph-prerequirements&#34;&gt;ceph prerequirements&lt;/h1&gt;
+&lt;ul&gt;
+&lt;li&gt;3node 부팅 Vagrant 로 부팅하면서 /dev/sdb/ 를 생성하도록 하였으며 lvm, fs 생성은 하지 않았다.&lt;/li&gt;
+&lt;li&gt;ssh fingerprint 설정&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-sh&#34; data-lang=&#34;sh&#34;&gt;&lt;span style=&#34;color:#228b22&#34;&gt;# 이방법으로 패스워드 yes, 패스워드 일일이 쳤음&lt;/span&gt; 
+ssh-keygen 
+ssh-copy-id ceph0
+ssh-copy-id ceph1
+ssh-copy-id ceph2
+
+&lt;span style=&#34;color:#228b22&#34;&gt;# 핑거프린트 검증용 각 호스트 접속 조회 확인&lt;/span&gt;  
+ssh root@ceph0 hostname
+ssh root@ceph1 hostname
+ssh root@ceph2 hostname
+
+
+&lt;span style=&#34;color:#228b22&#34;&gt;# 다른방법으로는 sshpass 가 있다고 한다. 아래와 같이 사용하면 된다.&lt;/span&gt; 
+yum install -y sshpass
+&lt;span style=&#34;color:#658b00&#34;&gt;echo&lt;/span&gt; &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;passwd-content&amp;#34;&lt;/span&gt; ~/passwd
+sshpass -f ~/passwd ssh-copy-id root@ceph0
+ssh root@ceph0 hostname 
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;ul&gt;
+&lt;li&gt;ceph 설치 전 사전 준비
+&lt;ul&gt;
+&lt;li&gt;Pip, git Clone, 의존성 파일을 받아준다.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-sh&#34; data-lang=&#34;sh&#34;&gt;yum install -y git python-pip sshpass &amp;amp;&amp;amp; 
+git clone https://github.com/ceph/ceph-ansible.git &amp;amp;&amp;amp; &lt;span style=&#34;color:#cd5555&#34;&gt;\
+&lt;/span&gt;&lt;span style=&#34;color:#cd5555&#34;&gt;&lt;/span&gt;&lt;span style=&#34;color:#658b00&#34;&gt;cd&lt;/span&gt; ceph-ansible &amp;amp;&amp;amp; &lt;span style=&#34;color:#cd5555&#34;&gt;\
+&lt;/span&gt;&lt;span style=&#34;color:#cd5555&#34;&gt;&lt;/span&gt;git checkout  stable-3.2 &amp;amp;&amp;amp; &lt;span style=&#34;color:#cd5555&#34;&gt;\
+&lt;/span&gt;&lt;span style=&#34;color:#cd5555&#34;&gt;&lt;/span&gt;pip install -r requirements.txt 
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;ul&gt;
+&lt;li&gt;/etc/hosts 설정&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-sh&#34; data-lang=&#34;sh&#34;&gt;cat &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;lt;&amp;lt;EOF&amp;gt;&amp;gt; /etc/hosts
+&lt;/span&gt;&lt;span style=&#34;color:#cd5555&#34;&gt;
+&lt;/span&gt;&lt;span style=&#34;color:#cd5555&#34;&gt;10.0.3.2 ceph0
+&lt;/span&gt;&lt;span style=&#34;color:#cd5555&#34;&gt;10.0.3.3 ceph1
+&lt;/span&gt;&lt;span style=&#34;color:#cd5555&#34;&gt;10.0.3.4 ceph2
+&lt;/span&gt;&lt;span style=&#34;color:#cd5555&#34;&gt;
+&lt;/span&gt;&lt;span style=&#34;color:#cd5555&#34;&gt;EOF&lt;/span&gt;
+
+&lt;span style=&#34;color:#228b22&#34;&gt;# 검증하기위한 조회&lt;/span&gt; 
+cat /etc/hosts
+
+&lt;span style=&#34;color:#228b22&#34;&gt;# ceph&lt;/span&gt; 
+firewall-cmd --permanent --new-service &lt;span style=&#34;color:#b452cd&#34;&gt;3300&lt;/span&gt; &amp;amp;&amp;amp; &lt;span style=&#34;color:#cd5555&#34;&gt;\
+&lt;/span&gt;&lt;span style=&#34;color:#cd5555&#34;&gt;&lt;/span&gt;  firewall-cmd --permanent --new-service &lt;span style=&#34;color:#b452cd&#34;&gt;6789&lt;/span&gt; &amp;amp;&amp;amp; &lt;span style=&#34;color:#cd5555&#34;&gt;\
+&lt;/span&gt;&lt;span style=&#34;color:#cd5555&#34;&gt;&lt;/span&gt;  firewall-cmd --reload
+
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h1 id=&#34;ceph-ansible-install&#34;&gt;ceph ansible install&lt;/h1&gt;
+&lt;ul&gt;
+&lt;li&gt;inventory 작성&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-sh&#34; data-lang=&#34;sh&#34;&gt;cat &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;lt;&amp;lt; EOF | tee inventory.ini
+&lt;/span&gt;&lt;span style=&#34;color:#cd5555&#34;&gt;[mons]
+&lt;/span&gt;&lt;span style=&#34;color:#cd5555&#34;&gt;ceph0
+&lt;/span&gt;&lt;span style=&#34;color:#cd5555&#34;&gt;
+&lt;/span&gt;&lt;span style=&#34;color:#cd5555&#34;&gt;[mgrs]
+&lt;/span&gt;&lt;span style=&#34;color:#cd5555&#34;&gt;ceph0
+&lt;/span&gt;&lt;span style=&#34;color:#cd5555&#34;&gt;
+&lt;/span&gt;&lt;span style=&#34;color:#cd5555&#34;&gt;[osds]
+&lt;/span&gt;&lt;span style=&#34;color:#cd5555&#34;&gt;ceph0
+&lt;/span&gt;&lt;span style=&#34;color:#cd5555&#34;&gt;ceph1
+&lt;/span&gt;&lt;span style=&#34;color:#cd5555&#34;&gt;ceph2
+&lt;/span&gt;&lt;span style=&#34;color:#cd5555&#34;&gt;
+&lt;/span&gt;&lt;span style=&#34;color:#cd5555&#34;&gt;[grafana-server]
+&lt;/span&gt;&lt;span style=&#34;color:#cd5555&#34;&gt;ceph0
+&lt;/span&gt;&lt;span style=&#34;color:#cd5555&#34;&gt;
+&lt;/span&gt;&lt;span style=&#34;color:#cd5555&#34;&gt;[all:children]
+&lt;/span&gt;&lt;span style=&#34;color:#cd5555&#34;&gt;mons
+&lt;/span&gt;&lt;span style=&#34;color:#cd5555&#34;&gt;osds
+&lt;/span&gt;&lt;span style=&#34;color:#cd5555&#34;&gt;mgrs
+&lt;/span&gt;&lt;span style=&#34;color:#cd5555&#34;&gt;EOF&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;ul&gt;
+&lt;li&gt;extra-vars.yml 파일 작성&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-sh&#34; data-lang=&#34;sh&#34;&gt;
+cat &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;lt;&amp;lt;EOF | tee extra.yaml
+&lt;/span&gt;&lt;span style=&#34;color:#cd5555&#34;&gt;# ceph
+&lt;/span&gt;&lt;span style=&#34;color:#cd5555&#34;&gt;monitor_interface: eth1
+&lt;/span&gt;&lt;span style=&#34;color:#cd5555&#34;&gt;monitor_address: 10.0.3.2
+&lt;/span&gt;&lt;span style=&#34;color:#cd5555&#34;&gt;public_network: 10.0.3.0/24
+&lt;/span&gt;&lt;span style=&#34;color:#cd5555&#34;&gt;cluster_network: 10.0.3.0/24
+&lt;/span&gt;&lt;span style=&#34;color:#cd5555&#34;&gt;
+&lt;/span&gt;&lt;span style=&#34;color:#cd5555&#34;&gt;ceph_origin: repository
+&lt;/span&gt;&lt;span style=&#34;color:#cd5555&#34;&gt;ceph_repository: community
+&lt;/span&gt;&lt;span style=&#34;color:#cd5555&#34;&gt;ceph_stable_release: luminous
+&lt;/span&gt;&lt;span style=&#34;color:#cd5555&#34;&gt;
+&lt;/span&gt;&lt;span style=&#34;color:#cd5555&#34;&gt;ceph_conf_overrides:
+&lt;/span&gt;&lt;span style=&#34;color:#cd5555&#34;&gt;  global:
+&lt;/span&gt;&lt;span style=&#34;color:#cd5555&#34;&gt;    mon_allow_pool_delete: true
+&lt;/span&gt;&lt;span style=&#34;color:#cd5555&#34;&gt;    osd_pool_default_size: 1
+&lt;/span&gt;&lt;span style=&#34;color:#cd5555&#34;&gt;    osd_pool_default_min_size: 1
+&lt;/span&gt;&lt;span style=&#34;color:#cd5555&#34;&gt;    osd_pg_stat_report_internal_max: 1
+&lt;/span&gt;&lt;span style=&#34;color:#cd5555&#34;&gt;  osd:
+&lt;/span&gt;&lt;span style=&#34;color:#cd5555&#34;&gt;    osd_min_pg_log_entries: 10
+&lt;/span&gt;&lt;span style=&#34;color:#cd5555&#34;&gt;    osd_max_pg_log_entries: 10
+&lt;/span&gt;&lt;span style=&#34;color:#cd5555&#34;&gt;    osd_pg_log_dups_tracked: 10
+&lt;/span&gt;&lt;span style=&#34;color:#cd5555&#34;&gt;    osd_pg_log_trim_min: 10
+&lt;/span&gt;&lt;span style=&#34;color:#cd5555&#34;&gt;
+&lt;/span&gt;&lt;span style=&#34;color:#cd5555&#34;&gt;osd_objectstore: bluestore
+&lt;/span&gt;&lt;span style=&#34;color:#cd5555&#34;&gt;#lvm_volumes:
+&lt;/span&gt;&lt;span style=&#34;color:#cd5555&#34;&gt;#  - data: /dev/sda
+&lt;/span&gt;&lt;span style=&#34;color:#cd5555&#34;&gt;#  - data: /dev/sdb
+&lt;/span&gt;&lt;span style=&#34;color:#cd5555&#34;&gt;osd_scenario: collocated
+&lt;/span&gt;&lt;span style=&#34;color:#cd5555&#34;&gt;dmcrypt: true
+&lt;/span&gt;&lt;span style=&#34;color:#cd5555&#34;&gt;devices:
+&lt;/span&gt;&lt;span style=&#34;color:#cd5555&#34;&gt;  - /dev/sdb
+&lt;/span&gt;&lt;span style=&#34;color:#cd5555&#34;&gt;
+&lt;/span&gt;&lt;span style=&#34;color:#cd5555&#34;&gt;openstack_config: true
+&lt;/span&gt;&lt;span style=&#34;color:#cd5555&#34;&gt;kube_pool:
+&lt;/span&gt;&lt;span style=&#34;color:#cd5555&#34;&gt;  name: &amp;#34;kube&amp;#34;
+&lt;/span&gt;&lt;span style=&#34;color:#cd5555&#34;&gt;  pg_num: 64
+&lt;/span&gt;&lt;span style=&#34;color:#cd5555&#34;&gt;  pgp_num: 64
+&lt;/span&gt;&lt;span style=&#34;color:#cd5555&#34;&gt;  rule_name: &amp;#34;replicated_rule&amp;#34;
+&lt;/span&gt;&lt;span style=&#34;color:#cd5555&#34;&gt;  type: 1
+&lt;/span&gt;&lt;span style=&#34;color:#cd5555&#34;&gt;  erasure_profile: &amp;#34;&amp;#34;
+&lt;/span&gt;&lt;span style=&#34;color:#cd5555&#34;&gt;  expected_num_objects: &amp;#34;&amp;#34;
+&lt;/span&gt;&lt;span style=&#34;color:#cd5555&#34;&gt;  application: &amp;#34;rbd&amp;#34;
+&lt;/span&gt;&lt;span style=&#34;color:#cd5555&#34;&gt;openstack_glance_pool:
+&lt;/span&gt;&lt;span style=&#34;color:#cd5555&#34;&gt;  name: &amp;#34;images&amp;#34;
+&lt;/span&gt;&lt;span style=&#34;color:#cd5555&#34;&gt;  pg_num: 64
+&lt;/span&gt;&lt;span style=&#34;color:#cd5555&#34;&gt;  pgp_num: 64
+&lt;/span&gt;&lt;span style=&#34;color:#cd5555&#34;&gt;  rule_name: &amp;#34;replicated_rule&amp;#34;
+&lt;/span&gt;&lt;span style=&#34;color:#cd5555&#34;&gt;  type: 1
+&lt;/span&gt;&lt;span style=&#34;color:#cd5555&#34;&gt;  erasure_profile: &amp;#34;&amp;#34;
+&lt;/span&gt;&lt;span style=&#34;color:#cd5555&#34;&gt;  expected_num_objects: &amp;#34;&amp;#34;
+&lt;/span&gt;&lt;span style=&#34;color:#cd5555&#34;&gt;openstack_cinder_pool:
+&lt;/span&gt;&lt;span style=&#34;color:#cd5555&#34;&gt;  name: &amp;#34;volumes&amp;#34;
+&lt;/span&gt;&lt;span style=&#34;color:#cd5555&#34;&gt;  pg_num: 64
+&lt;/span&gt;&lt;span style=&#34;color:#cd5555&#34;&gt;  pgp_num: 64
+&lt;/span&gt;&lt;span style=&#34;color:#cd5555&#34;&gt;  rule_name: &amp;#34;replicated_rule&amp;#34;
+&lt;/span&gt;&lt;span style=&#34;color:#cd5555&#34;&gt;  type: 1
+&lt;/span&gt;&lt;span style=&#34;color:#cd5555&#34;&gt;  erasure_profile: &amp;#34;&amp;#34;
+&lt;/span&gt;&lt;span style=&#34;color:#cd5555&#34;&gt;  expected_num_objects: &amp;#34;&amp;#34;
+&lt;/span&gt;&lt;span style=&#34;color:#cd5555&#34;&gt;openstack_cinder_backup_pool:
+&lt;/span&gt;&lt;span style=&#34;color:#cd5555&#34;&gt;  name: &amp;#34;backups&amp;#34;
+&lt;/span&gt;&lt;span style=&#34;color:#cd5555&#34;&gt;  pg_num: 2
+&lt;/span&gt;&lt;span style=&#34;color:#cd5555&#34;&gt;  pgp_num: 2
+&lt;/span&gt;&lt;span style=&#34;color:#cd5555&#34;&gt;  rule_name: &amp;#34;replicated_rule&amp;#34;
+&lt;/span&gt;&lt;span style=&#34;color:#cd5555&#34;&gt;  type: 1
+&lt;/span&gt;&lt;span style=&#34;color:#cd5555&#34;&gt;  erasure_profile: &amp;#34;&amp;#34;
+&lt;/span&gt;&lt;span style=&#34;color:#cd5555&#34;&gt;  expected_num_objects: &amp;#34;&amp;#34;
+&lt;/span&gt;&lt;span style=&#34;color:#cd5555&#34;&gt;openstack_nova_vms_pool:
+&lt;/span&gt;&lt;span style=&#34;color:#cd5555&#34;&gt;  name: &amp;#34;vms&amp;#34;
+&lt;/span&gt;&lt;span style=&#34;color:#cd5555&#34;&gt;  pg_num: 64
+&lt;/span&gt;&lt;span style=&#34;color:#cd5555&#34;&gt;  pgp_num: 64
+&lt;/span&gt;&lt;span style=&#34;color:#cd5555&#34;&gt;  rule_name: &amp;#34;replicated_rule&amp;#34;
+&lt;/span&gt;&lt;span style=&#34;color:#cd5555&#34;&gt;  type: 1
+&lt;/span&gt;&lt;span style=&#34;color:#cd5555&#34;&gt;  erasure_profile: &amp;#34;&amp;#34;
+&lt;/span&gt;&lt;span style=&#34;color:#cd5555&#34;&gt;  expected_num_objects: &amp;#34;&amp;#34;
+&lt;/span&gt;&lt;span style=&#34;color:#cd5555&#34;&gt;  application: &amp;#34;rbd&amp;#34;
+&lt;/span&gt;&lt;span style=&#34;color:#cd5555&#34;&gt;
+&lt;/span&gt;&lt;span style=&#34;color:#cd5555&#34;&gt;openstack_pools:
+&lt;/span&gt;&lt;span style=&#34;color:#cd5555&#34;&gt;  - &amp;#34;{{ kube_pool }}&amp;#34;
+&lt;/span&gt;&lt;span style=&#34;color:#cd5555&#34;&gt;  - &amp;#34;{{ openstack_glance_pool }}&amp;#34;
+&lt;/span&gt;&lt;span style=&#34;color:#cd5555&#34;&gt;  - &amp;#34;{{ openstack_cinder_pool }}&amp;#34;
+&lt;/span&gt;&lt;span style=&#34;color:#cd5555&#34;&gt;  - &amp;#34;{{ openstack_cinder_backup_pool }}&amp;#34;
+&lt;/span&gt;&lt;span style=&#34;color:#cd5555&#34;&gt;  - &amp;#34;{{ openstack_nova_vms_pool }}&amp;#34;
+&lt;/span&gt;&lt;span style=&#34;color:#cd5555&#34;&gt;EOF&lt;/span&gt;
+
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;ul&gt;
+&lt;li&gt;ping 체크&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-sh&#34; data-lang=&#34;sh&#34;&gt;ansible -b -i inventory.ini -m ping all
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;ul&gt;
+&lt;li&gt;ansible playbook site 스크립트를 실행하여 설치&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-sh&#34; data-lang=&#34;sh&#34;&gt;
+ cp site.yml.sample site.yml
+
+&lt;span style=&#34;color:#00688b&#34;&gt;INVENTORY&lt;/span&gt;=&lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;-i inventory.ini&amp;#34;&lt;/span&gt;
+&lt;span style=&#34;color:#00688b&#34;&gt;EXTRA&lt;/span&gt;=&lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;-e @extra.yaml&amp;#34;&lt;/span&gt;
+&lt;span style=&#34;color:#00688b&#34;&gt;OPTION&lt;/span&gt;=&lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;-b -vvvv&amp;#34;&lt;/span&gt;
+&lt;span style=&#34;color:#00688b&#34;&gt;PLAY&lt;/span&gt;=&lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;site.yml&amp;#34;&lt;/span&gt;
+ansible-playbook &lt;span style=&#34;color:#00688b&#34;&gt;$INVENTORY&lt;/span&gt; &lt;span style=&#34;color:#00688b&#34;&gt;$EXTRA&lt;/span&gt; &lt;span style=&#34;color:#00688b&#34;&gt;$PLAY&lt;/span&gt; &lt;span style=&#34;color:#00688b&#34;&gt;$OPTION&lt;/span&gt; 
+&lt;span style=&#34;color:#228b22&#34;&gt;# ansible-playbook -b -vvvv -i inventory.ini -e @extra.yaml site.yaml&lt;/span&gt;
+
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h1 id=&#34;ceph-ansible-remove&#34;&gt;ceph ansible remove&lt;/h1&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-sh&#34; data-lang=&#34;sh&#34;&gt;
+cat &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;lt;&amp;lt; EOF | tee purge=cluster.sh 
+&lt;/span&gt;&lt;span style=&#34;color:#cd5555&#34;&gt;#!/bin/bash 
+&lt;/span&gt;&lt;span style=&#34;color:#cd5555&#34;&gt;set -ex 
+&lt;/span&gt;&lt;span style=&#34;color:#cd5555&#34;&gt;INVENTORY=&amp;#34;-i inventory.ini&amp;#34;
+&lt;/span&gt;&lt;span style=&#34;color:#cd5555&#34;&gt;EXTRA=&amp;#34;-e @extra.yaml&amp;#34;
+&lt;/span&gt;&lt;span style=&#34;color:#cd5555&#34;&gt;PLAY=&amp;#34;infrastructure-playbooks/purge-cluster.yml&amp;#34;
+&lt;/span&gt;&lt;span style=&#34;color:#cd5555&#34;&gt;OPTION=&amp;#34;-b -vvv&amp;#34;
+&lt;/span&gt;&lt;span style=&#34;color:#cd5555&#34;&gt;ansible-playbook $INVENTORY $EXTRA $PLAY $OPTION 
+&lt;/span&gt;&lt;span style=&#34;color:#cd5555&#34;&gt;EOF&lt;/span&gt;
+chmod +x &lt;span style=&#34;color:#00688b&#34;&gt;purge&lt;/span&gt;=cluster.sh  &amp;amp;&amp;amp; &lt;span style=&#34;color:#00688b&#34;&gt;purge&lt;/span&gt;=cluster.sh
+
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h1 id=&#34;주로-발생한-error&#34;&gt;주로 발생한 Error&lt;/h1&gt;
+&lt;ul&gt;
+&lt;li&gt;/etc/ceph.conf 의 mon host 값 문제
+&lt;ul&gt;
+&lt;li&gt;ceph-ansible 4.0 버전의 Source 는 task 파일의 Jinja template 를 확인해보면&lt;/li&gt;
+&lt;li&gt;mon 호스트를 루프 돌면서 호스트 정보를 찍어주는데&lt;/li&gt;
+&lt;li&gt;mon v2, v1 버전을 마이그래이션 하는 소스가 들어가있다.&lt;/li&gt;
+&lt;li&gt;그렇기때문에 git 다운받고 checkout stable-3.2 버전으로 실행시키며&lt;/li&gt;
+&lt;li&gt;extra.yaml 에 monitor_address 값을 넣어준다.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;에러내용&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-sh&#34; data-lang=&#34;sh&#34;&gt;fatal: [mon1]: FAILED! =&amp;gt; 
+  msg: |-
+    The conditional check &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#39;(ceph_health_raw.stdout != &amp;#34;&amp;#34;) and (ceph_health_raw.stdout | default(&amp;#39;&lt;/span&gt;{}&lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#39;) | from_json)[&amp;#39;&lt;/span&gt;state&lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#39;] in [&amp;#39;&lt;/span&gt;leader&lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#39;, &amp;#39;&lt;/span&gt;peon&lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#39;]
+&lt;/span&gt;&lt;span style=&#34;color:#cd5555&#34;&gt;    &amp;#39;&lt;/span&gt; failed. The error was: No JSON object could be decoded
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;ul&gt;
+&lt;li&gt;조치사항&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-sh&#34; data-lang=&#34;sh&#34;&gt;&lt;span style=&#34;color:#228b22&#34;&gt;#조치 1 branch checkout&lt;/span&gt; 
+$ git checkout stable-3.2
+
+$ vi extre.yaml
+---
+&lt;span style=&#34;color:#228b22&#34;&gt;# extra.yaml&lt;/span&gt; 
+monitor_interface: eth1
+&lt;span style=&#34;color:#228b22&#34;&gt;#monitor_address: 10.0.3.2 ## 조치 2 여기부분&lt;/span&gt;
+public_network: 10.0.3.0/24
+cluster_network: 10.0.3.0/24
+---
+
+* 참고  : https://github.com/ceph/ceph-ansible/issues/3948
+* 참고2 : http://lists.ceph.com/pipermail/ceph-users-ceph.com/2019-February/032801.html
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;- http://seaofnight.github.io/posts/ceph-install-with-ansible/ - .</description>
+        </item>
+    
+    
+    
+        <item>
+        <title>firewalld</title>
+        <link>http://seaofnight.github.io/posts/firewalld-command/</link>
+        <pubDate>Mon, 01 Jun 2020 10:58:08 -0400</pubDate>
+        
+        <guid>http://seaofnight.github.io/posts/firewalld-command/</guid>
+        <description>Dev Blog http://seaofnight.github.io/posts/firewalld-command/ -&lt;h1 id=&#34;firewalld&#34;&gt;Firewalld&lt;/h1&gt;
+&lt;h1 id=&#34;firewalld-install&#34;&gt;Firewalld install&lt;/h1&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-sh&#34; data-lang=&#34;sh&#34;&gt;
+$ sudo yum install -y firewalld 
+$ sudo systemctl status firewalld 
+$ sudo systemctl start firewalld 
+$ sudo firewall-cmd --state
+output : running 
+
+
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h1 id=&#34;firewalld-사용방법&#34;&gt;Firewalld 사용방법&lt;/h1&gt;
+&lt;ul&gt;
+&lt;li&gt;Zone 조회&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-sh&#34; data-lang=&#34;sh&#34;&gt;&lt;span style=&#34;color:#228b22&#34;&gt;# Default 조회&lt;/span&gt; 
+$ sudo firewall-cmd --get-default-zone
+
+&lt;span style=&#34;color:#228b22&#34;&gt;# Active Zone list 조회&lt;/span&gt; 
+$ firewall-cmd --get-active-zones
+
+&lt;span style=&#34;color:#228b22&#34;&gt;# 특정 Zone 의 정보 조회&lt;/span&gt; 
+$ sudo firewall-cmd --zone=home --list-all
+
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;ul&gt;
+&lt;li&gt;Default Zone 변경&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-sh&#34; data-lang=&#34;sh&#34;&gt;$ sudo firewall-cmd --set-default-zone=home
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;ul&gt;
+&lt;li&gt;Zone 에 Service 허용
+&lt;ul&gt;
+&lt;li&gt;영구와 비영구의 차이는 &amp;ndash;reload 시에 비영구 옵션은 사라진다.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-sh&#34; data-lang=&#34;sh&#34;&gt;&lt;span style=&#34;color:#228b22&#34;&gt;# Http 서비스 허용&lt;/span&gt; 
+$ sudo firewall-cmd --zone=public --add-service=http
+$ sudo firewall-cmd --zone=public --list-services
+output : dhcpv6-client http ssh
+
+&lt;span style=&#34;color:#228b22&#34;&gt;# Http 서비스 영구 허용&lt;/span&gt; 
+$ sudo firewall-cmd --zone=public --permanent --add-service=http
+
+&lt;span style=&#34;color:#228b22&#34;&gt;# Port/protocol 로 허용&lt;/span&gt; 
+$ sudo firewall-cmd --zone=public --add-port=5000/tcp
+$ sudo firewall-cmd --zone=public --list-ports
+output : 5000/tcp
+
+&lt;span style=&#34;color:#228b22&#34;&gt;# Port/protocol 로 영구 허용&lt;/span&gt; 
+$ sudo firewall-cmd --zone=public --add-port=5000/tcp
+
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;ul&gt;
+&lt;li&gt;Firewalld Service Reload&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-sh&#34; data-lang=&#34;sh&#34;&gt;sudo firewall-cmd --reload
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;ul&gt;
+&lt;li&gt;firewalld example&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-sh&#34; data-lang=&#34;sh&#34;&gt;{
+firewall-cmd --permanent --add-port=10250/tcp
+firewall-cmd --permanent --add-port=10255/tcp
+firewall-cmd --permanent --add-port=8472/udp
+firewall-cmd --permanent --add-port=30000-32767/tcp
+firewall-cmd --add-masquerade --permanent
+
+systemctl restart firewalld
+}
+
+{
+firewall-cmd --permanent --add-port=80/tcp
+firewall-cmd --permanent --add-port=443/tcp
+
+systemctl restart firewalld
+}
+
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;- http://seaofnight.github.io/posts/firewalld-command/ - .</description>
+        </item>
+    
+    
+    
+        <item>
+        <title>git command guide</title>
+        <link>http://seaofnight.github.io/posts/git-command-guide/</link>
+        <pubDate>Mon, 01 Jun 2020 10:58:08 -0400</pubDate>
+        
+        <guid>http://seaofnight.github.io/posts/git-command-guide/</guid>
+        <description>Dev Blog http://seaofnight.github.io/posts/git-command-guide/ -&lt;h1 id=&#34;common-명령어&#34;&gt;common 명령어&lt;/h1&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;git init&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;일반 폴더에서 깃 저장소로 만들어 준다.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;git config&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;깃 저장소의 설정을 변경한다. 예시로 유저명, 메일등을 설정 할 수 있다.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-sh&#34; data-lang=&#34;sh&#34;&gt;
+$ git config --global user.name &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;yjkim1@gmail.com&amp;#34;&lt;/span&gt; 
+$ git config --global user.email &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;yjkim1@gamil.com&amp;#34;&lt;/span&gt;
+
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;git help&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;git status&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h1 id=&#34;upload-download-관련&#34;&gt;upload, download 관련&lt;/h1&gt;
+&lt;ul&gt;
+&lt;li&gt;git add
+&lt;ul&gt;
+&lt;li&gt;git 에 업로드 하기 위하여는 add commit 의 순서를 거치는데 우리가 어떤 파일을 로컬 레포에 저장할 것이다 라는 명령어이다.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-sh&#34; data-lang=&#34;sh&#34;&gt;$ git add . &lt;span style=&#34;color:#228b22&#34;&gt;# current folder&lt;/span&gt; 
+$ git add readme.md &lt;span style=&#34;color:#228b22&#34;&gt;# readme.md&lt;/span&gt; 
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;ul&gt;
+&lt;li&gt;git commit
+&lt;ul&gt;
+&lt;li&gt;commit 시에는 message 를 날려주면 된다.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-sh&#34; data-lang=&#34;sh&#34;&gt;$ git commit -m &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;add pelican source&amp;#34;&lt;/span&gt; 
+
+&lt;span style=&#34;color:#228b22&#34;&gt;# 그러면 아래와 같이 로그에 출력이 되며 깃헙에도 메시지가 올라가게 된다.&lt;/span&gt; 
+$ git log 
+commit 4fb60f7260f17fee8cc5b6e4eaf779d8997a2a5a (HEAD -&amp;gt; gh-pages, origin/gh-pages)
+Author: yjkim &amp;lt;seaofnight@hanmail.net&amp;gt;
+Date:   Sat Sep &lt;span style=&#34;color:#b452cd&#34;&gt;14&lt;/span&gt; 18:58:04 &lt;span style=&#34;color:#b452cd&#34;&gt;2019&lt;/span&gt; +0900
+
+    add pelican &lt;span style=&#34;color:#658b00&#34;&gt;source&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;git branch&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;git checkout&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;git branch 간에 이동을하거나 삭제를 하고자 할떄 사용한다.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-sh&#34; data-lang=&#34;sh&#34;&gt;$ git checkout branch_name 
+&lt;span style=&#34;color:#228b22&#34;&gt;# 변경하면 폴더도 해당 브렌치에 맞도록 변경이 된다.&lt;/span&gt; 
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;ul&gt;
+&lt;li&gt;git push
+&lt;ul&gt;
+&lt;li&gt;local 레포에 있는 변경사항을 원격 레포로 업로드 한다.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-sh&#34; data-lang=&#34;sh&#34;&gt;$ git push origin master 
+&lt;span style=&#34;color:#228b22&#34;&gt;# 다른 레포지토리로 업로드 하고 싶으면 이렇게 하면 된다.&lt;/span&gt; 
+$ git push -u origin gh-pages
+
+&lt;span style=&#34;color:#228b22&#34;&gt;# 원격 레포의 브랜치 삭제 : git push --delete &amp;lt;remote-name&amp;gt; &amp;lt;branch-name&amp;gt;&lt;/span&gt;
+$ git push --delete origin gh 
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;ul&gt;
+&lt;li&gt;git pull
+&lt;ul&gt;
+&lt;li&gt;git 원격 레포에 있는 내용을 가져오는 명령이다.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h1 id=&#34;local-에서-repo-만들어서-remote-로-올리기&#34;&gt;local 에서 repo 만들어서 remote 로 올리기&lt;/h1&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-sh&#34; data-lang=&#34;sh&#34;&gt;
+&lt;span style=&#34;color:#228b22&#34;&gt;# init 로 프로젝트 생성&lt;/span&gt; 
+git init 
+
+&lt;span style=&#34;color:#228b22&#34;&gt;# 설정정보 등록&lt;/span&gt; 
+git config --global user.name &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;yjkim&amp;#34;&lt;/span&gt;
+git config --global user.email seaofnight@hanmail.net
+
+&lt;span style=&#34;color:#228b22&#34;&gt;# remote 정보 등록, 해당 remote 가 public 사이트이면 프로젝트 생성해야함. e.g github&lt;/span&gt;
+git remote add origin https://github.com/seaofnight/vitess-example.git
+
+&lt;span style=&#34;color:#228b22&#34;&gt;# 병합하기 위하여 pull&lt;/span&gt;
+git pull origin master
+
+&lt;span style=&#34;color:#228b22&#34;&gt;# 업로드&lt;/span&gt; 
+git push origin master
+
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;- http://seaofnight.github.io/posts/git-command-guide/ - .</description>
+        </item>
+    
+    
+    
+        <item>
+        <title>vitess</title>
+        <link>http://seaofnight.github.io/posts/vitess-install/</link>
+        <pubDate>Mon, 01 Jun 2020 10:58:08 -0400</pubDate>
+        
+        <guid>http://seaofnight.github.io/posts/vitess-install/</guid>
+        <description>Dev Blog http://seaofnight.github.io/posts/vitess-install/ -&lt;h1 id=&#34;vitess-소개&#34;&gt;vitess 소개&lt;/h1&gt;
+&lt;p&gt;오늘 포스팅 할 내용은 사내에서 사용하지 않기로 한 Vitess 라는 솔루션에 대한 기록 및 조사한 내용을 공유하는 자리를 가지도록 하곘다.
+비교제품군이 있으며 비교제품중에 선택이 되었으므로 사용 안할것 같은 내용은 기록을 하여 남기도록 하겠다.
+Vitess 는 Youtube 에 mysql 을 ScaleOut 하기 위하여 개발이 되었으며
+제품 소개 자료에서도 Scaleout에 대한 기능에 대하여 강점을 많이 설명을 하는 제품이다.
+&lt;img src=&#34;https://vitess.io/docs/overview/img/VitessOverview.png&#34; alt=&#34;vitess archeture&#34;&gt;
+하지만 Mysql 은 아래쪽에 있을뿐 다른 무언가가 많이 붙어 있는것을 볼수 있다.
+붙어 있는 컴포넌트에 대한 대략적인 설명을 하고 가겠다.&lt;/p&gt;
+&lt;h3 id=&#34;component&#34;&gt;Component&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;vTgate&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Vitess 의 외부에서 접속 할 수 있는 접점이라고 보면 된다.
+Vtgate 는 Topology 를 통하여 Sharding Key 정보를 확인 한후에 해당하는 Vtablet에 있는 데이터를 가져오도록 되어있다.
+Kubernetes 의 외부에 노출은 Service 로 될것이고
+일반 Baremetal 에 도커나 쌩으로 설치 되었을 시에는 당연이 Port 가 열려있을것이다.
+Get Start Locally 나 Start with Kubenetes 를 보아도 패키징이 아주 잘되있으며
+예제로 삼기에도 충분할정도로 자세하고 내공이 보여지도록 구성이 되어있다&lt;/p&gt;
+&lt;p&gt;역시 갓갓 구글&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Topology&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Topology 는 어떤 것으로 구성할지 선택할 수 있는 옵션들이 있다.
+일반적으로 예제에서는 ETCD를 이용하여 작성되어있는데 Zookeeper, Consel 등으로 구성할 수 있으며 vTablet 에서 저장하는 Sharding Key 가 어떻게 되느냐 클러스터의 형상이 어떻게 되느냐 등등에 대한 Metadata 가 저장이 되고 관리 되는곳이다.
+설치시에는 Global 로 1개, Cell 별로 Replica 개수를 지정하여 설치 할 수 있다.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;vTablet&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;vTablet 는 Mysql 을 Proxy Server 역활을 해주는 프로세스이며
+1개의 Mysql Server 당 1개의 vTable 가 붙어서 해당 저장소를 관리 해준다.
+vTablet 는 Kubernetes 로 설치 될경우에는
+vtablet, mysql, ganeral-log, error-log,slow-log등 로그 컨테이너와 함께 생성이 되며
+만약 Monitoring 솔루션인 PMM 과 같이 배포하였을 경우에는 PMM 도 vTable 포드에 포함되어 배포가 된다.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;vtctl&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;vtctl 은 topology 를 통하여 Cli 로 vschema, sharding, 혹은 ddl 등을 날릴수 있는
+cli client tool 이다
+설치는 vitess 를 build 하면 vtctlclient 가 빌드가 되며 빌드 된 bin 을 사용하여 topology 를 지정한다거나. vtctld kubernetes service 를 지정하여 명령을 날릴수 있다.&lt;/p&gt;
+&lt;p&gt;vitess 의 vtctl 은 vtgate 로 명령을 날릴수 있고 vTablet 로도 직접 command 를 날려서 제어할 수 있다. 요청하는 방식은 cli 의 sub command 를 help 하여서 확인 하여야 된다.&lt;/p&gt;
+&lt;p&gt;vtctl 은 위에 아키텍쳐 그림에서 보듯이 Dashboard 도 제공을 해 주고 있다.
+Material 기반의 UI 이며 조금은 개선이 되었으나 아직은 가식성이 좀 떨어지는 면이 있다.&lt;/p&gt;
+&lt;h1 id=&#34;install&#34;&gt;install&lt;/h1&gt;
+&lt;h3 id=&#34;install-절차&#34;&gt;install 절차&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;사전 조건
+&lt;ul&gt;
+&lt;li&gt;kubernetes 설치가 되어있어야 된다. 1.15 이상&lt;/li&gt;
+&lt;li&gt;helm chart 를 이용하여 배포 할 예정이다.&lt;/li&gt;
+&lt;li&gt;helm chart 는 1.16 버전에 맞추어서 old api remove 가 되어서 deploy, daemon api 를 맞게 정정 해주어야 된다.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;설치 절차
+&lt;ul&gt;
+&lt;li&gt;topology 인 etcd 설치&lt;/li&gt;
+&lt;li&gt;storage class 생성&lt;/li&gt;
+&lt;li&gt;vitess depoly 의 절차로 설치가 된다.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;install-script&#34;&gt;install script&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;create kubernetes namespaces&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-sh&#34; data-lang=&#34;sh&#34;&gt;
+$ kubectl create ns vitess 
+
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;ul&gt;
+&lt;li&gt;install etcd operator&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-sh&#34; data-lang=&#34;sh&#34;&gt;
+&lt;span style=&#34;color:#228b22&#34;&gt;# project 를 clone 해온다.&lt;/span&gt; 
+$ git clone https://github.com/coreos/etcd-operator.git
+
+&lt;span style=&#34;color:#228b22&#34;&gt;# rbac 를 생성해준다.&lt;/span&gt; 
+$ ./etcd-operator/example/rbac/create_role.sh --namespace=vitess   
+
+&lt;span style=&#34;color:#228b22&#34;&gt;# etcd operater 을 생성 해준다.&lt;/span&gt; 
+$ kubectl create -f etcd-operator/example/deployment.yaml
+
+&lt;span style=&#34;color:#228b22&#34;&gt;# 생성 확인&lt;/span&gt; 
+$ kubectl get crd | grep etcdcl 
+NAME                                    KIND
+etcdclusters.etcd.database.coreos.com   CustomResourceDefinition.v1beta1.apiextensions.k8s.io
+
+&lt;span style=&#34;color:#228b22&#34;&gt;# etcd operater helm chart 로 생성&lt;/span&gt; 
+helm install stable/etcd-operator --name etcd --namespace vitess  &lt;span style=&#34;color:#cd5555&#34;&gt;\
+&lt;/span&gt;&lt;span style=&#34;color:#cd5555&#34;&gt;&lt;/span&gt;  --set customResources.createEtcdClusterCRD=&lt;span style=&#34;color:#658b00&#34;&gt;true&lt;/span&gt; &lt;span style=&#34;color:#cd5555&#34;&gt;\
+&lt;/span&gt;&lt;span style=&#34;color:#cd5555&#34;&gt;&lt;/span&gt;  --set deployments.backupOperator=&lt;span style=&#34;color:#658b00&#34;&gt;false&lt;/span&gt; &lt;span style=&#34;color:#cd5555&#34;&gt;\
+&lt;/span&gt;&lt;span style=&#34;color:#cd5555&#34;&gt;&lt;/span&gt;  --set deployments.restoreOperator=&lt;span style=&#34;color:#658b00&#34;&gt;false&lt;/span&gt; &lt;span style=&#34;color:#cd5555&#34;&gt;\
+&lt;/span&gt;&lt;span style=&#34;color:#cd5555&#34;&gt;&lt;/span&gt;  --set etcdCluster.size=&lt;span style=&#34;color:#b452cd&#34;&gt;1&lt;/span&gt;
+
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;ul&gt;
+&lt;li&gt;create storage class&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-sh&#34; data-lang=&#34;sh&#34;&gt;
+&lt;span style=&#34;color:#00688b&#34;&gt;NAME&lt;/span&gt;=vitess1
+&lt;span style=&#34;color:#00688b&#34;&gt;POOL_NAME&lt;/span&gt;=&lt;span style=&#34;color:#00688b&#34;&gt;$NAME&lt;/span&gt;-pool 
+&lt;span style=&#34;color:#00688b&#34;&gt;SC_NAME&lt;/span&gt;=&lt;span style=&#34;color:#00688b&#34;&gt;$NAME&lt;/span&gt;-sc
+cat &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;lt;&amp;lt;EOF | kubectl create -f - 
+&lt;/span&gt;&lt;span style=&#34;color:#cd5555&#34;&gt;apiVersion: ceph.rook.io/v1
+&lt;/span&gt;&lt;span style=&#34;color:#cd5555&#34;&gt;kind: CephBlockPool
+&lt;/span&gt;&lt;span style=&#34;color:#cd5555&#34;&gt;metadata:
+&lt;/span&gt;&lt;span style=&#34;color:#cd5555&#34;&gt;  name: $POOL_NAME
+&lt;/span&gt;&lt;span style=&#34;color:#cd5555&#34;&gt;  namespace: rook-ceph
+&lt;/span&gt;&lt;span style=&#34;color:#cd5555&#34;&gt;spec:
+&lt;/span&gt;&lt;span style=&#34;color:#cd5555&#34;&gt;  failureDomain: host
+&lt;/span&gt;&lt;span style=&#34;color:#cd5555&#34;&gt;  replicated:
+&lt;/span&gt;&lt;span style=&#34;color:#cd5555&#34;&gt;    size: 1
+&lt;/span&gt;&lt;span style=&#34;color:#cd5555&#34;&gt;---
+&lt;/span&gt;&lt;span style=&#34;color:#cd5555&#34;&gt;apiVersion: storage.k8s.io/v1
+&lt;/span&gt;&lt;span style=&#34;color:#cd5555&#34;&gt;kind: StorageClass
+&lt;/span&gt;&lt;span style=&#34;color:#cd5555&#34;&gt;metadata:
+&lt;/span&gt;&lt;span style=&#34;color:#cd5555&#34;&gt;   name: $SC_NAME
+&lt;/span&gt;&lt;span style=&#34;color:#cd5555&#34;&gt;provisioner: rook-ceph.rbd.csi.ceph.com
+&lt;/span&gt;&lt;span style=&#34;color:#cd5555&#34;&gt;parameters:
+&lt;/span&gt;&lt;span style=&#34;color:#cd5555&#34;&gt;    clusterID: rook-ceph
+&lt;/span&gt;&lt;span style=&#34;color:#cd5555&#34;&gt;    pool: $POOL_NAME
+&lt;/span&gt;&lt;span style=&#34;color:#cd5555&#34;&gt;    imageFormat: &amp;#34;2&amp;#34;
+&lt;/span&gt;&lt;span style=&#34;color:#cd5555&#34;&gt;    imageFeatures: layering
+&lt;/span&gt;&lt;span style=&#34;color:#cd5555&#34;&gt;    csi.storage.k8s.io/provisioner-secret-name: rook-ceph-csi
+&lt;/span&gt;&lt;span style=&#34;color:#cd5555&#34;&gt;    csi.storage.k8s.io/provisioner-secret-namespace: rook-ceph
+&lt;/span&gt;&lt;span style=&#34;color:#cd5555&#34;&gt;    csi.storage.k8s.io/node-stage-secret-name: rook-ceph-csi
+&lt;/span&gt;&lt;span style=&#34;color:#cd5555&#34;&gt;    csi.storage.k8s.io/node-stage-secret-namespace: rook-ceph
+&lt;/span&gt;&lt;span style=&#34;color:#cd5555&#34;&gt;    csi.storage.k8s.io/fstype: ext4
+&lt;/span&gt;&lt;span style=&#34;color:#cd5555&#34;&gt;reclaimPolicy: Delete
+&lt;/span&gt;&lt;span style=&#34;color:#cd5555&#34;&gt;EOF&lt;/span&gt;
+
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;ul&gt;
+&lt;li&gt;install vitess cluster&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-sh&#34; data-lang=&#34;sh&#34;&gt;
+$ git clone https://github.com/vitessio/vitess.git
+
+$ &lt;span style=&#34;color:#658b00&#34;&gt;cd&lt;/span&gt; ~/vitess/example/helm
+
+&lt;span style=&#34;color:#228b22&#34;&gt;# 예제에서 생성하는 초기 vitess cluster 을 생성해준다.&lt;/span&gt; 
+$ helm install --name vitess --namespace vitess ../../helm/vitess  &lt;span style=&#34;color:#cd5555&#34;&gt;\
+&lt;/span&gt;&lt;span style=&#34;color:#cd5555&#34;&gt;&lt;/span&gt;  -f 101_initial_cluster.yaml --debug
+
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h1 id=&#34;vitess-client&#34;&gt;vitess client&lt;/h1&gt;
+&lt;p&gt;vitess 는 3가지의 Client 옵션을 가지고 있다.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;vtctlclient&lt;/li&gt;
+&lt;li&gt;mysql client&lt;/li&gt;
+&lt;li&gt;grpc&lt;/li&gt;
+&lt;li&gt;vtctl gui&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;위에 있는 옵션중에 mysql client 가 적용이 되면 그 외의 나머지 명령도 거의 mysql client 를 지원하는 것들이라서 왠만큼 사용하는데에는 문제가 없을듯 하다.&lt;/p&gt;
+&lt;p&gt;vtctlclient, vtctl gui 등은 vschema, vindex, vseq 등등을 정의 설정하는데 사용을 할 수 있다.
+나머지 vtworker 등은 기록하지 않도록 하겠다.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;vtctlclinet example&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-sh&#34; data-lang=&#34;sh&#34;&gt;
+&lt;span style=&#34;color:#00688b&#34;&gt;HOST&lt;/span&gt;=&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;$(&lt;/span&gt;kubectl get svc vtctld -o json | jq -r &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;.spec.clusterIP&amp;#34;&lt;/span&gt;&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;)&lt;/span&gt;
+&lt;span style=&#34;color:#00688b&#34;&gt;PORT&lt;/span&gt;=&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;$(&lt;/span&gt;kubectl get svc vtctld -o json | jq -r &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;.spec.ports[1].port&amp;#34;&lt;/span&gt;&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;)&lt;/span&gt;
+
+vtctlclient -server &lt;span style=&#34;color:#00688b&#34;&gt;$HOST&lt;/span&gt;:&lt;span style=&#34;color:#00688b&#34;&gt;$PORT&lt;/span&gt; GetCellInfoNames   
+vtctlclient -server &lt;span style=&#34;color:#00688b&#34;&gt;$HOST&lt;/span&gt;:&lt;span style=&#34;color:#00688b&#34;&gt;$PORT&lt;/span&gt; GetCellInfo zone1
+
+vtctlclient -server &lt;span style=&#34;color:#00688b&#34;&gt;$HOST&lt;/span&gt;:&lt;span style=&#34;color:#00688b&#34;&gt;$PORT&lt;/span&gt; ListAllTablets
+vtctlclient -server &lt;span style=&#34;color:#00688b&#34;&gt;$HOST&lt;/span&gt;:&lt;span style=&#34;color:#00688b&#34;&gt;$PORT&lt;/span&gt; ListTablets zone1-0794219800
+vtctlclient -server &lt;span style=&#34;color:#00688b&#34;&gt;$HOST&lt;/span&gt;:&lt;span style=&#34;color:#00688b&#34;&gt;$PORT&lt;/span&gt; GetTablet zone1-0794219800
+vtctlclient -server &lt;span style=&#34;color:#00688b&#34;&gt;$HOST&lt;/span&gt;:&lt;span style=&#34;color:#00688b&#34;&gt;$PORT&lt;/span&gt; GetKeyspaces  
+vtctlclient -server &lt;span style=&#34;color:#00688b&#34;&gt;$HOST&lt;/span&gt;:&lt;span style=&#34;color:#00688b&#34;&gt;$PORT&lt;/span&gt; GetKeyspace commerce
+vtctlclient -server &lt;span style=&#34;color:#00688b&#34;&gt;$HOST&lt;/span&gt;:&lt;span style=&#34;color:#00688b&#34;&gt;$PORT&lt;/span&gt; GetVSchema t
+
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;- http://seaofnight.github.io/posts/vitess-install/ - .</description>
+        </item>
+    
+    
+    
+        <item>
+        <title>markdown</title>
+        <link>http://seaofnight.github.io/posts/markdown-list/</link>
+        <pubDate>Thu, 09 Apr 2020 10:58:08 -0400</pubDate>
+        
+        <guid>http://seaofnight.github.io/posts/markdown-list/</guid>
+        <description>Dev Blog http://seaofnight.github.io/posts/markdown-list/ -&lt;h1 id=&#34;개요&#34;&gt;개요&lt;/h1&gt;
+&lt;ul&gt;
+&lt;li&gt;본 페이지는 블로그 테마를 받았는데 테마에서 마크다운을 얼마나 지원하는지 확인하기 위한 페이지 이다.&lt;/li&gt;
+&lt;li&gt;아래부터 정상적으로 보이는것을 기준으로 문서 작성에 활용할 예정이다.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h1 id=&#34;되는걸로-보이는것&#34;&gt;되는걸로 보이는것&lt;/h1&gt;
+&lt;ul&gt;
+&lt;li&gt;header 1~6&lt;/li&gt;
+&lt;li&gt;emphasis : bold 만됨 언더스코어 스크래치 안됨&lt;/li&gt;
+&lt;li&gt;list : 숫자, 특문 됨&lt;/li&gt;
+&lt;li&gt;링크, 이미지&lt;/li&gt;
+&lt;li&gt;코딩문법강조&lt;/li&gt;
+&lt;li&gt;Table 안됨&lt;/li&gt;
+&lt;li&gt;인라인 html 안됨&lt;/li&gt;
+&lt;li&gt;line breaking 안됨&lt;/li&gt;
+&lt;li&gt;youtube video 안됨&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h5 id=&#34;table-of-contents&#34;&gt;Table of Contents&lt;/h5&gt;
+&lt;p&gt;&lt;a href=&#34;#headers&#34;&gt;Headers&lt;/a&gt;&lt;br&gt;
+&lt;a href=&#34;#emphasis&#34;&gt;Emphasis&lt;/a&gt;&lt;br&gt;
+&lt;a href=&#34;#lists&#34;&gt;Lists&lt;/a&gt;&lt;br&gt;
+&lt;a href=&#34;#links&#34;&gt;Links&lt;/a&gt;&lt;br&gt;
+&lt;a href=&#34;#images&#34;&gt;Images&lt;/a&gt;&lt;br&gt;
+&lt;a href=&#34;#code&#34;&gt;Code and Syntax Highlighting&lt;/a&gt;&lt;br&gt;
+&lt;a href=&#34;#tables&#34;&gt;Tables&lt;/a&gt;&lt;br&gt;
+&lt;a href=&#34;#blockquotes&#34;&gt;Blockquotes&lt;/a&gt;&lt;br&gt;
+&lt;a href=&#34;#html&#34;&gt;Inline HTML&lt;/a&gt;&lt;br&gt;
+&lt;a href=&#34;#hr&#34;&gt;Horizontal Rule&lt;/a&gt;&lt;br&gt;
+&lt;a href=&#34;#lines&#34;&gt;Line Breaks&lt;/a&gt;&lt;br&gt;
+&lt;a href=&#34;#videos&#34;&gt;YouTube Videos&lt;/a&gt;&lt;/p&gt;
+&lt;!-- raw HTML omitted --&gt;
+&lt;h2 id=&#34;headers&#34;&gt;Headers&lt;/h2&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-no-highlight&#34; data-lang=&#34;no-highlight&#34;&gt;# H1
+## H2
+### H3
+#### H4
+##### H5
+###### H6
+
+Alternatively, for H1 and H2, an underline-ish style:
+
+Alt-H1
+======
+
+Alt-H2
+------
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h1 id=&#34;h1&#34;&gt;H1&lt;/h1&gt;
+&lt;h2 id=&#34;h2&#34;&gt;H2&lt;/h2&gt;
+&lt;h3 id=&#34;h3&#34;&gt;H3&lt;/h3&gt;
+&lt;h4 id=&#34;h4&#34;&gt;H4&lt;/h4&gt;
+&lt;h5 id=&#34;h5&#34;&gt;H5&lt;/h5&gt;
+&lt;h6 id=&#34;h6&#34;&gt;H6&lt;/h6&gt;
+&lt;p&gt;Alternatively, for H1 and H2, an underline-ish style:&lt;/p&gt;
+&lt;h1 id=&#34;alt-h1&#34;&gt;Alt-H1&lt;/h1&gt;
+&lt;h2 id=&#34;alt-h2&#34;&gt;Alt-H2&lt;/h2&gt;
+&lt;!-- raw HTML omitted --&gt;
+&lt;h2 id=&#34;emphasis&#34;&gt;Emphasis&lt;/h2&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-no-highlight&#34; data-lang=&#34;no-highlight&#34;&gt;Emphasis, aka italics, with *asterisks* or _underscores_.
+
+Strong emphasis, aka bold, with **asterisks** or __underscores__.
+
+Combined emphasis with **asterisks and _underscores_**.
+
+Strikethrough uses two tildes. ~~Scratch this.~~
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;Emphasis, aka italics, with &lt;em&gt;asterisks&lt;/em&gt; or &lt;em&gt;underscores&lt;/em&gt;.&lt;/p&gt;
+&lt;p&gt;Strong emphasis, aka bold, with &lt;strong&gt;asterisks&lt;/strong&gt; or &lt;strong&gt;underscores&lt;/strong&gt;.&lt;/p&gt;
+&lt;p&gt;Combined emphasis with &lt;strong&gt;asterisks and &lt;em&gt;underscores&lt;/em&gt;&lt;/strong&gt;.&lt;/p&gt;
+&lt;p&gt;Strikethrough uses two tildes. &lt;del&gt;Scratch this.&lt;/del&gt;&lt;/p&gt;
+&lt;!-- raw HTML omitted --&gt;
+&lt;h2 id=&#34;lists&#34;&gt;Lists&lt;/h2&gt;
+&lt;p&gt;(In this example, leading and trailing spaces are shown with with dots: ⋅)&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-no-highlight&#34; data-lang=&#34;no-highlight&#34;&gt;1. First ordered list item
+2. Another item
+⋅⋅* Unordered sub-list. 
+1. Actual numbers don&amp;#39;t matter, just that it&amp;#39;s a number
+⋅⋅1. Ordered sub-list
+4. And another item.
+
+⋅⋅⋅You can have properly indented paragraphs within list items. Notice the blank line above, and the leading spaces (at least one, but we&amp;#39;ll use three here to also align the raw Markdown).
+
+⋅⋅⋅To have a line break without a paragraph, you will need to use two trailing spaces.⋅⋅
+⋅⋅⋅Note that this line is separate, but within the same paragraph.⋅⋅
+⋅⋅⋅(This is contrary to the typical GFM line break behaviour, where trailing spaces are not required.)
+
+* Unordered list can use asterisks
+- Or minuses
++ Or pluses
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;ol&gt;
+&lt;li&gt;First ordered list item&lt;/li&gt;
+&lt;li&gt;Another item&lt;/li&gt;
+&lt;/ol&gt;
+&lt;ul&gt;
+&lt;li&gt;Unordered sub-list.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;Actual numbers don&amp;rsquo;t matter, just that it&amp;rsquo;s a number&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Ordered sub-list&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;And another item.&lt;/p&gt;
+&lt;p&gt;You can have properly indented paragraphs within list items. Notice the blank line above, and the leading spaces (at least one, but we&amp;rsquo;ll use three here to also align the raw Markdown).&lt;/p&gt;
+&lt;p&gt;To have a line break without a paragraph, you will need to use two trailing spaces.&lt;br&gt;
+Note that this line is separate, but within the same paragraph.&lt;br&gt;
+(This is contrary to the typical GFM line break behaviour, where trailing spaces are not required.)&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;ul&gt;
+&lt;li&gt;Unordered list can use asterisks&lt;/li&gt;
+&lt;/ul&gt;
+&lt;ul&gt;
+&lt;li&gt;Or minuses&lt;/li&gt;
+&lt;/ul&gt;
+&lt;ul&gt;
+&lt;li&gt;Or pluses&lt;/li&gt;
+&lt;/ul&gt;
+&lt;!-- raw HTML omitted --&gt;
+&lt;h2 id=&#34;links&#34;&gt;Links&lt;/h2&gt;
+&lt;p&gt;There are two ways to create links.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-no-highlight&#34; data-lang=&#34;no-highlight&#34;&gt;[I&amp;#39;m an inline-style link](https://www.google.com)
+
+[I&amp;#39;m an inline-style link with title](https://www.google.com &amp;#34;Google&amp;#39;s Homepage&amp;#34;)
+
+[I&amp;#39;m a reference-style link][Arbitrary case-insensitive reference text]
+
+[I&amp;#39;m a relative reference to a repository file](../blob/master/LICENSE)
+
+[You can use numbers for reference-style link definitions][1]
+
+Or leave it empty and use the [link text itself].
+
+URLs and URLs in angle brackets will automatically get turned into links. 
+http://www.example.com or &amp;lt;http://www.example.com&amp;gt; and sometimes 
+example.com (but not on Github, for example).
+
+Some text to show that the reference links can follow later.
+
+[arbitrary case-insensitive reference text]: https://www.mozilla.org
+[1]: http://slashdot.org
+[link text itself]: http://www.reddit.com
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;&lt;a href=&#34;https://www.google.com&#34;&gt;I&amp;rsquo;m an inline-style link&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href=&#34;https://www.google.com&#34; title=&#34;Google&#39;s Homepage&#34;&gt;I&amp;rsquo;m an inline-style link with title&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href=&#34;https://www.mozilla.org&#34;&gt;I&amp;rsquo;m a reference-style link&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href=&#34;../blob/master/LICENSE&#34;&gt;I&amp;rsquo;m a relative reference to a repository file&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href=&#34;http://slashdot.org&#34;&gt;You can use numbers for reference-style link definitions&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Or leave it empty and use the &lt;a href=&#34;http://www.reddit.com&#34;&gt;link text itself&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;URLs and URLs in angle brackets will automatically get turned into links.
+&lt;a href=&#34;http://www.example.com&#34;&gt;http://www.example.com&lt;/a&gt; or &lt;a href=&#34;http://www.example.com&#34;&gt;http://www.example.com&lt;/a&gt; and sometimes
+example.com (but not on Github, for example).&lt;/p&gt;
+&lt;p&gt;Some text to show that the reference links can follow later.&lt;/p&gt;
+&lt;!-- raw HTML omitted --&gt;
+&lt;h2 id=&#34;images&#34;&gt;Images&lt;/h2&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-no-highlight&#34; data-lang=&#34;no-highlight&#34;&gt;Here&amp;#39;s our logo (hover to see the title text):
+
+Inline-style: 
+![alt text](https://github.com/adam-p/markdown-here/raw/master/src/common/images/icon48.png &amp;#34;Logo Title Text 1&amp;#34;)
+
+Reference-style: 
+![alt text][logo]
+
+[logo]: https://github.com/adam-p/markdown-here/raw/master/src/common/images/icon48.png &amp;#34;Logo Title Text 2&amp;#34;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;Here&amp;rsquo;s our logo (hover to see the title text):&lt;/p&gt;
+&lt;p&gt;Inline-style:
+&lt;img src=&#34;https://github.com/adam-p/markdown-here/raw/master/src/common/images/icon48.png&#34; alt=&#34;alt text&#34; title=&#34;Logo Title Text 1&#34;&gt;&lt;/p&gt;
+&lt;p&gt;Reference-style:
+&lt;img src=&#34;https://github.com/adam-p/markdown-here/raw/master/src/common/images/icon48.png&#34; alt=&#34;alt text&#34; title=&#34;Logo Title Text 2&#34;&gt;&lt;/p&gt;
+&lt;!-- raw HTML omitted --&gt;
+&lt;h2 id=&#34;code-and-syntax-highlighting&#34;&gt;Code and Syntax Highlighting&lt;/h2&gt;
+&lt;p&gt;Code blocks are part of the Markdown spec, but syntax highlighting isn&amp;rsquo;t. However, many renderers &amp;ndash; like Github&amp;rsquo;s and &lt;em&gt;Markdown Here&lt;/em&gt; &amp;ndash; support syntax highlighting. Which languages are supported and how those language names should be written will vary from renderer to renderer. &lt;em&gt;Markdown Here&lt;/em&gt; supports highlighting for dozens of languages (and not-really-languages, like diffs and HTTP headers); to see the complete list, and how to write the language names, see the &lt;a href=&#34;http://softwaremaniacs.org/media/soft/highlight/test.html&#34;&gt;highlight.js demo page&lt;/a&gt;.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-no-highlight&#34; data-lang=&#34;no-highlight&#34;&gt;Inline `code` has `back-ticks around` it.
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;Inline &lt;code&gt;code&lt;/code&gt; has &lt;code&gt;back-ticks around&lt;/code&gt; it.&lt;/p&gt;
+&lt;p&gt;Blocks of code are either fenced by lines with three back-ticks &lt;!-- raw HTML omitted --&gt;```&lt;!-- raw HTML omitted --&gt;, or are indented with four spaces. I recommend only using the fenced code blocks &amp;ndash; they&amp;rsquo;re easier and only they support syntax highlighting.&lt;/p&gt;
+&lt;!-- raw HTML omitted --&gt;
+&lt;!-- raw HTML omitted --&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-javascript&#34; data-lang=&#34;javascript&#34;&gt;&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;var&lt;/span&gt; s = &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;JavaScript syntax highlighting&amp;#34;&lt;/span&gt;;
+alert(s);
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;s = &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;Python syntax highlighting&amp;#34;&lt;/span&gt;
+&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;print&lt;/span&gt; s
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;pre&gt;&lt;code&gt;No language indicated, so no syntax highlighting in Markdown Here (varies on Github). 
+But let&#39;s throw in a &amp;lt;b&amp;gt;tag&amp;lt;/b&amp;gt;.
+&lt;/code&gt;&lt;/pre&gt;&lt;!-- raw HTML omitted --&gt;
+&lt;h2 id=&#34;tables&#34;&gt;Tables&lt;/h2&gt;
+&lt;p&gt;Tables aren&amp;rsquo;t part of the core Markdown spec, but they are part of GFM and &lt;em&gt;Markdown Here&lt;/em&gt; supports them. They are an easy way of adding tables to your email &amp;ndash; a task that would otherwise require copy-pasting from another application.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-no-highlight&#34; data-lang=&#34;no-highlight&#34;&gt;Colons can be used to align columns.
+
+| Tables        | Are           | Cool  |
+| ------------- |:-------------:| -----:|
+| col 3 is      | right-aligned | $1600 |
+| col 2 is      | centered      |   $12 |
+| zebra stripes | are neat      |    $1 |
+
+There must be at least 3 dashes separating each header cell.
+The outer pipes (|) are optional, and you don&amp;#39;t need to make the 
+raw Markdown line up prettily. You can also use inline Markdown.
+
+Markdown | Less | Pretty
+--- | --- | ---
+*Still* | `renders` | **nicely**
+1 | 2 | 3
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;Colons can be used to align columns.&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;Tables&lt;/th&gt;
+&lt;th align=&#34;center&#34;&gt;Are&lt;/th&gt;
+&lt;th align=&#34;right&#34;&gt;Cool&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;col 3 is&lt;/td&gt;
+&lt;td align=&#34;center&#34;&gt;right-aligned&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;$1600&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;col 2 is&lt;/td&gt;
+&lt;td align=&#34;center&#34;&gt;centered&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;$12&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;zebra stripes&lt;/td&gt;
+&lt;td align=&#34;center&#34;&gt;are neat&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;$1&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;There must be at least 3 dashes separating each header cell. The outer pipes (|) are optional, and you don&amp;rsquo;t need to make the raw Markdown line up prettily. You can also use inline Markdown.&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;Markdown&lt;/th&gt;
+&lt;th&gt;Less&lt;/th&gt;
+&lt;th&gt;Pretty&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;em&gt;Still&lt;/em&gt;&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;renders&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;&lt;strong&gt;nicely&lt;/strong&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;1&lt;/td&gt;
+&lt;td&gt;2&lt;/td&gt;
+&lt;td&gt;3&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;!-- raw HTML omitted --&gt;
+&lt;h2 id=&#34;blockquotes&#34;&gt;Blockquotes&lt;/h2&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-no-highlight&#34; data-lang=&#34;no-highlight&#34;&gt;&amp;gt; Blockquotes are very handy in email to emulate reply text.
+&amp;gt; This line is part of the same quote.
+
+Quote break.
+
+&amp;gt; This is a very long line that will still be quoted properly when it wraps. Oh boy let&amp;#39;s keep writing to make sure this is long enough to actually wrap for everyone. Oh, you can *put* **Markdown** into a blockquote. 
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;blockquote&gt;
+&lt;p&gt;Blockquotes are very handy in email to emulate reply text.
+This line is part of the same quote.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;Quote break.&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;This is a very long line that will still be quoted properly when it wraps. Oh boy let&amp;rsquo;s keep writing to make sure this is long enough to actually wrap for everyone. Oh, you can &lt;em&gt;put&lt;/em&gt; &lt;strong&gt;Markdown&lt;/strong&gt; into a blockquote.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;!-- raw HTML omitted --&gt;
+&lt;h2 id=&#34;inline-html&#34;&gt;Inline HTML&lt;/h2&gt;
+&lt;p&gt;You can also use raw HTML in your Markdown, and it&amp;rsquo;ll mostly work pretty well.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-no-highlight&#34; data-lang=&#34;no-highlight&#34;&gt;&amp;lt;dl&amp;gt;
+  &amp;lt;dt&amp;gt;Definition list&amp;lt;/dt&amp;gt;
+  &amp;lt;dd&amp;gt;Is something people use sometimes.&amp;lt;/dd&amp;gt;
+
+  &amp;lt;dt&amp;gt;Markdown in HTML&amp;lt;/dt&amp;gt;
+  &amp;lt;dd&amp;gt;Does *not* work **very** well. Use HTML &amp;lt;em&amp;gt;tags&amp;lt;/em&amp;gt;.&amp;lt;/dd&amp;gt;
+&amp;lt;/dl&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;!-- raw HTML omitted --&gt;
+&lt;!-- raw HTML omitted --&gt;
+&lt;!-- raw HTML omitted --&gt;
+&lt;h2 id=&#34;horizontal-rule&#34;&gt;Horizontal Rule&lt;/h2&gt;
+&lt;pre&gt;&lt;code&gt;Three or more...
+
+---
+
+Hyphens
+
+***
+
+Asterisks
+
+___
+
+Underscores
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Three or more&amp;hellip;&lt;/p&gt;
+&lt;hr&gt;
+&lt;p&gt;Hyphens&lt;/p&gt;
+&lt;hr&gt;
+&lt;p&gt;Asterisks&lt;/p&gt;
+&lt;hr&gt;
+&lt;p&gt;Underscores&lt;/p&gt;
+&lt;!-- raw HTML omitted --&gt;
+&lt;h2 id=&#34;line-breaks&#34;&gt;Line Breaks&lt;/h2&gt;
+&lt;p&gt;My basic recommendation for learning how line breaks work is to experiment and discover &amp;ndash; hit &amp;lt;Enter&amp;gt; once (i.e., insert one newline), then hit it twice (i.e., insert two newlines), see what happens. You&amp;rsquo;ll soon learn to get what you want. &amp;ldquo;Markdown Toggle&amp;rdquo; is your friend.&lt;/p&gt;
+&lt;p&gt;Here are some things to try out:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;Here&#39;s a line for us to start with.
+
+This line is separated from the one above by two newlines, so it will be a *separate paragraph*.
+
+This line is also a separate paragraph, but...
+This line is only separated by a single newline, so it&#39;s a separate line in the *same paragraph*.
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Here&amp;rsquo;s a line for us to start with.&lt;/p&gt;
+&lt;p&gt;This line is separated from the one above by two newlines, so it will be a &lt;em&gt;separate paragraph&lt;/em&gt;.&lt;/p&gt;
+&lt;p&gt;This line is also begins a separate paragraph, but&amp;hellip;&lt;br&gt;
+This line is only separated by a single newline, so it&amp;rsquo;s a separate line in the &lt;em&gt;same paragraph&lt;/em&gt;.&lt;/p&gt;
+&lt;p&gt;(Technical note: &lt;em&gt;Markdown Here&lt;/em&gt; uses GFM line breaks, so there&amp;rsquo;s no need to use MD&amp;rsquo;s two-space line breaks.)&lt;/p&gt;
+&lt;!-- raw HTML omitted --&gt;
+&lt;h2 id=&#34;youtube-videos&#34;&gt;YouTube Videos&lt;/h2&gt;
+&lt;p&gt;They can&amp;rsquo;t be added directly but you can add an image with a link to the video like this:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-no-highlight&#34; data-lang=&#34;no-highlight&#34;&gt;&amp;lt;a href=&amp;#34;http://www.youtube.com/watch?feature=player_embedded&amp;amp;v=YOUTUBE_VIDEO_ID_HERE
+&amp;#34; target=&amp;#34;_blank&amp;#34;&amp;gt;&amp;lt;img src=&amp;#34;http://img.youtube.com/vi/YOUTUBE_VIDEO_ID_HERE/0.jpg&amp;#34; 
+alt=&amp;#34;IMAGE ALT TEXT HERE&amp;#34; width=&amp;#34;240&amp;#34; height=&amp;#34;180&amp;#34; border=&amp;#34;10&amp;#34; /&amp;gt;&amp;lt;/a&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;Or, in pure Markdown, but losing the image sizing and border:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-no-highlight&#34; data-lang=&#34;no-highlight&#34;&gt;[![IMAGE ALT TEXT HERE](http://img.youtube.com/vi/YOUTUBE_VIDEO_ID_HERE/0.jpg)](http://www.youtube.com/watch?v=YOUTUBE_VIDEO_ID_HERE)
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;Referencing a bug by #bugID in your git commit links it to the slip. For example #1.&lt;/p&gt;
+&lt;hr&gt;
+&lt;p&gt;License: &lt;a href=&#34;https://creativecommons.org/licenses/by/3.0/&#34;&gt;CC-BY&lt;/a&gt;&lt;/p&gt;
+- http://seaofnight.github.io/posts/markdown-list/ - .</description>
+        </item>
+    
+    
+    
+        <item>
+        <title>install-k8s-cluster-with-kubespray</title>
+        <link>http://seaofnight.github.io/posts/kubernetes-install/</link>
+        <pubDate>Sun, 22 Sep 2019 10:58:08 -0400</pubDate>
+        
+        <guid>http://seaofnight.github.io/posts/kubernetes-install/</guid>
+        <description>Dev Blog http://seaofnight.github.io/posts/kubernetes-install/ -&lt;h1 id=&#34;개요&#34;&gt;개요&lt;/h1&gt;
+&lt;p&gt;오늘은 K8s Cluster 을 간략하게 생성 해보는 예제를 기록해 보려고 한다.
+Cluster 생성은 Kubespray 프로젝트를 이용하여 생성할 예정이다.&lt;/p&gt;
+&lt;h1 id=&#34;클러스터-정보&#34;&gt;클러스터 정보&lt;/h1&gt;
+&lt;ul&gt;
+&lt;li&gt;vm 생성 : vagrant&lt;/li&gt;
+&lt;li&gt;호스트 정보
+&lt;ul&gt;
+&lt;li&gt;k8s-master : 10.0.3.2&lt;/li&gt;
+&lt;li&gt;k8s-node1 : 10.0.3.3&lt;/li&gt;
+&lt;li&gt;k8s-node2  : 10.0.3.4&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;single master, 2 node&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h1 id=&#34;사전-설치&#34;&gt;사전 설치&lt;/h1&gt;
+&lt;ul&gt;
+&lt;li&gt;사전설치 요소에는 아래와 같다.
+&lt;ul&gt;
+&lt;li&gt;pip 설치&lt;/li&gt;
+&lt;li&gt;kubespray 프로젝트 클론&lt;/li&gt;
+&lt;li&gt;ansible 설치 : pip install 하면 설치됨&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;나머지 sshd, user account,  host 설정은 skip 한다.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-sh&#34; data-lang=&#34;sh&#34;&gt;$ sudo yum install -y git python-pip 
+$ git clone https://github.com/kubernetes-sigs/kubespray
+$ pip install  -r kubespray/requirements.txt
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;ul&gt;
+&lt;li&gt;ssh fingerprint 관련 설정을 해준다.&lt;/li&gt;
+&lt;li&gt;아래는 쉘 파일 내용이니 붙여 넣기한후에 실행 해주면 된다.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-sh&#34; data-lang=&#34;sh&#34;&gt;
+
+&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;function&lt;/span&gt; append_hosts_info(){
+cat &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;lt;&amp;lt; EOF &amp;gt;&amp;gt; /etc/hosts
+&lt;/span&gt;&lt;span style=&#34;color:#cd5555&#34;&gt;# kubernetes nodes
+&lt;/span&gt;&lt;span style=&#34;color:#cd5555&#34;&gt;10.0.3.2 k8s-master1
+&lt;/span&gt;&lt;span style=&#34;color:#cd5555&#34;&gt;10.0.3.3 k8s-worker1
+&lt;/span&gt;&lt;span style=&#34;color:#cd5555&#34;&gt;10.0.3.4 k8s-worker2
+&lt;/span&gt;&lt;span style=&#34;color:#cd5555&#34;&gt;EOF&lt;/span&gt;
+
+
+&lt;span style=&#34;color:#228b22&#34;&gt;# master&lt;/span&gt; 
+firewall-cmd --permanent --add-service=https
+firewall-cmd --permanent --add-port=443/tcp
+firewall-cmd --permanent --add-port=6443/tcp
+firewall-cmd --permanent --add-port=2379-2380/tcp
+firewall-cmd --permanent --add-port=10250/tcp
+firewall-cmd --permanent --add-port=10251/tcp
+firewall-cmd --permanent --add-port=10252/tcp
+firewall-cmd --permanent --add-port=10255/tcp
+firewall-cmd --permanent --add-port=8472/udp
+firewall-cmd --add-masquerade --permanent
+firewall-cmd --permanent --add-port=30000-32767/tcp
+
+&lt;span style=&#34;color:#228b22&#34;&gt;# worker&lt;/span&gt; 
+firewall-cmd --permanent --add-port=10250/tcp
+firewall-cmd --permanent --add-port=10255/tcp
+firewall-cmd --permanent --add-port=8472/udp
+firewall-cmd --permanent --add-port=30000-32767/tcp
+firewall-cmd --add-masquerade --permanent
+
+
+}
+
+
+&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;function&lt;/span&gt; generate_ssh_key(){
+
+ cat /dev/zero | ssh-keygen -q -N &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;&amp;#34;&lt;/span&gt;
+
+}
+
+&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;function&lt;/span&gt; deploy_ssh_key_all_nodes(){
+
+ &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;for&lt;/span&gt; i in &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;$(&lt;/span&gt;cat /etc/hosts | tail -n &lt;span style=&#34;color:#b452cd&#34;&gt;3&lt;/span&gt; | awk &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#39;{print $2}&amp;#39;&lt;/span&gt;&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;)&lt;/span&gt; ; &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;do&lt;/span&gt;
+  ssh-keyscan -t rsa &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;&lt;/span&gt;&lt;span style=&#34;color:#00688b&#34;&gt;$i&lt;/span&gt;&lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;&lt;/span&gt; &amp;gt;&amp;gt; ~/.ssh/known_hosts
+  sshpass -p &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;vagrant&amp;#34;&lt;/span&gt; ssh-copy-id -i /root/.ssh/id_rsa.pub root@&lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;&lt;/span&gt;&lt;span style=&#34;color:#00688b&#34;&gt;$i&lt;/span&gt;&lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;&lt;/span&gt;
+  ssh &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;&lt;/span&gt;&lt;span style=&#34;color:#00688b&#34;&gt;$i&lt;/span&gt;&lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;&lt;/span&gt; hostname
+ &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;done&lt;/span&gt;
+
+
+}
+
+
+main(){
+
+ append_hosts_info
+ generate_ssh_key
+ deploy_ssh_key_all_nodes
+
+}
+
+main
+
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h1 id=&#34;설치-하고자-할-cluster-설정&#34;&gt;설치 하고자 할 cluster 설정&lt;/h1&gt;
+&lt;ul&gt;
+&lt;li&gt;kubespray 를 이용하여 cluster를 정의 하려면 inventory 파일을 수정해 주어야 한다.&lt;/li&gt;
+&lt;li&gt;kubespary 의 인벤토리 파일은 inventory 파일의 sample 폴더를 참고 하면 된다.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-sh&#34; data-lang=&#34;sh&#34;&gt;$ cp -rfp kubespray/inventory/sample kubespray/inventory/mycluster
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h1 id=&#34;inventory-설정&#34;&gt;inventory 설정&lt;/h1&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-sh&#34; data-lang=&#34;sh&#34;&gt;
+$ cat &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;lt;&amp;lt; EOF &amp;gt; kubespray/inventory/mycluster/hosts.ini
+&lt;/span&gt;&lt;span style=&#34;color:#cd5555&#34;&gt;[all]
+&lt;/span&gt;&lt;span style=&#34;color:#cd5555&#34;&gt;k8s-master ansible_host=10.0.3.2 ip=10.0.3.2 etcd_member_name=etcd1
+&lt;/span&gt;&lt;span style=&#34;color:#cd5555&#34;&gt;k8s-node1 ansible_host=10.0.3.3 ip=10.0.3.3
+&lt;/span&gt;&lt;span style=&#34;color:#cd5555&#34;&gt;k8s-node2 ansible_host=10.0.3.4 ip=10.0.3.4
+&lt;/span&gt;&lt;span style=&#34;color:#cd5555&#34;&gt;
+&lt;/span&gt;&lt;span style=&#34;color:#cd5555&#34;&gt;[kube-master]
+&lt;/span&gt;&lt;span style=&#34;color:#cd5555&#34;&gt;k8s-master
+&lt;/span&gt;&lt;span style=&#34;color:#cd5555&#34;&gt;
+&lt;/span&gt;&lt;span style=&#34;color:#cd5555&#34;&gt;[kube-node]
+&lt;/span&gt;&lt;span style=&#34;color:#cd5555&#34;&gt;k8s-master
+&lt;/span&gt;&lt;span style=&#34;color:#cd5555&#34;&gt;k8s-node1
+&lt;/span&gt;&lt;span style=&#34;color:#cd5555&#34;&gt;k8s-node2
+&lt;/span&gt;&lt;span style=&#34;color:#cd5555&#34;&gt;
+&lt;/span&gt;&lt;span style=&#34;color:#cd5555&#34;&gt;[etcd]
+&lt;/span&gt;&lt;span style=&#34;color:#cd5555&#34;&gt;k8s-master
+&lt;/span&gt;&lt;span style=&#34;color:#cd5555&#34;&gt;
+&lt;/span&gt;&lt;span style=&#34;color:#cd5555&#34;&gt;[k8s-cluster:children]
+&lt;/span&gt;&lt;span style=&#34;color:#cd5555&#34;&gt;kube-node
+&lt;/span&gt;&lt;span style=&#34;color:#cd5555&#34;&gt;kube-master
+&lt;/span&gt;&lt;span style=&#34;color:#cd5555&#34;&gt;
+&lt;/span&gt;&lt;span style=&#34;color:#cd5555&#34;&gt;EOF&lt;/span&gt;
+
+$ cat kubespray/inventory/mycluster/hosts.ini
+
+&lt;span style=&#34;color:#228b22&#34;&gt;# network 가 flannel -&amp;gt; calico 로 변경해주는 스크립트이다.&lt;/span&gt; 
+$ sed -i &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#39;s/kube_network_plugin: flannel/kube_network_plugin: calico/&amp;#39;&lt;/span&gt; kubespray/inventory/mycluster/group_vars/k8s-cluster/k8s-cluster.yml
+
+&lt;span style=&#34;color:#228b22&#34;&gt;# external lb 가 있을경우에는 해당 IP 를 요기 추가해주어야된다.&lt;/span&gt; 
+$ &lt;span style=&#34;color:#658b00&#34;&gt;echo&lt;/span&gt; -e &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;supplementary_addresses_in_ssl_keys: [219.250.188.73]&amp;#34;&lt;/span&gt; &amp;gt;&amp;gt; kubespray/inventory/mycluster/group_vars/k8s-cluster/k8s-cluster.yml
+
+&lt;span style=&#34;color:#228b22&#34;&gt;# multus 를 사용할 경우엔 실행 시켜주면 된다.&lt;/span&gt; 
+$ sed -i &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#39;s/kube_network_plugin_multus: false/kube_network_plugin_multus: true/&amp;#39;&lt;/span&gt; kubespray/inventory/mycluster/group_vars/k8s-cluster/k8s-cluster.yml
+
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h1 id=&#34;설치&#34;&gt;설치&lt;/h1&gt;
+&lt;ul&gt;
+&lt;li&gt;인벤토리 설정이 정상적으로 진행되었다면 설치를 진행한다.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-sh&#34; data-lang=&#34;sh&#34;&gt;
+$ ansible-playbook -b -i inventory/mycluster/host.ini cluster.yml 
+
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h1 id=&#34;일부-기능만-설치-하고자-할경우&#34;&gt;일부 기능만 설치 하고자 할경우&lt;/h1&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-sh&#34; data-lang=&#34;sh&#34;&gt;&lt;span style=&#34;color:#228b22&#34;&gt;# ansible tag 조회&lt;/span&gt; 
+ansible-playbook -b -i inventory/mycluster/hosts.ini cluster.yml --list-tags
+
+&lt;span style=&#34;color:#228b22&#34;&gt;# 설치하고자 하는 플러그인을 태그명에 넣어준다.&lt;/span&gt; 
+ansible-playbook -b -i inventory/mycluster/hosts.ini cluster.yml --tags=&lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;rbd-provisioner,helm,metrics_server&amp;#34;&lt;/span&gt;
+ansible-playbook -b -i inventory/mycluster/hosts.ini cluster.yml --tags=&lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;ingress_controller&amp;#34;&lt;/span&gt;
+ansible-playbook -b -i kubespray/inventory/mycluster/hosts.ini kubespray/cluster.yml --tags=&lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;coredns,nodelocaldns&amp;#34;&lt;/span&gt;
+
+
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;- http://seaofnight.github.io/posts/kubernetes-install/ - .</description>
+        </item>
+    
+    
+  </channel>
+</rss> 

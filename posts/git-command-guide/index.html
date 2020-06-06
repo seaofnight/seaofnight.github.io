@@ -1,14 +1,13 @@
 <!DOCTYPE html>
 <html><head>
-	<meta name="generator" content="Hugo 0.72.0" />
-<title>Dev Blog</title>
+<title>git command guide</title>
 
 <meta charset="utf-8">
 <meta name="X-UA-Compatible" content="IE=edge">
 <meta name="google-site-verification" content="">
 <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport">
 <meta content="telephone=no" name="format-detection">
-<meta name="description" content="">
+<meta name="description" content="git commands">
 <meta name="renderer" content="webkit">
 <meta name="theme-color" content="#ffffff">
 
@@ -40,6 +39,10 @@
 
 
 
+  
+    <script src="http://seaofnight.github.io//js/toc-collapse.js"></script>
+  
+
 
 
 
@@ -52,7 +55,7 @@
 </head><body>
     	<div id="app"><div ref="sideContainer" class="side-container">
     
-    <a class="a-block nav-head active" href="http://seaofnight.github.io/">
+    <a class="a-block nav-head false" href="http://seaofnight.github.io/">
     
         <div class="nav-title">
             Dev Blog
@@ -70,9 +73,11 @@
             
             
             
+                
             
             
-            <a class="a-block nav-link-item false" href="/posts">
+            
+            <a class="a-block nav-link-item active" href="/posts">
                 Archive
             </a>
             
@@ -118,6 +123,78 @@ Ported from <a href="https://mak1t0.cc/" target="_blank" rel="noreferrer noopene
 </div><div ref="extraContainer" class="extra-container">
     
     
+    <div class="toc animated-visibility" :class="{ invisible: scrollY <= 140 }">
+
+
+	<div class="toc-content">
+	
+		
+		
+		
+		<center>- CATALOG -</center>
+		
+		
+		<ul>
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#common-%eb%aa%85%eb%a0%b9%ec%96%b4" onclick="collapseOthers(`#common-명령어-nav`)" id="common-명령어-nav">
+									common 명령어
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#upload-download-%ea%b4%80%eb%a0%a8" onclick="collapseOthers(`#upload-download-관련-nav`)" id="upload-download-관련-nav">
+									upload, download 관련
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#local-%ec%97%90%ec%84%9c-repo-%eb%a7%8c%eb%93%a4%ec%96%b4%ec%84%9c-remote-%eb%a1%9c-%ec%98%ac%eb%a6%ac%ea%b8%b0" onclick="collapseOthers(`#local-에서-repo-만들어서-remote-로-올리기-nav`)" id="local-에서-repo-만들어서-remote-로-올리기-nav">
+									local 에서 repo 만들어서 remote 로 올리기
+								</a>
+							</li>
+						
+						
+					
+				
+			
+		</ul>
+	</div>
+
+</div>
+    
     <div class="pagination">
         <a id="globalBackToTop" class="pagination-action animated-visibility" href="#top" :class="{ invisible: scrollY == 0 }">
             <i class="material-icons pagination-action-icon">
@@ -135,8 +212,6 @@ Ported from <a href="https://mak1t0.cc/" target="_blank" rel="noreferrer noopene
         </a>
         
         
-        
-        
     </div>
 </div><div class="single-column-drawer-container" ref="drawer"
      v-bind:class="{ 'single-column-drawer-container-active': isDrawerOpen }">
@@ -148,9 +223,11 @@ Ported from <a href="https://mak1t0.cc/" target="_blank" rel="noreferrer noopene
                 
                 
                 
+                    
                 
                 
-                <a class="a-block drawer-menu-item false" href="/posts">
+                
+                <a class="a-block drawer-menu-item active" href="/posts">
                     Archive
                 </a>
                 
@@ -175,6 +252,78 @@ Ported from <a href="https://mak1t0.cc/" target="_blank" rel="noreferrer noopene
                 </a>
                 
             
+            
+            <div class="toc">
+
+
+	<div class="toc-content">
+	
+		
+		
+		
+		<center>- CATALOG -</center>
+		
+		
+		<ul>
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#common-%eb%aa%85%eb%a0%b9%ec%96%b4" onclick="collapseOthers(`#common-명령어-nav`)" id="common-명령어-nav">
+									common 명령어
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#upload-download-%ea%b4%80%eb%a0%a8" onclick="collapseOthers(`#upload-download-관련-nav`)" id="upload-download-관련-nav">
+									upload, download 관련
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#local-%ec%97%90%ec%84%9c-repo-%eb%a7%8c%eb%93%a4%ec%96%b4%ec%84%9c-remote-%eb%a1%9c-%ec%98%ac%eb%a6%ac%ea%b8%b0" onclick="collapseOthers(`#local-에서-repo-만들어서-remote-로-올리기-nav`)" id="local-에서-repo-만들어서-remote-로-올리기-nav">
+									local 에서 repo 만들어서 remote 로 올리기
+								</a>
+							</li>
+						
+						
+					
+				
+			
+		</ul>
+	</div>
+
+</div>
             
         </div>
     </div>
@@ -216,204 +365,197 @@ Ported from <a href="https://mak1t0.cc/" target="_blank" rel="noreferrer noopene
     </a>
 </div>
             <div id="content">
-
 <div ref="streamContainer" class="stream-container">
-    <div class="post-list-container post-list-container-no-background">
-        
+    <div class="post-list-container post-list-container-shadow">
+        <div class="post">
             
-            <a href="http://seaofnight.github.io/posts/ceph-install-with-ansible/" class="a-block">
-                <div class="post-item-wrapper">
-                    <div class="post-item post-item-no-divider">
-                        <div class="post-item-info-wrapper">
-                            <div class="post-item-title">
-                                ceph ansible simple installation
-                            </div>
-                            <div class="post-item-summary">
-                                ceph-ansible
-                            </div>
-                            <div class="post-item-meta">
-    2020-06-01
-    &emsp;
-    
-    
-    
-    &emsp;
-    
-</div>
+            
+            
 
-                        </div>
+            <div class="post-head-wrapper-text-only"
+                
+            >
+                <div class="post-title">
+                    git command guide
+                    
+                    <div class="post-subtitle">
+                        git commands
+                    </div>
+                    
+                    <div class="post-meta">
+                        
+                        <time itemprop="datePublished">
+                            2020-06-01 10:58
+                        </time>
+                        
+
+                        
+                            <i class="material-icons" style="">folder</i>
+                                <a href="/categories/">[git]</a>
+                                &nbsp;
+                        
+
+                        
+                            <i class="material-icons" style="">label</i>
+                            
+                                <a href="/tags/git">git</a>
+                                &nbsp;
+                            
+                                <a href="/tags/guide">guide</a>
+                                &nbsp;
+                            
                         
                         
                     </div>
                 </div>
+            </div>
             
-        
-            
-            <a href="http://seaofnight.github.io/posts/firewalld-command/" class="a-block">
-                <div class="post-item-wrapper">
-                    <div class="post-item post-item-no-divider">
-                        <div class="post-item-info-wrapper">
-                            <div class="post-item-title">
-                                firewalld
-                            </div>
-                            <div class="post-item-summary">
-                                firewalld commands 
-                            </div>
-                            <div class="post-item-meta">
-    2020-06-01
-    &emsp;
-    
-    
-    
-    &emsp;
-    
-</div>
+            <div class="post-body-wrapper">
+                
+                <div class="post-body" v-pre>
+                
+                    <h1 id="common-명령어">common 명령어</h1>
+<ul>
+<li>
+<p>git init</p>
+<ul>
+<li>일반 폴더에서 깃 저장소로 만들어 준다.</li>
+</ul>
+</li>
+<li>
+<p>git config</p>
+<ul>
+<li>깃 저장소의 설정을 변경한다. 예시로 유저명, 메일등을 설정 할 수 있다.</li>
+</ul>
+</li>
+</ul>
+<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">
+$ git config --global user.name <span style="color:#cd5555">&#34;yjkim1@gmail.com&#34;</span> 
+$ git config --global user.email <span style="color:#cd5555">&#34;yjkim1@gamil.com&#34;</span>
 
-                        </div>
-                        
-                        
-                    </div>
-                </div>
-            
-        
-            
-            <a href="http://seaofnight.github.io/posts/git-command-guide/" class="a-block">
-                <div class="post-item-wrapper">
-                    <div class="post-item post-item-no-divider">
-                        <div class="post-item-info-wrapper">
-                            <div class="post-item-title">
-                                git command guide
-                            </div>
-                            <div class="post-item-summary">
-                                git commands
-                            </div>
-                            <div class="post-item-meta">
-    2020-06-01
-    &emsp;
-    
-    
-    
-    &emsp;
-    
-</div>
+</code></pre></div><ul>
+<li>
+<p>git help</p>
+</li>
+<li>
+<p>git status</p>
+</li>
+</ul>
+<h1 id="upload-download-관련">upload, download 관련</h1>
+<ul>
+<li>git add
+<ul>
+<li>git 에 업로드 하기 위하여는 add commit 의 순서를 거치는데 우리가 어떤 파일을 로컬 레포에 저장할 것이다 라는 명령어이다.</li>
+</ul>
+</li>
+</ul>
+<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">$ git add . <span style="color:#228b22"># current folder</span> 
+$ git add readme.md <span style="color:#228b22"># readme.md</span> 
+</code></pre></div><ul>
+<li>git commit
+<ul>
+<li>commit 시에는 message 를 날려주면 된다.</li>
+</ul>
+</li>
+</ul>
+<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">$ git commit -m <span style="color:#cd5555">&#34;add pelican source&#34;</span> 
 
-                        </div>
-                        
-                        
-                    </div>
-                </div>
-            
-        
-            
-            <a href="http://seaofnight.github.io/posts/vitess-install/" class="a-block">
-                <div class="post-item-wrapper">
-                    <div class="post-item post-item-no-divider">
-                        <div class="post-item-info-wrapper">
-                            <div class="post-item-title">
-                                vitess
-                            </div>
-                            <div class="post-item-summary">
-                                vitess 설치 방법 
-                            </div>
-                            <div class="post-item-meta">
-    2020-06-01
-    &emsp;
-    
-    
-    
-    &emsp;
-    
-</div>
+<span style="color:#228b22"># 그러면 아래와 같이 로그에 출력이 되며 깃헙에도 메시지가 올라가게 된다.</span> 
+$ git log 
+commit 4fb60f7260f17fee8cc5b6e4eaf779d8997a2a5a (HEAD -&gt; gh-pages, origin/gh-pages)
+Author: yjkim &lt;seaofnight@hanmail.net&gt;
+Date:   Sat Sep <span style="color:#b452cd">14</span> 18:58:04 <span style="color:#b452cd">2019</span> +0900
 
-                        </div>
-                        
-                        
-                            
-                            <div class="post-item-image-wrapper">
-                            <div class="post-item-image"
-                            
-                                 style="background-image: url('http://seaofnight.github.io/images/vitess18.jpg')"
-                            
-                            ></div>
-                            </div>
-                        
-                    </div>
-                </div>
-            
-        
-            
-            <a href="http://seaofnight.github.io/posts/markdown-list/" class="a-block">
-                <div class="post-item-wrapper">
-                    <div class="post-item post-item-no-divider">
-                        <div class="post-item-info-wrapper">
-                            <div class="post-item-title">
-                                markdown
-                            </div>
-                            <div class="post-item-summary">
-                                markdown
-                            </div>
-                            <div class="post-item-meta">
-    2020-04-09
-    &emsp;
-    
-    
-    
-    &emsp;
-    
-</div>
+    add pelican <span style="color:#658b00">source</span>
+</code></pre></div><ul>
+<li>
+<p>git branch</p>
+</li>
+<li>
+<p>git checkout</p>
+<ul>
+<li>git branch 간에 이동을하거나 삭제를 하고자 할떄 사용한다.</li>
+</ul>
+</li>
+</ul>
+<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">$ git checkout branch_name 
+<span style="color:#228b22"># 변경하면 폴더도 해당 브렌치에 맞도록 변경이 된다.</span> 
+</code></pre></div><ul>
+<li>git push
+<ul>
+<li>local 레포에 있는 변경사항을 원격 레포로 업로드 한다.</li>
+</ul>
+</li>
+</ul>
+<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">$ git push origin master 
+<span style="color:#228b22"># 다른 레포지토리로 업로드 하고 싶으면 이렇게 하면 된다.</span> 
+$ git push -u origin gh-pages
 
-                        </div>
-                        
-                        
-                            
-                            <div class="post-item-image-wrapper">
-                            <div class="post-item-image"
-                            
-                                 style="background-image: url('http://seaofnight.github.io/images/Pope-Edouard-de-Beaumont-1844.jpg')"
-                            
-                            ></div>
-                            </div>
-                        
-                    </div>
-                </div>
-            
-        
-            
-            <a href="http://seaofnight.github.io/posts/kubernetes-install/" class="a-block">
-                <div class="post-item-wrapper">
-                    <div class="post-item post-item-no-divider">
-                        <div class="post-item-info-wrapper">
-                            <div class="post-item-title">
-                                install-k8s-cluster-with-kubespray
-                            </div>
-                            <div class="post-item-summary">
-                                
-                            </div>
-                            <div class="post-item-meta">
-    2019-09-22
-    &emsp;
-    
-    
-    
-    &emsp;
-    
-</div>
+<span style="color:#228b22"># 원격 레포의 브랜치 삭제 : git push --delete &lt;remote-name&gt; &lt;branch-name&gt;</span>
+$ git push --delete origin gh 
+</code></pre></div><ul>
+<li>git pull
+<ul>
+<li>git 원격 레포에 있는 내용을 가져오는 명령이다.</li>
+</ul>
+</li>
+</ul>
+<h1 id="local-에서-repo-만들어서-remote-로-올리기">local 에서 repo 만들어서 remote 로 올리기</h1>
+<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">
+<span style="color:#228b22"># init 로 프로젝트 생성</span> 
+git init 
 
-                        </div>
-                        
-                        
-                    </div>
+<span style="color:#228b22"># 설정정보 등록</span> 
+git config --global user.name <span style="color:#cd5555">&#34;yjkim&#34;</span>
+git config --global user.email seaofnight@hanmail.net
+
+<span style="color:#228b22"># remote 정보 등록, 해당 remote 가 public 사이트이면 프로젝트 생성해야함. e.g github</span>
+git remote add origin https://github.com/seaofnight/vitess-example.git
+
+<span style="color:#228b22"># 병합하기 위하여 pull</span>
+git pull origin master
+
+<span style="color:#228b22"># 업로드</span> 
+git push origin master
+
+</code></pre></div>
+                    
+                    <HR width="100%" id="EOF">
+		    <p style="color:#777;">Last modified on 2020-06-01</p>
+                    
                 </div>
+            </div>
             
-        
-        </a>
+            
+            <nav class="post-pagination">
+
+                
+                <a class="newer-posts" href="http://seaofnight.github.io/posts/firewalld-command/">
+			Next<br>firewalld
+                </a>
+                
+                
+                
+                <a class="older-posts" href="http://seaofnight.github.io/posts/vitess-install/">
+			Previous<br>vitess
+                </a>
+                
+            </nav>
+            <div class="post-comment-wrapper">
+                
+
+
+
+
+
+
+
+            </div>
+        </div>
     </div>
 </div>
 
-            </div>
-
-
-<div id="single-column-footer">
+            </div><div id="single-column-footer">
 Hugo Theme <a href="https://github.com/amazingrise/hugo-theme-diary">Diary</a> by <a href="https://amazingrise.net">Rise</a>
 <br>
 Ported from <a href="https://mak1t0.cc/" target="_blank" rel="noreferrer noopener">Makito</a>'s <a href="https://github.com/SumiMakito/hexo-theme-journal/" target="_blank" rel="noreferrer noopener">Journal.</a> <br>

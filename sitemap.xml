@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+  xmlns:xhtml="http://www.w3.org/1999/xhtml">
+  
+  <url>
+    <loc>http://seaofnight.github.io/categories/</loc>
+    <lastmod>2020-06-01T10:58:08-04:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://seaofnight.github.io/tags/ceph/</loc>
+    <lastmod>2020-06-01T10:58:08-04:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://seaofnight.github.io/categories/ceph/</loc>
+    <lastmod>2020-06-01T10:58:08-04:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://seaofnight.github.io/posts/ceph-install-with-ansible/</loc>
+    <lastmod>2020-06-01T10:58:08-04:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://seaofnight.github.io/tags/command/</loc>
+    <lastmod>2020-06-01T10:58:08-04:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://seaofnight.github.io/</loc>
+    <lastmod>2020-06-01T10:58:08-04:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://seaofnight.github.io/tags/firewalld/</loc>
+    <lastmod>2020-06-01T10:58:08-04:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://seaofnight.github.io/categories/firewalld/</loc>
+    <lastmod>2020-06-01T10:58:08-04:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://seaofnight.github.io/posts/firewalld-command/</loc>
+    <lastmod>2020-06-01T10:58:08-04:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://seaofnight.github.io/tags/git/</loc>
+    <lastmod>2020-06-01T10:58:08-04:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://seaofnight.github.io/categories/git/</loc>
+    <lastmod>2020-06-01T10:58:08-04:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://seaofnight.github.io/posts/git-command-guide/</loc>
+    <lastmod>2020-06-01T10:58:08-04:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://seaofnight.github.io/tags/guide/</loc>
+    <lastmod>2020-06-01T10:58:08-04:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://seaofnight.github.io/tags/install/</loc>
+    <lastmod>2020-06-01T10:58:08-04:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://seaofnight.github.io/posts/</loc>
+    <lastmod>2020-06-01T10:58:08-04:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://seaofnight.github.io/tags/</loc>
+    <lastmod>2020-06-01T10:58:08-04:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://seaofnight.github.io/tags/vitess/</loc>
+    <lastmod>2020-06-01T10:58:08-04:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://seaofnight.github.io/categories/vitess/</loc>
+    <lastmod>2020-06-01T10:58:08-04:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://seaofnight.github.io/posts/vitess-install/</loc>
+    <lastmod>2020-06-01T10:58:08-04:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://seaofnight.github.io/tags/markdown/</loc>
+    <lastmod>2020-04-09T10:58:08-04:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://seaofnight.github.io/categories/markdown/</loc>
+    <lastmod>2020-04-09T10:58:08-04:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://seaofnight.github.io/posts/markdown-list/</loc>
+    <lastmod>2020-04-09T10:58:08-04:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://seaofnight.github.io/tags/test/</loc>
+    <lastmod>2020-04-09T10:58:08-04:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://seaofnight.github.io/posts/kubernetes-install/</loc>
+    <lastmod>2019-09-22T10:58:08-04:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://seaofnight.github.io/tags/kubernetes/</loc>
+    <lastmod>2019-09-22T10:58:08-04:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://seaofnight.github.io/tags/kubespray/</loc>
+    <lastmod>2019-09-22T10:58:08-04:00</lastmod>
+  </url>
+  
+</urlset>
