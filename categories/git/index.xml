@@ -2,22 +2,22 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>git on Dev Blog</title>
-    <link>http://seaofnight.github.io/categories/git/</link>
+    <link>https://seaofnight.github.io/categories/git/</link>
     <description>Recent content in git on Dev Blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>.</copyright>
     <lastBuildDate>Mon, 01 Jun 2020 10:58:08 -0400</lastBuildDate>
     
-	<atom:link href="http://seaofnight.github.io/categories/git/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="https://seaofnight.github.io/categories/git/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
       <title>git command guide</title>
-      <link>http://seaofnight.github.io/posts/git-command-guide/</link>
+      <link>https://seaofnight.github.io/posts/git-command-guide/</link>
       <pubDate>Mon, 01 Jun 2020 10:58:08 -0400</pubDate>
       
-      <guid>http://seaofnight.github.io/posts/git-command-guide/</guid>
+      <guid>https://seaofnight.github.io/posts/git-command-guide/</guid>
       <description>common 명령어   git init
  일반 폴더에서 깃 저장소로 만들어 준다.    git config
  깃 저장소의 설정을 변경한다. 예시로 유저명, 메일등을 설정 할 수 있다.    $ git config --global user.name &amp;#34;yjkim1@gmail.com&amp;#34; $ git config --global user.email &amp;#34;yjkim1@gamil.com&amp;#34;   git help

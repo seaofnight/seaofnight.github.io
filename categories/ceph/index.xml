@@ -2,22 +2,22 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>ceph on Dev Blog</title>
-    <link>http://seaofnight.github.io/categories/ceph/</link>
+    <link>https://seaofnight.github.io/categories/ceph/</link>
     <description>Recent content in ceph on Dev Blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>.</copyright>
     <lastBuildDate>Mon, 01 Jun 2020 10:58:08 -0400</lastBuildDate>
     
-	<atom:link href="http://seaofnight.github.io/categories/ceph/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="https://seaofnight.github.io/categories/ceph/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
       <title>ceph ansible simple installation</title>
-      <link>http://seaofnight.github.io/posts/ceph-install-with-ansible/</link>
+      <link>https://seaofnight.github.io/posts/ceph-install-with-ansible/</link>
       <pubDate>Mon, 01 Jun 2020 10:58:08 -0400</pubDate>
       
-      <guid>http://seaofnight.github.io/posts/ceph-install-with-ansible/</guid>
+      <guid>https://seaofnight.github.io/posts/ceph-install-with-ansible/</guid>
       <description>개요  회사에서 Ceph 를 계속 스터디를 하고 있었으나. K8s Cluster 에 올려놓고 사용만 하고있었지 Baremetal 에 올려 사용하지는 않고있었다. 자세하게 사용하기도 해야할 뿐더러 여러가지 옵션을 테스트 및 운용하기 위한 클러스터 구축을 정리하기 위하여 본 포스팅을 정리한다. Ceph 설치방법은 Ceph-ansible 이며 stable-3.2 버전을 이용하여 설치 하였다. 설치 노드는  mon 1, osd 3, mgr 1 이며 mon1 과 mgr1, osd1 이 같은 호스트에 배포가 되었다. ceph0 10.0.3.2 8cpu 16gb ram, /dev/sdb 300gb ceph1 10.</description>
     </item>
     

@@ -1,24 +1,24 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Dev Blog</title>
-    <link>http://seaofnight.github.io/</link>
+    <link>https://seaofnight.github.io/</link>
     <description>Recent content on Dev Blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>.</copyright>
     <lastBuildDate>Mon, 01 Jun 2020 10:58:08 -0400</lastBuildDate>
     
-        <atom:link href="http://seaofnight.github.io/index.xml" rel="self" type="application/rss+xml" />
+        <atom:link href="https://seaofnight.github.io/index.xml" rel="self" type="application/rss+xml" />
     
     
     
         <item>
         <title>ceph ansible simple installation</title>
-        <link>http://seaofnight.github.io/posts/ceph-install-with-ansible/</link>
+        <link>https://seaofnight.github.io/posts/ceph-install-with-ansible/</link>
         <pubDate>Mon, 01 Jun 2020 10:58:08 -0400</pubDate>
         
-        <guid>http://seaofnight.github.io/posts/ceph-install-with-ansible/</guid>
-        <description>Dev Blog http://seaofnight.github.io/posts/ceph-install-with-ansible/ -&lt;h1 id=&#34;개요&#34;&gt;개요&lt;/h1&gt;
+        <guid>https://seaofnight.github.io/posts/ceph-install-with-ansible/</guid>
+        <description>Dev Blog https://seaofnight.github.io/posts/ceph-install-with-ansible/ -&lt;h1 id=&#34;개요&#34;&gt;개요&lt;/h1&gt;
 &lt;ul&gt;
 &lt;li&gt;회사에서 Ceph 를 계속 스터디를 하고 있었으나. K8s Cluster 에 올려놓고 사용만 하고있었지 Baremetal 에 올려 사용하지는 않고있었다.&lt;/li&gt;
 &lt;li&gt;자세하게 사용하기도 해야할 뿐더러 여러가지 옵션을 테스트 및 운용하기 위한 클러스터 구축을 정리하기 위하여 본 포스팅을 정리한다.&lt;/li&gt;
@@ -261,18 +261,18 @@ cluster_network: 10.0.3.0/24
 
 * 참고  : https://github.com/ceph/ceph-ansible/issues/3948
 * 참고2 : http://lists.ceph.com/pipermail/ceph-users-ceph.com/2019-February/032801.html
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;- http://seaofnight.github.io/posts/ceph-install-with-ansible/ - .</description>
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;- https://seaofnight.github.io/posts/ceph-install-with-ansible/ - .</description>
         </item>
     
     
     
         <item>
         <title>firewalld</title>
-        <link>http://seaofnight.github.io/posts/firewalld-command/</link>
+        <link>https://seaofnight.github.io/posts/firewalld-command/</link>
         <pubDate>Mon, 01 Jun 2020 10:58:08 -0400</pubDate>
         
-        <guid>http://seaofnight.github.io/posts/firewalld-command/</guid>
-        <description>Dev Blog http://seaofnight.github.io/posts/firewalld-command/ -&lt;h1 id=&#34;firewalld&#34;&gt;Firewalld&lt;/h1&gt;
+        <guid>https://seaofnight.github.io/posts/firewalld-command/</guid>
+        <description>Dev Blog https://seaofnight.github.io/posts/firewalld-command/ -&lt;h1 id=&#34;firewalld&#34;&gt;Firewalld&lt;/h1&gt;
 &lt;h1 id=&#34;firewalld-install&#34;&gt;Firewalld install&lt;/h1&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-sh&#34; data-lang=&#34;sh&#34;&gt;
 $ sudo yum install -y firewalld 
@@ -346,18 +346,18 @@ firewall-cmd --permanent --add-port=443/tcp
 systemctl restart firewalld
 }
 
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;- http://seaofnight.github.io/posts/firewalld-command/ - .</description>
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;- https://seaofnight.github.io/posts/firewalld-command/ - .</description>
         </item>
     
     
     
         <item>
         <title>git command guide</title>
-        <link>http://seaofnight.github.io/posts/git-command-guide/</link>
+        <link>https://seaofnight.github.io/posts/git-command-guide/</link>
         <pubDate>Mon, 01 Jun 2020 10:58:08 -0400</pubDate>
         
-        <guid>http://seaofnight.github.io/posts/git-command-guide/</guid>
-        <description>Dev Blog http://seaofnight.github.io/posts/git-command-guide/ -&lt;h1 id=&#34;common-명령어&#34;&gt;common 명령어&lt;/h1&gt;
+        <guid>https://seaofnight.github.io/posts/git-command-guide/</guid>
+        <description>Dev Blog https://seaofnight.github.io/posts/git-command-guide/ -&lt;h1 id=&#34;common-명령어&#34;&gt;common 명령어&lt;/h1&gt;
 &lt;ul&gt;
 &lt;li&gt;
 &lt;p&gt;git init&lt;/p&gt;
@@ -461,18 +461,18 @@ git pull origin master
 &lt;span style=&#34;color:#228b22&#34;&gt;# 업로드&lt;/span&gt; 
 git push origin master
 
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;- http://seaofnight.github.io/posts/git-command-guide/ - .</description>
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;- https://seaofnight.github.io/posts/git-command-guide/ - .</description>
         </item>
     
     
     
         <item>
         <title>vitess</title>
-        <link>http://seaofnight.github.io/posts/vitess-install/</link>
+        <link>https://seaofnight.github.io/posts/vitess-install/</link>
         <pubDate>Mon, 01 Jun 2020 10:58:08 -0400</pubDate>
         
-        <guid>http://seaofnight.github.io/posts/vitess-install/</guid>
-        <description>Dev Blog http://seaofnight.github.io/posts/vitess-install/ -&lt;h1 id=&#34;vitess-소개&#34;&gt;vitess 소개&lt;/h1&gt;
+        <guid>https://seaofnight.github.io/posts/vitess-install/</guid>
+        <description>Dev Blog https://seaofnight.github.io/posts/vitess-install/ -&lt;h1 id=&#34;vitess-소개&#34;&gt;vitess 소개&lt;/h1&gt;
 &lt;p&gt;오늘 포스팅 할 내용은 사내에서 사용하지 않기로 한 Vitess 라는 솔루션에 대한 기록 및 조사한 내용을 공유하는 자리를 가지도록 하곘다.
 비교제품군이 있으며 비교제품중에 선택이 되었으므로 사용 안할것 같은 내용은 기록을 하여 남기도록 하겠다.
 Vitess 는 Youtube 에 mysql 을 ScaleOut 하기 위하여 개발이 되었으며
@@ -640,18 +640,18 @@ vtctlclient -server &lt;span style=&#34;color:#00688b&#34;&gt;$HOST&lt;/span&gt;
 vtctlclient -server &lt;span style=&#34;color:#00688b&#34;&gt;$HOST&lt;/span&gt;:&lt;span style=&#34;color:#00688b&#34;&gt;$PORT&lt;/span&gt; GetKeyspace commerce
 vtctlclient -server &lt;span style=&#34;color:#00688b&#34;&gt;$HOST&lt;/span&gt;:&lt;span style=&#34;color:#00688b&#34;&gt;$PORT&lt;/span&gt; GetVSchema t
 
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;- http://seaofnight.github.io/posts/vitess-install/ - .</description>
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;- https://seaofnight.github.io/posts/vitess-install/ - .</description>
         </item>
     
     
     
         <item>
         <title>markdown</title>
-        <link>http://seaofnight.github.io/posts/markdown-list/</link>
+        <link>https://seaofnight.github.io/posts/markdown-list/</link>
         <pubDate>Thu, 09 Apr 2020 10:58:08 -0400</pubDate>
         
-        <guid>http://seaofnight.github.io/posts/markdown-list/</guid>
-        <description>Dev Blog http://seaofnight.github.io/posts/markdown-list/ -&lt;h1 id=&#34;개요&#34;&gt;개요&lt;/h1&gt;
+        <guid>https://seaofnight.github.io/posts/markdown-list/</guid>
+        <description>Dev Blog https://seaofnight.github.io/posts/markdown-list/ -&lt;h1 id=&#34;개요&#34;&gt;개요&lt;/h1&gt;
 &lt;ul&gt;
 &lt;li&gt;본 페이지는 블로그 테마를 받았는데 테마에서 마크다운을 얼마나 지원하는지 확인하기 위한 페이지 이다.&lt;/li&gt;
 &lt;li&gt;아래부터 정상적으로 보이는것을 기준으로 문서 작성에 활용할 예정이다.&lt;/li&gt;
@@ -977,18 +977,18 @@ alt=&amp;#34;IMAGE ALT TEXT HERE&amp;#34; width=&amp;#34;240&amp;#34; height=&am
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;Referencing a bug by #bugID in your git commit links it to the slip. For example #1.&lt;/p&gt;
 &lt;hr&gt;
 &lt;p&gt;License: &lt;a href=&#34;https://creativecommons.org/licenses/by/3.0/&#34;&gt;CC-BY&lt;/a&gt;&lt;/p&gt;
-- http://seaofnight.github.io/posts/markdown-list/ - .</description>
+- https://seaofnight.github.io/posts/markdown-list/ - .</description>
         </item>
     
     
     
         <item>
         <title>install-k8s-cluster-with-kubespray</title>
-        <link>http://seaofnight.github.io/posts/kubernetes-install/</link>
+        <link>https://seaofnight.github.io/posts/kubernetes-install/</link>
         <pubDate>Sun, 22 Sep 2019 10:58:08 -0400</pubDate>
         
-        <guid>http://seaofnight.github.io/posts/kubernetes-install/</guid>
-        <description>Dev Blog http://seaofnight.github.io/posts/kubernetes-install/ -&lt;h1 id=&#34;개요&#34;&gt;개요&lt;/h1&gt;
+        <guid>https://seaofnight.github.io/posts/kubernetes-install/</guid>
+        <description>Dev Blog https://seaofnight.github.io/posts/kubernetes-install/ -&lt;h1 id=&#34;개요&#34;&gt;개요&lt;/h1&gt;
 &lt;p&gt;오늘은 K8s Cluster 을 간략하게 생성 해보는 예제를 기록해 보려고 한다.
 Cluster 생성은 Kubespray 프로젝트를 이용하여 생성할 예정이다.&lt;/p&gt;
 &lt;h1 id=&#34;클러스터-정보&#34;&gt;클러스터 정보&lt;/h1&gt;
@@ -1143,7 +1143,7 @@ ansible-playbook -b -i inventory/mycluster/hosts.ini cluster.yml --tags=&lt;span
 ansible-playbook -b -i kubespray/inventory/mycluster/hosts.ini kubespray/cluster.yml --tags=&lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;coredns,nodelocaldns&amp;#34;&lt;/span&gt;
 
 
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;- http://seaofnight.github.io/posts/kubernetes-install/ - .</description>
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;- https://seaofnight.github.io/posts/kubernetes-install/ - .</description>
         </item>
     
     

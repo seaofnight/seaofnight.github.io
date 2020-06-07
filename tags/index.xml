@@ -2,112 +2,112 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Tags on Dev Blog</title>
-    <link>http://seaofnight.github.io/tags/</link>
+    <link>https://seaofnight.github.io/tags/</link>
     <description>Recent content in Tags on Dev Blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>.</copyright>
     <lastBuildDate>Mon, 01 Jun 2020 10:58:08 -0400</lastBuildDate>
     
-	<atom:link href="http://seaofnight.github.io/tags/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="https://seaofnight.github.io/tags/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
       <title>ceph</title>
-      <link>http://seaofnight.github.io/tags/ceph/</link>
+      <link>https://seaofnight.github.io/tags/ceph/</link>
       <pubDate>Mon, 01 Jun 2020 10:58:08 -0400</pubDate>
       
-      <guid>http://seaofnight.github.io/tags/ceph/</guid>
+      <guid>https://seaofnight.github.io/tags/ceph/</guid>
       <description></description>
     </item>
     
     <item>
       <title>command</title>
-      <link>http://seaofnight.github.io/tags/command/</link>
+      <link>https://seaofnight.github.io/tags/command/</link>
       <pubDate>Mon, 01 Jun 2020 10:58:08 -0400</pubDate>
       
-      <guid>http://seaofnight.github.io/tags/command/</guid>
+      <guid>https://seaofnight.github.io/tags/command/</guid>
       <description></description>
     </item>
     
     <item>
       <title>firewalld</title>
-      <link>http://seaofnight.github.io/tags/firewalld/</link>
+      <link>https://seaofnight.github.io/tags/firewalld/</link>
       <pubDate>Mon, 01 Jun 2020 10:58:08 -0400</pubDate>
       
-      <guid>http://seaofnight.github.io/tags/firewalld/</guid>
+      <guid>https://seaofnight.github.io/tags/firewalld/</guid>
       <description></description>
     </item>
     
     <item>
       <title>git</title>
-      <link>http://seaofnight.github.io/tags/git/</link>
+      <link>https://seaofnight.github.io/tags/git/</link>
       <pubDate>Mon, 01 Jun 2020 10:58:08 -0400</pubDate>
       
-      <guid>http://seaofnight.github.io/tags/git/</guid>
+      <guid>https://seaofnight.github.io/tags/git/</guid>
       <description></description>
     </item>
     
     <item>
       <title>guide</title>
-      <link>http://seaofnight.github.io/tags/guide/</link>
+      <link>https://seaofnight.github.io/tags/guide/</link>
       <pubDate>Mon, 01 Jun 2020 10:58:08 -0400</pubDate>
       
-      <guid>http://seaofnight.github.io/tags/guide/</guid>
+      <guid>https://seaofnight.github.io/tags/guide/</guid>
       <description></description>
     </item>
     
     <item>
       <title>install</title>
-      <link>http://seaofnight.github.io/tags/install/</link>
+      <link>https://seaofnight.github.io/tags/install/</link>
       <pubDate>Mon, 01 Jun 2020 10:58:08 -0400</pubDate>
       
-      <guid>http://seaofnight.github.io/tags/install/</guid>
+      <guid>https://seaofnight.github.io/tags/install/</guid>
       <description></description>
     </item>
     
     <item>
       <title>vitess</title>
-      <link>http://seaofnight.github.io/tags/vitess/</link>
+      <link>https://seaofnight.github.io/tags/vitess/</link>
       <pubDate>Mon, 01 Jun 2020 10:58:08 -0400</pubDate>
       
-      <guid>http://seaofnight.github.io/tags/vitess/</guid>
+      <guid>https://seaofnight.github.io/tags/vitess/</guid>
       <description></description>
     </item>
     
     <item>
       <title>markdown</title>
-      <link>http://seaofnight.github.io/tags/markdown/</link>
+      <link>https://seaofnight.github.io/tags/markdown/</link>
       <pubDate>Thu, 09 Apr 2020 10:58:08 -0400</pubDate>
       
-      <guid>http://seaofnight.github.io/tags/markdown/</guid>
+      <guid>https://seaofnight.github.io/tags/markdown/</guid>
       <description></description>
     </item>
     
     <item>
       <title>test</title>
-      <link>http://seaofnight.github.io/tags/test/</link>
+      <link>https://seaofnight.github.io/tags/test/</link>
       <pubDate>Thu, 09 Apr 2020 10:58:08 -0400</pubDate>
       
-      <guid>http://seaofnight.github.io/tags/test/</guid>
+      <guid>https://seaofnight.github.io/tags/test/</guid>
       <description></description>
     </item>
     
     <item>
       <title>kubernetes</title>
-      <link>http://seaofnight.github.io/tags/kubernetes/</link>
+      <link>https://seaofnight.github.io/tags/kubernetes/</link>
       <pubDate>Sun, 22 Sep 2019 10:58:08 -0400</pubDate>
       
-      <guid>http://seaofnight.github.io/tags/kubernetes/</guid>
+      <guid>https://seaofnight.github.io/tags/kubernetes/</guid>
       <description></description>
     </item>
     
     <item>
       <title>kubespray</title>
-      <link>http://seaofnight.github.io/tags/kubespray/</link>
+      <link>https://seaofnight.github.io/tags/kubespray/</link>
       <pubDate>Sun, 22 Sep 2019 10:58:08 -0400</pubDate>
       
-      <guid>http://seaofnight.github.io/tags/kubespray/</guid>
+      <guid>https://seaofnight.github.io/tags/kubespray/</guid>
       <description></description>
     </item>
     

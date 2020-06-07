@@ -2,22 +2,22 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>firewalld on Dev Blog</title>
-    <link>http://seaofnight.github.io/categories/firewalld/</link>
+    <link>https://seaofnight.github.io/categories/firewalld/</link>
     <description>Recent content in firewalld on Dev Blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>.</copyright>
     <lastBuildDate>Mon, 01 Jun 2020 10:58:08 -0400</lastBuildDate>
     
-	<atom:link href="http://seaofnight.github.io/categories/firewalld/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="https://seaofnight.github.io/categories/firewalld/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
       <title>firewalld</title>
-      <link>http://seaofnight.github.io/posts/firewalld-command/</link>
+      <link>https://seaofnight.github.io/posts/firewalld-command/</link>
       <pubDate>Mon, 01 Jun 2020 10:58:08 -0400</pubDate>
       
-      <guid>http://seaofnight.github.io/posts/firewalld-command/</guid>
+      <guid>https://seaofnight.github.io/posts/firewalld-command/</guid>
       <description>Firewalld Firewalld install $ sudo yum install -y firewalld $ sudo systemctl status firewalld $ sudo systemctl start firewalld $ sudo firewall-cmd --state output : running Firewalld 사용방법  Zone 조회  # Default 조회 $ sudo firewall-cmd --get-default-zone # Active Zone list 조회 $ firewall-cmd --get-active-zones # 특정 Zone 의 정보 조회 $ sudo firewall-cmd --zone=home --list-all  Default Zone 변경  $ sudo firewall-cmd --set-default-zone=home  Zone 에 Service 허용  영구와 비영구의 차이는 &amp;ndash;reload 시에 비영구 옵션은 사라진다.</description>
     </item>
     

@@ -2,58 +2,58 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Categories on Dev Blog</title>
-    <link>http://seaofnight.github.io/categories/</link>
+    <link>https://seaofnight.github.io/categories/</link>
     <description>Recent content in Categories on Dev Blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>.</copyright>
     <lastBuildDate>Mon, 01 Jun 2020 10:58:08 -0400</lastBuildDate>
     
-	<atom:link href="http://seaofnight.github.io/categories/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="https://seaofnight.github.io/categories/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
       <title>ceph</title>
-      <link>http://seaofnight.github.io/categories/ceph/</link>
+      <link>https://seaofnight.github.io/categories/ceph/</link>
       <pubDate>Mon, 01 Jun 2020 10:58:08 -0400</pubDate>
       
-      <guid>http://seaofnight.github.io/categories/ceph/</guid>
+      <guid>https://seaofnight.github.io/categories/ceph/</guid>
       <description></description>
     </item>
     
     <item>
       <title>firewalld</title>
-      <link>http://seaofnight.github.io/categories/firewalld/</link>
+      <link>https://seaofnight.github.io/categories/firewalld/</link>
       <pubDate>Mon, 01 Jun 2020 10:58:08 -0400</pubDate>
       
-      <guid>http://seaofnight.github.io/categories/firewalld/</guid>
+      <guid>https://seaofnight.github.io/categories/firewalld/</guid>
       <description></description>
     </item>
     
     <item>
       <title>git</title>
-      <link>http://seaofnight.github.io/categories/git/</link>
+      <link>https://seaofnight.github.io/categories/git/</link>
       <pubDate>Mon, 01 Jun 2020 10:58:08 -0400</pubDate>
       
-      <guid>http://seaofnight.github.io/categories/git/</guid>
+      <guid>https://seaofnight.github.io/categories/git/</guid>
       <description></description>
     </item>
     
     <item>
       <title>vitess</title>
-      <link>http://seaofnight.github.io/categories/vitess/</link>
+      <link>https://seaofnight.github.io/categories/vitess/</link>
       <pubDate>Mon, 01 Jun 2020 10:58:08 -0400</pubDate>
       
-      <guid>http://seaofnight.github.io/categories/vitess/</guid>
+      <guid>https://seaofnight.github.io/categories/vitess/</guid>
       <description></description>
     </item>
     
     <item>
       <title>markdown</title>
-      <link>http://seaofnight.github.io/categories/markdown/</link>
+      <link>https://seaofnight.github.io/categories/markdown/</link>
       <pubDate>Thu, 09 Apr 2020 10:58:08 -0400</pubDate>
       
-      <guid>http://seaofnight.github.io/categories/markdown/</guid>
+      <guid>https://seaofnight.github.io/categories/markdown/</guid>
       <description></description>
     </item>
     
