@@ -1,13 +1,13 @@
 <!DOCTYPE html>
 <html><head>
-<title>ceph</title>
+<title>rook-ceph 설치 및 rbd 연동 </title>
 
 <meta charset="utf-8">
 <meta name="X-UA-Compatible" content="IE=edge">
 <meta name="google-site-verification" content="">
 <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport">
 <meta content="telephone=no" name="format-detection">
-<meta name="description" content="">
+<meta name="description" content="rook-ceph">
 <meta name="renderer" content="webkit">
 <meta name="theme-color" content="#ffffff">
 
@@ -39,6 +39,10 @@
 
 
 
+  
+    <script src="https://seaofnight.github.io//js/toc-collapse.js"></script>
+  
+
 
 
 
@@ -69,9 +73,11 @@
             
             
             
+                
             
             
-            <a class="a-block nav-link-item false" href="/posts">
+            
+            <a class="a-block nav-link-item active" href="/posts">
                 Archive
             </a>
             
@@ -89,11 +95,9 @@
             
             
             
-                
             
             
-            
-            <a class="a-block nav-link-item active" href="/tags">
+            <a class="a-block nav-link-item false" href="/tags">
                 Tags
             </a>
             
@@ -119,6 +123,42 @@ Ported from <a href="https://mak1t0.cc/" target="_blank" rel="noreferrer noopene
 </div><div ref="extraContainer" class="extra-container">
     
     
+    <div class="toc animated-visibility" :class="{ invisible: scrollY <= 140 }">
+
+
+	<div class="toc-content">
+	
+		
+		
+		
+		<center>- CATALOG -</center>
+		
+		
+		<ul>
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#install" onclick="collapseOthers(`#install-nav`)" id="install-nav">
+									Install
+								</a>
+							</li>
+						
+						
+					
+				
+			
+		</ul>
+	</div>
+
+</div>
+    
     <div class="pagination">
         <a id="globalBackToTop" class="pagination-action animated-visibility" href="#top" :class="{ invisible: scrollY == 0 }">
             <i class="material-icons pagination-action-icon">
@@ -136,8 +176,6 @@ Ported from <a href="https://mak1t0.cc/" target="_blank" rel="noreferrer noopene
         </a>
         
         
-        
-        
     </div>
 </div><div class="single-column-drawer-container" ref="drawer"
      v-bind:class="{ 'single-column-drawer-container-active': isDrawerOpen }">
@@ -149,9 +187,11 @@ Ported from <a href="https://mak1t0.cc/" target="_blank" rel="noreferrer noopene
                 
                 
                 
+                    
                 
                 
-                <a class="a-block drawer-menu-item false" href="/posts">
+                
+                <a class="a-block drawer-menu-item active" href="/posts">
                     Archive
                 </a>
                 
@@ -169,15 +209,49 @@ Ported from <a href="https://mak1t0.cc/" target="_blank" rel="noreferrer noopene
                 
                 
                 
-                    
                 
                 
-                
-                <a class="a-block drawer-menu-item active" href="/tags">
+                <a class="a-block drawer-menu-item false" href="/tags">
                     Tags
                 </a>
                 
             
+            
+            <div class="toc">
+
+
+	<div class="toc-content">
+	
+		
+		
+		
+		<center>- CATALOG -</center>
+		
+		
+		<ul>
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#install" onclick="collapseOthers(`#install-nav`)" id="install-nav">
+									Install
+								</a>
+							</li>
+						
+						
+					
+				
+			
+		</ul>
+	</div>
+
+</div>
             
         </div>
     </div>
@@ -221,61 +295,146 @@ Ported from <a href="https://mak1t0.cc/" target="_blank" rel="noreferrer noopene
             <div id="content">
 <div ref="streamContainer" class="stream-container">
     <div class="post-list-container post-list-container-shadow">
-        <div class="post-item-wrapper post-item-wrapper-no-hover">
-            <div class="post-item post-item-no-gaps">
-                <div class="post-item-info-wrapper">
-                    <div class="post-item-title  post-item-title-small">
-                        <a href="https://seaofnight.github.io/">Dev Blog</a> / ceph
+        <div class="post">
+            
+            
+            
+
+            <div class="post-head-wrapper-text-only"
+                
+            >
+                <div class="post-title">
+                    rook-ceph 설치 및 rbd 연동 
+                    
+                    <div class="post-subtitle">
+                        rook-ceph
+                    </div>
+                    
+                    <div class="post-meta">
+                        
+                        <time itemprop="datePublished">
+                            2020-06-07 10:58
+                        </time>
+                        
+
+                        
+                            <i class="material-icons" style="">folder</i>
+                                <a href="/categories/ceph">ceph</a>
+                                &nbsp;
+                        
+
+                        
+                            <i class="material-icons" style="">label</i>
+                            
+                                <a href="/tags/rook-ceph">rook-ceph</a>
+                                &nbsp;
+                            
+                                <a href="/tags/install">install</a>
+                                &nbsp;
+                            
+                        
+                        
                     </div>
                 </div>
             </div>
-        </div><a href="/posts/ceph-install-with-ansible/" class="a-block">
-            <div class="post-item-wrapper">
-                <div class="post-item post-item-no-gaps">
-                    <div class="post-item-info-wrapper">
-                        <div class="post-item-title">
-                            ceph ansible simple installation
-                        </div>
-                        <div class="post-item-meta">
-    2020-06-01
-    &emsp;
-    
-    
-    
-    &emsp;
-    
-</div>
+            
+            <div class="post-body-wrapper">
+                
+                <div class="post-body" v-pre>
+                
+                    <h1 id="install">Install</h1>
+<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">git clone https://github.com/rook/rook.git
+<span style="color:#658b00">cd</span> cluster/examples/kubernetes/ceph
+kubectl create -f common.yaml
+kubectl create -f operator.yaml
 
-                    </div>
+<span style="color:#228b22"># 아래는 예시입니다.</span> 
+<span style="color:#228b22">## ceph cluster 설정에 맞추어서 변경을 해주셔야 합니다.</span>
+cat <span style="color:#cd5555">&lt;&lt;EOF | kubectl create  -f - 
+</span><span style="color:#cd5555">---
+</span><span style="color:#cd5555">apiVersion: ceph.rook.io/v1
+</span><span style="color:#cd5555">kind: CephCluster
+</span><span style="color:#cd5555">metadata:
+</span><span style="color:#cd5555">  name: rook-ceph
+</span><span style="color:#cd5555">  namespace: rook-ceph
+</span><span style="color:#cd5555">spec:
+</span><span style="color:#cd5555">  cephVersion:
+</span><span style="color:#cd5555">    image: ceph/ceph:v14.2.4-20190917
+</span><span style="color:#cd5555">    allowUnsupported: true
+</span><span style="color:#cd5555">  dataDirHostPath: /var/lib/rook
+</span><span style="color:#cd5555">  skipUpgradeChecks: false
+</span><span style="color:#cd5555">  mon:
+</span><span style="color:#cd5555">    count: 1
+</span><span style="color:#cd5555">    allowMultiplePerNode: true
+</span><span style="color:#cd5555">  dashboard:
+</span><span style="color:#cd5555">    enabled: true
+</span><span style="color:#cd5555">  monitoring:
+</span><span style="color:#cd5555">    enabled: false  # requires Prometheus to be pre-installed
+</span><span style="color:#cd5555">    rulesNamespace: rook-ceph
+</span><span style="color:#cd5555">  network:
+</span><span style="color:#cd5555">    hostNetwork: false
+</span><span style="color:#cd5555">  rbdMirroring:
+</span><span style="color:#cd5555">    workers: 0
+</span><span style="color:#cd5555">  mgr:
+</span><span style="color:#cd5555">    modules:
+</span><span style="color:#cd5555">    # the pg_autoscaler is only available on nautilus or newer. remove this if testing mimic.
+</span><span style="color:#cd5555">    - name: pg_autoscaler
+</span><span style="color:#cd5555">      enabled: true
+</span><span style="color:#cd5555">  storage:
+</span><span style="color:#cd5555">    useAllNodes: true
+</span><span style="color:#cd5555">    useAllDevices: false
+</span><span style="color:#cd5555">    deviceFilter:
+</span><span style="color:#cd5555">    config:
+</span><span style="color:#cd5555">      databaseSizeMB: &#34;1024&#34; # this value can be removed for environments with normal sized disks (100 GB or larger)
+</span><span style="color:#cd5555">      journalSizeMB: &#34;1024&#34;  # this value can be removed for environments with normal sized disks (20 GB or larger)
+</span><span style="color:#cd5555">      osdsPerDevice: &#34;1&#34; # this value can be overridden at the node or device level
+</span><span style="color:#cd5555">    nodes:
+</span><span style="color:#cd5555">    - name: &#34;k8s-master&#34;
+</span><span style="color:#cd5555">      devices:
+</span><span style="color:#cd5555">      - name: &#34;/dev/sdb&#34;
+</span><span style="color:#cd5555">    - name: &#34;k8s-node1&#34;
+</span><span style="color:#cd5555">      devices:
+</span><span style="color:#cd5555">      - name: &#34;/dev/sdb&#34;
+</span><span style="color:#cd5555">---
+</span><span style="color:#cd5555">EOF</span>
+</code></pre></div>
+                    
+                    <HR width="100%" id="EOF">
+		    <p style="color:#777;">Last modified on 2020-06-07</p>
+                    
                 </div>
             </div>
-        </a><a href="/posts/ceph-commands/" class="a-block">
-            <div class="post-item-wrapper">
-                <div class="post-item post-item-no-gaps">
-                    <div class="post-item-info-wrapper">
-                        <div class="post-item-title">
-                            ceph commands
-                        </div>
-                        <div class="post-item-meta">
-    2020-06-01
-    &emsp;
-    
-    
-    
-    &emsp;
-    
+            
+            
+            <nav class="post-pagination">
+
+                
+                <a class="newer-posts">
+			Next<br>No newer posts.
+                </a>
+                
+                
+                
+                <a class="older-posts" href="https://seaofnight.github.io/posts/ceph-install-with-ansible/">
+			Previous<br>ceph ansible simple installation
+                </a>
+                
+            </nav>
+            <div class="post-comment-wrapper">
+                
+
+
+
+
+
+
+
+            </div>
+        </div>
+    </div>
 </div>
 
-                    </div>
-                </div>
-            </div>
-        </a></div>
-</div>
-
-            </div>
-
-
-<div id="single-column-footer">
+            </div><div id="single-column-footer">
 Hugo Theme <a href="https://github.com/amazingrise/hugo-theme-diary">Diary</a> by <a href="https://amazingrise.net">Rise</a>
 <br>
 Ported from <a href="https://mak1t0.cc/" target="_blank" rel="noreferrer noopener">Makito</a>'s <a href="https://github.com/SumiMakito/hexo-theme-journal/" target="_blank" rel="noreferrer noopener">Journal.</a> <br>

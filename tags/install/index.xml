@@ -7,10 +7,19 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>.</copyright>
-    <lastBuildDate>Mon, 01 Jun 2020 10:58:08 -0400</lastBuildDate>
+    <lastBuildDate>Sun, 07 Jun 2020 10:58:08 -0400</lastBuildDate>
     
 	<atom:link href="https://seaofnight.github.io/tags/install/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>rook-ceph 설치 및 rbd 연동 </title>
+      <link>https://seaofnight.github.io/posts/rook-ceph-install/</link>
+      <pubDate>Sun, 07 Jun 2020 10:58:08 -0400</pubDate>
+      
+      <guid>https://seaofnight.github.io/posts/rook-ceph-install/</guid>
+      <description>Install git clone https://github.com/rook/rook.git cd cluster/examples/kubernetes/ceph kubectl create -f common.yaml kubectl create -f operator.yaml # 아래는 예시입니다. ## ceph cluster 설정에 맞추어서 변경을 해주셔야 합니다. cat &amp;lt;&amp;lt;EOF | kubectl create -f - --- apiVersion: ceph.rook.io/v1 kind: CephCluster metadata: name: rook-ceph namespace: rook-ceph spec: cephVersion: image: ceph/ceph:v14.2.4-20190917 allowUnsupported: true dataDirHostPath: /var/lib/rook skipUpgradeChecks: false mon: count: 1 allowMultiplePerNode: true dashboard: enabled: true monitoring: enabled: false # requires Prometheus to be pre-installed rulesNamespace: rook-ceph network: hostNetwork: false rbdMirroring: workers: 0 mgr: modules: # the pg_autoscaler is only available on nautilus or newer.</description>
+    </item>
     
     <item>
       <title>ceph ansible simple installation</title>

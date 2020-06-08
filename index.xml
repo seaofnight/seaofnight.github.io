@@ -6,9 +6,75 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>.</copyright>
-    <lastBuildDate>Mon, 01 Jun 2020 10:58:08 -0400</lastBuildDate>
+    <lastBuildDate>Sun, 07 Jun 2020 10:58:08 -0400</lastBuildDate>
     
         <atom:link href="https://seaofnight.github.io/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    
+        <item>
+        <title>rook-ceph 설치 및 rbd 연동 </title>
+        <link>https://seaofnight.github.io/posts/rook-ceph-install/</link>
+        <pubDate>Sun, 07 Jun 2020 10:58:08 -0400</pubDate>
+        
+        <guid>https://seaofnight.github.io/posts/rook-ceph-install/</guid>
+        <description>Dev Blog https://seaofnight.github.io/posts/rook-ceph-install/ -&lt;h1 id=&#34;install&#34;&gt;Install&lt;/h1&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-sh&#34; data-lang=&#34;sh&#34;&gt;git clone https://github.com/rook/rook.git
+&lt;span style=&#34;color:#658b00&#34;&gt;cd&lt;/span&gt; cluster/examples/kubernetes/ceph
+kubectl create -f common.yaml
+kubectl create -f operator.yaml
+
+&lt;span style=&#34;color:#228b22&#34;&gt;# 아래는 예시입니다.&lt;/span&gt; 
+&lt;span style=&#34;color:#228b22&#34;&gt;## ceph cluster 설정에 맞추어서 변경을 해주셔야 합니다.&lt;/span&gt;
+cat &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;lt;&amp;lt;EOF | kubectl create  -f - 
+&lt;/span&gt;&lt;span style=&#34;color:#cd5555&#34;&gt;---
+&lt;/span&gt;&lt;span style=&#34;color:#cd5555&#34;&gt;apiVersion: ceph.rook.io/v1
+&lt;/span&gt;&lt;span style=&#34;color:#cd5555&#34;&gt;kind: CephCluster
+&lt;/span&gt;&lt;span style=&#34;color:#cd5555&#34;&gt;metadata:
+&lt;/span&gt;&lt;span style=&#34;color:#cd5555&#34;&gt;  name: rook-ceph
+&lt;/span&gt;&lt;span style=&#34;color:#cd5555&#34;&gt;  namespace: rook-ceph
+&lt;/span&gt;&lt;span style=&#34;color:#cd5555&#34;&gt;spec:
+&lt;/span&gt;&lt;span style=&#34;color:#cd5555&#34;&gt;  cephVersion:
+&lt;/span&gt;&lt;span style=&#34;color:#cd5555&#34;&gt;    image: ceph/ceph:v14.2.4-20190917
+&lt;/span&gt;&lt;span style=&#34;color:#cd5555&#34;&gt;    allowUnsupported: true
+&lt;/span&gt;&lt;span style=&#34;color:#cd5555&#34;&gt;  dataDirHostPath: /var/lib/rook
+&lt;/span&gt;&lt;span style=&#34;color:#cd5555&#34;&gt;  skipUpgradeChecks: false
+&lt;/span&gt;&lt;span style=&#34;color:#cd5555&#34;&gt;  mon:
+&lt;/span&gt;&lt;span style=&#34;color:#cd5555&#34;&gt;    count: 1
+&lt;/span&gt;&lt;span style=&#34;color:#cd5555&#34;&gt;    allowMultiplePerNode: true
+&lt;/span&gt;&lt;span style=&#34;color:#cd5555&#34;&gt;  dashboard:
+&lt;/span&gt;&lt;span style=&#34;color:#cd5555&#34;&gt;    enabled: true
+&lt;/span&gt;&lt;span style=&#34;color:#cd5555&#34;&gt;  monitoring:
+&lt;/span&gt;&lt;span style=&#34;color:#cd5555&#34;&gt;    enabled: false  # requires Prometheus to be pre-installed
+&lt;/span&gt;&lt;span style=&#34;color:#cd5555&#34;&gt;    rulesNamespace: rook-ceph
+&lt;/span&gt;&lt;span style=&#34;color:#cd5555&#34;&gt;  network:
+&lt;/span&gt;&lt;span style=&#34;color:#cd5555&#34;&gt;    hostNetwork: false
+&lt;/span&gt;&lt;span style=&#34;color:#cd5555&#34;&gt;  rbdMirroring:
+&lt;/span&gt;&lt;span style=&#34;color:#cd5555&#34;&gt;    workers: 0
+&lt;/span&gt;&lt;span style=&#34;color:#cd5555&#34;&gt;  mgr:
+&lt;/span&gt;&lt;span style=&#34;color:#cd5555&#34;&gt;    modules:
+&lt;/span&gt;&lt;span style=&#34;color:#cd5555&#34;&gt;    # the pg_autoscaler is only available on nautilus or newer. remove this if testing mimic.
+&lt;/span&gt;&lt;span style=&#34;color:#cd5555&#34;&gt;    - name: pg_autoscaler
+&lt;/span&gt;&lt;span style=&#34;color:#cd5555&#34;&gt;      enabled: true
+&lt;/span&gt;&lt;span style=&#34;color:#cd5555&#34;&gt;  storage:
+&lt;/span&gt;&lt;span style=&#34;color:#cd5555&#34;&gt;    useAllNodes: true
+&lt;/span&gt;&lt;span style=&#34;color:#cd5555&#34;&gt;    useAllDevices: false
+&lt;/span&gt;&lt;span style=&#34;color:#cd5555&#34;&gt;    deviceFilter:
+&lt;/span&gt;&lt;span style=&#34;color:#cd5555&#34;&gt;    config:
+&lt;/span&gt;&lt;span style=&#34;color:#cd5555&#34;&gt;      databaseSizeMB: &amp;#34;1024&amp;#34; # this value can be removed for environments with normal sized disks (100 GB or larger)
+&lt;/span&gt;&lt;span style=&#34;color:#cd5555&#34;&gt;      journalSizeMB: &amp;#34;1024&amp;#34;  # this value can be removed for environments with normal sized disks (20 GB or larger)
+&lt;/span&gt;&lt;span style=&#34;color:#cd5555&#34;&gt;      osdsPerDevice: &amp;#34;1&amp;#34; # this value can be overridden at the node or device level
+&lt;/span&gt;&lt;span style=&#34;color:#cd5555&#34;&gt;    nodes:
+&lt;/span&gt;&lt;span style=&#34;color:#cd5555&#34;&gt;    - name: &amp;#34;k8s-master&amp;#34;
+&lt;/span&gt;&lt;span style=&#34;color:#cd5555&#34;&gt;      devices:
+&lt;/span&gt;&lt;span style=&#34;color:#cd5555&#34;&gt;      - name: &amp;#34;/dev/sdb&amp;#34;
+&lt;/span&gt;&lt;span style=&#34;color:#cd5555&#34;&gt;    - name: &amp;#34;k8s-node1&amp;#34;
+&lt;/span&gt;&lt;span style=&#34;color:#cd5555&#34;&gt;      devices:
+&lt;/span&gt;&lt;span style=&#34;color:#cd5555&#34;&gt;      - name: &amp;#34;/dev/sdb&amp;#34;
+&lt;/span&gt;&lt;span style=&#34;color:#cd5555&#34;&gt;---
+&lt;/span&gt;&lt;span style=&#34;color:#cd5555&#34;&gt;EOF&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;- https://seaofnight.github.io/posts/rook-ceph-install/ - .</description>
+        </item>
     
     
     
@@ -262,6 +328,225 @@ cluster_network: 10.0.3.0/24
 * 참고  : https://github.com/ceph/ceph-ansible/issues/3948
 * 참고2 : http://lists.ceph.com/pipermail/ceph-users-ceph.com/2019-February/032801.html
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;- https://seaofnight.github.io/posts/ceph-install-with-ansible/ - .</description>
+        </item>
+    
+    
+    
+        <item>
+        <title>ceph commands</title>
+        <link>https://seaofnight.github.io/posts/ceph-commands/</link>
+        <pubDate>Mon, 01 Jun 2020 10:58:08 -0400</pubDate>
+        
+        <guid>https://seaofnight.github.io/posts/ceph-commands/</guid>
+        <description>Dev Blog https://seaofnight.github.io/posts/ceph-commands/ -&lt;h3 id=&#34;ceph-status&#34;&gt;ceph status&lt;/h3&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-sh&#34; data-lang=&#34;sh&#34;&gt;
+[root@ceph0 ~]&lt;span style=&#34;color:#228b22&#34;&gt;# ceph -s&lt;/span&gt;
+  cluster:
+    id:     0ad3892c-c903-44d3-8872-b7536d10bcdb
+    health: HEALTH_OK
+
+  services:
+    mon: &lt;span style=&#34;color:#b452cd&#34;&gt;1&lt;/span&gt; daemons, quorum ceph0
+    mgr: ceph0(active)
+    osd: &lt;span style=&#34;color:#b452cd&#34;&gt;3&lt;/span&gt; osds: &lt;span style=&#34;color:#b452cd&#34;&gt;3&lt;/span&gt; up, &lt;span style=&#34;color:#b452cd&#34;&gt;3&lt;/span&gt; in
+
+  data:
+    pools:   &lt;span style=&#34;color:#b452cd&#34;&gt;5&lt;/span&gt; pools, &lt;span style=&#34;color:#b452cd&#34;&gt;258&lt;/span&gt; pgs
+    objects: &lt;span style=&#34;color:#b452cd&#34;&gt;0&lt;/span&gt; objects, 0B
+    usage:   3.01GiB used, 897GiB / 900GiB avail
+    pgs:     &lt;span style=&#34;color:#b452cd&#34;&gt;258&lt;/span&gt; active+clean
+
+&lt;span style=&#34;color:#228b22&#34;&gt;# watch cluster health&lt;/span&gt;
+[root@ceph0 ~]&lt;span style=&#34;color:#228b22&#34;&gt;# ceph -w&lt;/span&gt;
+  cluster:
+    id:     0ad3892c-c903-44d3-8872-b7536d10bcdb
+    health: HEALTH_OK
+
+  services:
+    mon: &lt;span style=&#34;color:#b452cd&#34;&gt;1&lt;/span&gt; daemons, quorum ceph0
+    mgr: ceph0(active)
+    osd: &lt;span style=&#34;color:#b452cd&#34;&gt;3&lt;/span&gt; osds: &lt;span style=&#34;color:#b452cd&#34;&gt;3&lt;/span&gt; up, &lt;span style=&#34;color:#b452cd&#34;&gt;3&lt;/span&gt; in
+
+  data:
+    pools:   &lt;span style=&#34;color:#b452cd&#34;&gt;5&lt;/span&gt; pools, &lt;span style=&#34;color:#b452cd&#34;&gt;258&lt;/span&gt; pgs
+    objects: &lt;span style=&#34;color:#b452cd&#34;&gt;0&lt;/span&gt; objects, 0B
+    usage:   3.01GiB used, 897GiB / 900GiB avail
+    pgs:     &lt;span style=&#34;color:#b452cd&#34;&gt;258&lt;/span&gt; active+clean
+
+
+[root@ceph0 ~]&lt;span style=&#34;color:#228b22&#34;&gt;# ceph health detail&lt;/span&gt;
+HEALTH_OK
+
+
+[root@ceph0 ~]&lt;span style=&#34;color:#228b22&#34;&gt;# ceph quorum_status --format json-pretty&lt;/span&gt;
+
+{
+    &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;election_epoch&amp;#34;&lt;/span&gt;: 3,
+    &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;quorum&amp;#34;&lt;/span&gt;: [
+        &lt;span style=&#34;color:#b452cd&#34;&gt;0&lt;/span&gt;
+    ],
+    &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;quorum_names&amp;#34;&lt;/span&gt;: [
+        &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;ceph0&amp;#34;&lt;/span&gt;
+    ],
+    &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;quorum_leader_name&amp;#34;&lt;/span&gt;: &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;ceph0&amp;#34;&lt;/span&gt;,
+    &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;monmap&amp;#34;&lt;/span&gt;: {
+        &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;epoch&amp;#34;&lt;/span&gt;: 1,
+        &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;fsid&amp;#34;&lt;/span&gt;: &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;0ad3892c-c903-44d3-8872-b7536d10bcdb&amp;#34;&lt;/span&gt;,
+        &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;modified&amp;#34;&lt;/span&gt;: &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;2019-09-29 03:37:04.511632&amp;#34;&lt;/span&gt;,
+        &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;created&amp;#34;&lt;/span&gt;: &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;2019-09-29 03:37:04.511632&amp;#34;&lt;/span&gt;,
+        &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;features&amp;#34;&lt;/span&gt;: {
+            &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;persistent&amp;#34;&lt;/span&gt;: [
+                &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;kraken&amp;#34;&lt;/span&gt;,
+                &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;luminous&amp;#34;&lt;/span&gt;
+            ],
+            &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;optional&amp;#34;&lt;/span&gt;: []
+        },
+        &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;mons&amp;#34;&lt;/span&gt;: [
+            {
+                &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;rank&amp;#34;&lt;/span&gt;: 0,
+                &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;name&amp;#34;&lt;/span&gt;: &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;ceph0&amp;#34;&lt;/span&gt;,
+                &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;addr&amp;#34;&lt;/span&gt;: &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;10.0.3.2:6789/0&amp;#34;&lt;/span&gt;,
+                &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;public_addr&amp;#34;&lt;/span&gt;: &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;10.0.3.2:6789/0&amp;#34;&lt;/span&gt;
+            }
+        ]
+    }
+}
+
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id=&#34;ceph-mon&#34;&gt;ceph mon&lt;/h3&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-sh&#34; data-lang=&#34;sh&#34;&gt;
+[root@ceph0 ~]&lt;span style=&#34;color:#228b22&#34;&gt;# ceph mon dump&lt;/span&gt;
+dumped monmap epoch &lt;span style=&#34;color:#b452cd&#34;&gt;1&lt;/span&gt;
+epoch &lt;span style=&#34;color:#b452cd&#34;&gt;1&lt;/span&gt;
+fsid 0ad3892c-c903-44d3-8872-b7536d10bcdb
+last_changed 2019-09-29 03:37:04.511632
+created 2019-09-29 03:37:04.511632
+0: 10.0.3.2:6789/0 mon.ceph0
+
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h1 id=&#34;ceph-df&#34;&gt;ceph df&lt;/h1&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-sh&#34; data-lang=&#34;sh&#34;&gt;
+[root@ceph0 ~]&lt;span style=&#34;color:#228b22&#34;&gt;# ceph df&lt;/span&gt;
+GLOBAL:
+    SIZE       AVAIL      RAW USED     %RAW USED
+    900GiB     897GiB      3.01GiB          0.33
+POOLS:
+    NAME        ID     USED     %USED     MAX AVAIL     OBJECTS
+    kube        &lt;span style=&#34;color:#b452cd&#34;&gt;1&lt;/span&gt;        0B         &lt;span style=&#34;color:#b452cd&#34;&gt;0&lt;/span&gt;        852GiB           &lt;span style=&#34;color:#b452cd&#34;&gt;0&lt;/span&gt;
+    images      &lt;span style=&#34;color:#b452cd&#34;&gt;2&lt;/span&gt;        0B         &lt;span style=&#34;color:#b452cd&#34;&gt;0&lt;/span&gt;        852GiB           &lt;span style=&#34;color:#b452cd&#34;&gt;0&lt;/span&gt;
+    volumes     &lt;span style=&#34;color:#b452cd&#34;&gt;3&lt;/span&gt;        0B         &lt;span style=&#34;color:#b452cd&#34;&gt;0&lt;/span&gt;        852GiB           &lt;span style=&#34;color:#b452cd&#34;&gt;0&lt;/span&gt;
+    backups     &lt;span style=&#34;color:#b452cd&#34;&gt;4&lt;/span&gt;        0B         &lt;span style=&#34;color:#b452cd&#34;&gt;0&lt;/span&gt;        852GiB           &lt;span style=&#34;color:#b452cd&#34;&gt;0&lt;/span&gt;
+    vms         &lt;span style=&#34;color:#b452cd&#34;&gt;5&lt;/span&gt;        0B         &lt;span style=&#34;color:#b452cd&#34;&gt;0&lt;/span&gt;        852GiB           &lt;span style=&#34;color:#b452cd&#34;&gt;0&lt;/span&gt;
+
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h1 id=&#34;ceph-instence-status&#34;&gt;ceph instence status&lt;/h1&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-sh&#34; data-lang=&#34;sh&#34;&gt;
+[root@ceph0 ~]&lt;span style=&#34;color:#228b22&#34;&gt;# ceph mon stat&lt;/span&gt;
+e1: &lt;span style=&#34;color:#b452cd&#34;&gt;1&lt;/span&gt; mons at {&lt;span style=&#34;color:#00688b&#34;&gt;ceph0&lt;/span&gt;=10.0.3.2:6789/0}, election epoch 3, leader &lt;span style=&#34;color:#b452cd&#34;&gt;0&lt;/span&gt; ceph0, quorum &lt;span style=&#34;color:#b452cd&#34;&gt;0&lt;/span&gt; ceph0
+[root@ceph0 ~]&lt;span style=&#34;color:#228b22&#34;&gt;# ceph osd stat&lt;/span&gt;
+&lt;span style=&#34;color:#b452cd&#34;&gt;3&lt;/span&gt; osds: &lt;span style=&#34;color:#b452cd&#34;&gt;3&lt;/span&gt; up, &lt;span style=&#34;color:#b452cd&#34;&gt;3&lt;/span&gt; in
+[root@ceph0 ~]&lt;span style=&#34;color:#228b22&#34;&gt;# ceph osd pool stats&lt;/span&gt;
+pool kube id &lt;span style=&#34;color:#b452cd&#34;&gt;1&lt;/span&gt;
+  nothing is going on
+
+pool images id &lt;span style=&#34;color:#b452cd&#34;&gt;2&lt;/span&gt;
+  nothing is going on
+
+pool volumes id &lt;span style=&#34;color:#b452cd&#34;&gt;3&lt;/span&gt;
+  nothing is going on
+
+pool backups id &lt;span style=&#34;color:#b452cd&#34;&gt;4&lt;/span&gt;
+  nothing is going on
+
+pool vms id &lt;span style=&#34;color:#b452cd&#34;&gt;5&lt;/span&gt;
+  nothing is going on
+
+[root@ceph0 ~]&lt;span style=&#34;color:#228b22&#34;&gt;# ceph pg stat&lt;/span&gt;
+&lt;span style=&#34;color:#b452cd&#34;&gt;258&lt;/span&gt; pgs: &lt;span style=&#34;color:#b452cd&#34;&gt;258&lt;/span&gt; active+clean; 0B data, 3.01GiB used, 897GiB / 900GiB avail
+
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id=&#34;ceph-pg-dump&#34;&gt;ceph pg dump&lt;/h3&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-sh&#34; data-lang=&#34;sh&#34;&gt;
+[root@ceph0 ~]&lt;span style=&#34;color:#228b22&#34;&gt;# ceph pg dump&lt;/span&gt;
+dumped all
+version &lt;span style=&#34;color:#b452cd&#34;&gt;14056&lt;/span&gt;
+stamp 2019-09-29 11:27:59.810412
+last_osdmap_epoch &lt;span style=&#34;color:#b452cd&#34;&gt;0&lt;/span&gt;
+last_pg_scan &lt;span style=&#34;color:#b452cd&#34;&gt;0&lt;/span&gt;
+full_ratio &lt;span style=&#34;color:#b452cd&#34;&gt;0&lt;/span&gt;
+nearfull_ratio &lt;span style=&#34;color:#b452cd&#34;&gt;0&lt;/span&gt;
+PG_STAT OBJECTS MISSING_ON_PRIMARY DEGRADED MISPLACED UNFOUND BYTES LOG DISK_LOG STATE        STATE_STAMP                VERSION REPORTED UP  UP_PRIMARY ACTING ACTING_PRIMARY LAST_SCRUB SCRUB_STAMP                LAST_DEEP_SCRUB DEEP_SCRUB_STAMP           SNAPTRIMQ_LEN
+5.3b          &lt;span style=&#34;color:#b452cd&#34;&gt;0&lt;/span&gt;                  &lt;span style=&#34;color:#b452cd&#34;&gt;0&lt;/span&gt;        &lt;span style=&#34;color:#b452cd&#34;&gt;0&lt;/span&gt;         &lt;span style=&#34;color:#b452cd&#34;&gt;0&lt;/span&gt;       &lt;span style=&#34;color:#b452cd&#34;&gt;0&lt;/span&gt;     &lt;span style=&#34;color:#b452cd&#34;&gt;0&lt;/span&gt;   &lt;span style=&#34;color:#b452cd&#34;&gt;0&lt;/span&gt;        &lt;span style=&#34;color:#b452cd&#34;&gt;0&lt;/span&gt; active+clean 2019-09-29 03:41:54.178434     0&lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#39;0    20:16 [2]          2    [2]              2        0&amp;#39;&lt;/span&gt;&lt;span style=&#34;color:#b452cd&#34;&gt;0&lt;/span&gt; 2019-09-29 03:41:53.161934             0&lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#39;0 2019-09-29 03:41:53.161934             0
+&lt;/span&gt;&lt;span style=&#34;color:#cd5555&#34;&gt;1.3f          0                  0        0         0       0     0   0        0 active+clean 2019-09-29 03:41:48.162380     0&amp;#39;&lt;/span&gt;&lt;span style=&#34;color:#b452cd&#34;&gt;0&lt;/span&gt;    20:21 [0]          &lt;span style=&#34;color:#b452cd&#34;&gt;0&lt;/span&gt;    [0]              &lt;span style=&#34;color:#b452cd&#34;&gt;0&lt;/span&gt;        0&lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#39;0 2019-09-29 03:41:46.562216             0&amp;#39;&lt;/span&gt;&lt;span style=&#34;color:#b452cd&#34;&gt;0&lt;/span&gt; 2019-09-29 03:41:46.562216             &lt;span style=&#34;color:#b452cd&#34;&gt;0&lt;/span&gt;
+2.3c          &lt;span style=&#34;color:#b452cd&#34;&gt;0&lt;/span&gt;                  &lt;span style=&#34;color:#b452cd&#34;&gt;0&lt;/span&gt;        &lt;span style=&#34;color:#b452cd&#34;&gt;0&lt;/span&gt;         &lt;span style=&#34;color:#b452cd&#34;&gt;0&lt;/span&gt;       &lt;span style=&#34;color:#b452cd&#34;&gt;0&lt;/span&gt;     &lt;span style=&#34;color:#b452cd&#34;&gt;0&lt;/span&gt;   &lt;span style=&#34;color:#b452cd&#34;&gt;0&lt;/span&gt;        &lt;span style=&#34;color:#b452cd&#34;&gt;0&lt;/span&gt; active+clean 2019-09-29 03:41:49.881971     0&lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#39;0    20:20 [0]          0    [0]              0        0&amp;#39;&lt;/span&gt;&lt;span style=&#34;color:#b452cd&#34;&gt;0&lt;/span&gt; 2019-09-29 03:41:48.150236             0&lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#39;0 2019-09-29 03:41:48.150236             0
+&lt;/span&gt;&lt;span style=&#34;color:#cd5555&#34;&gt;...
+&lt;/span&gt;&lt;span style=&#34;color:#cd5555&#34;&gt;...
+&lt;/span&gt;&lt;span style=&#34;color:#cd5555&#34;&gt;...
+&lt;/span&gt;&lt;span style=&#34;color:#cd5555&#34;&gt;
+&lt;/span&gt;&lt;span style=&#34;color:#cd5555&#34;&gt;1.2d          0                  0        0         0       0     0   0        0 active+clean 2019-09-29 03:41:48.162526     0&amp;#39;&lt;/span&gt;&lt;span style=&#34;color:#b452cd&#34;&gt;0&lt;/span&gt;    20:21 [0]          &lt;span style=&#34;color:#b452cd&#34;&gt;0&lt;/span&gt;    [0]              &lt;span style=&#34;color:#b452cd&#34;&gt;0&lt;/span&gt;        0&lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#39;0 2019-09-29 03:41:46.562216             0&amp;#39;&lt;/span&gt;&lt;span style=&#34;color:#b452cd&#34;&gt;0&lt;/span&gt; 2019-09-29 03:41:46.562216             &lt;span style=&#34;color:#b452cd&#34;&gt;0&lt;/span&gt;
+2.2e          &lt;span style=&#34;color:#b452cd&#34;&gt;0&lt;/span&gt;                  &lt;span style=&#34;color:#b452cd&#34;&gt;0&lt;/span&gt;        &lt;span style=&#34;color:#b452cd&#34;&gt;0&lt;/span&gt;         &lt;span style=&#34;color:#b452cd&#34;&gt;0&lt;/span&gt;       &lt;span style=&#34;color:#b452cd&#34;&gt;0&lt;/span&gt;     &lt;span style=&#34;color:#b452cd&#34;&gt;0&lt;/span&gt;   &lt;span style=&#34;color:#b452cd&#34;&gt;0&lt;/span&gt;        &lt;span style=&#34;color:#b452cd&#34;&gt;0&lt;/span&gt; active+clean 2019-09-29 03:41:49.881875     0&lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#39;0    20:20 [0]          0    [0]              0        0&amp;#39;&lt;/span&gt;&lt;span style=&#34;color:#b452cd&#34;&gt;0&lt;/span&gt; 2019-09-29 03:41:48.150236             0&lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#39;0 2019-09-29 03:41:48.150236             0
+&lt;/span&gt;&lt;span style=&#34;color:#cd5555&#34;&gt;3.2f          0                  0        0         0       0     0   0        0 active+clean 2019-09-29 03:41:51.531982     0&amp;#39;&lt;/span&gt;&lt;span style=&#34;color:#b452cd&#34;&gt;0&lt;/span&gt;    20:18 [2]          &lt;span style=&#34;color:#b452cd&#34;&gt;2&lt;/span&gt;    [2]              &lt;span style=&#34;color:#b452cd&#34;&gt;2&lt;/span&gt;        0&lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#39;0 2019-09-29 03:41:49.863122             0&amp;#39;&lt;/span&gt;&lt;span style=&#34;color:#b452cd&#34;&gt;0&lt;/span&gt; 2019-09-29 03:41:49.863122             &lt;span style=&#34;color:#b452cd&#34;&gt;0&lt;/span&gt;
+
+&lt;span style=&#34;color:#b452cd&#34;&gt;5&lt;/span&gt; &lt;span style=&#34;color:#b452cd&#34;&gt;0&lt;/span&gt; &lt;span style=&#34;color:#b452cd&#34;&gt;0&lt;/span&gt; &lt;span style=&#34;color:#b452cd&#34;&gt;0&lt;/span&gt; &lt;span style=&#34;color:#b452cd&#34;&gt;0&lt;/span&gt; &lt;span style=&#34;color:#b452cd&#34;&gt;0&lt;/span&gt; &lt;span style=&#34;color:#b452cd&#34;&gt;0&lt;/span&gt; &lt;span style=&#34;color:#b452cd&#34;&gt;0&lt;/span&gt; &lt;span style=&#34;color:#b452cd&#34;&gt;0&lt;/span&gt;
+&lt;span style=&#34;color:#b452cd&#34;&gt;4&lt;/span&gt; &lt;span style=&#34;color:#b452cd&#34;&gt;0&lt;/span&gt; &lt;span style=&#34;color:#b452cd&#34;&gt;0&lt;/span&gt; &lt;span style=&#34;color:#b452cd&#34;&gt;0&lt;/span&gt; &lt;span style=&#34;color:#b452cd&#34;&gt;0&lt;/span&gt; &lt;span style=&#34;color:#b452cd&#34;&gt;0&lt;/span&gt; &lt;span style=&#34;color:#b452cd&#34;&gt;0&lt;/span&gt; &lt;span style=&#34;color:#b452cd&#34;&gt;0&lt;/span&gt; &lt;span style=&#34;color:#b452cd&#34;&gt;0&lt;/span&gt;
+&lt;span style=&#34;color:#b452cd&#34;&gt;3&lt;/span&gt; &lt;span style=&#34;color:#b452cd&#34;&gt;0&lt;/span&gt; &lt;span style=&#34;color:#b452cd&#34;&gt;0&lt;/span&gt; &lt;span style=&#34;color:#b452cd&#34;&gt;0&lt;/span&gt; &lt;span style=&#34;color:#b452cd&#34;&gt;0&lt;/span&gt; &lt;span style=&#34;color:#b452cd&#34;&gt;0&lt;/span&gt; &lt;span style=&#34;color:#b452cd&#34;&gt;0&lt;/span&gt; &lt;span style=&#34;color:#b452cd&#34;&gt;0&lt;/span&gt; &lt;span style=&#34;color:#b452cd&#34;&gt;0&lt;/span&gt;
+&lt;span style=&#34;color:#b452cd&#34;&gt;2&lt;/span&gt; &lt;span style=&#34;color:#b452cd&#34;&gt;0&lt;/span&gt; &lt;span style=&#34;color:#b452cd&#34;&gt;0&lt;/span&gt; &lt;span style=&#34;color:#b452cd&#34;&gt;0&lt;/span&gt; &lt;span style=&#34;color:#b452cd&#34;&gt;0&lt;/span&gt; &lt;span style=&#34;color:#b452cd&#34;&gt;0&lt;/span&gt; &lt;span style=&#34;color:#b452cd&#34;&gt;0&lt;/span&gt; &lt;span style=&#34;color:#b452cd&#34;&gt;0&lt;/span&gt; &lt;span style=&#34;color:#b452cd&#34;&gt;0&lt;/span&gt;
+&lt;span style=&#34;color:#b452cd&#34;&gt;1&lt;/span&gt; &lt;span style=&#34;color:#b452cd&#34;&gt;0&lt;/span&gt; &lt;span style=&#34;color:#b452cd&#34;&gt;0&lt;/span&gt; &lt;span style=&#34;color:#b452cd&#34;&gt;0&lt;/span&gt; &lt;span style=&#34;color:#b452cd&#34;&gt;0&lt;/span&gt; &lt;span style=&#34;color:#b452cd&#34;&gt;0&lt;/span&gt; &lt;span style=&#34;color:#b452cd&#34;&gt;0&lt;/span&gt; &lt;span style=&#34;color:#b452cd&#34;&gt;0&lt;/span&gt; &lt;span style=&#34;color:#b452cd&#34;&gt;0&lt;/span&gt;
+
+sum &lt;span style=&#34;color:#b452cd&#34;&gt;0&lt;/span&gt; &lt;span style=&#34;color:#b452cd&#34;&gt;0&lt;/span&gt; &lt;span style=&#34;color:#b452cd&#34;&gt;0&lt;/span&gt; &lt;span style=&#34;color:#b452cd&#34;&gt;0&lt;/span&gt; &lt;span style=&#34;color:#b452cd&#34;&gt;0&lt;/span&gt; &lt;span style=&#34;color:#b452cd&#34;&gt;0&lt;/span&gt; &lt;span style=&#34;color:#b452cd&#34;&gt;0&lt;/span&gt; &lt;span style=&#34;color:#b452cd&#34;&gt;0&lt;/span&gt;
+OSD_STAT USED    AVAIL  TOTAL  HB_PEERS PG_SUM PRIMARY_PG_SUM
+&lt;span style=&#34;color:#b452cd&#34;&gt;0&lt;/span&gt;        1.00GiB 299GiB 300GiB    [1,2]     &lt;span style=&#34;color:#b452cd&#34;&gt;89&lt;/span&gt;             &lt;span style=&#34;color:#b452cd&#34;&gt;89&lt;/span&gt;
+&lt;span style=&#34;color:#b452cd&#34;&gt;2&lt;/span&gt;        1.00GiB 299GiB 300GiB    [0,1]     &lt;span style=&#34;color:#b452cd&#34;&gt;88&lt;/span&gt;             &lt;span style=&#34;color:#b452cd&#34;&gt;88&lt;/span&gt;
+&lt;span style=&#34;color:#b452cd&#34;&gt;1&lt;/span&gt;        1.00GiB 299GiB 300GiB    [0,2]     &lt;span style=&#34;color:#b452cd&#34;&gt;81&lt;/span&gt;             &lt;span style=&#34;color:#b452cd&#34;&gt;81&lt;/span&gt;
+sum      3.01GiB 897GiB 900GiB
+
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h1 id=&#34;ceph-osd-pool-ls-detail&#34;&gt;ceph osd pool ls detail&lt;/h1&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-sh&#34; data-lang=&#34;sh&#34;&gt;
+[root@ceph0 ~]&lt;span style=&#34;color:#228b22&#34;&gt;# ceph osd pool ls detail&lt;/span&gt;
+pool &lt;span style=&#34;color:#b452cd&#34;&gt;1&lt;/span&gt; &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#39;kube&amp;#39;&lt;/span&gt; replicated size &lt;span style=&#34;color:#b452cd&#34;&gt;1&lt;/span&gt; min_size &lt;span style=&#34;color:#b452cd&#34;&gt;1&lt;/span&gt; crush_rule &lt;span style=&#34;color:#b452cd&#34;&gt;0&lt;/span&gt; object_hash rjenkins pg_num &lt;span style=&#34;color:#b452cd&#34;&gt;64&lt;/span&gt; pgp_num &lt;span style=&#34;color:#b452cd&#34;&gt;64&lt;/span&gt; last_change &lt;span style=&#34;color:#b452cd&#34;&gt;20&lt;/span&gt; flags hashpspool stripe_width &lt;span style=&#34;color:#b452cd&#34;&gt;0&lt;/span&gt; expected_num_objects &lt;span style=&#34;color:#b452cd&#34;&gt;1&lt;/span&gt; application rbd
+pool &lt;span style=&#34;color:#b452cd&#34;&gt;2&lt;/span&gt; &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#39;images&amp;#39;&lt;/span&gt; replicated size &lt;span style=&#34;color:#b452cd&#34;&gt;1&lt;/span&gt; min_size &lt;span style=&#34;color:#b452cd&#34;&gt;1&lt;/span&gt; crush_rule &lt;span style=&#34;color:#b452cd&#34;&gt;0&lt;/span&gt; object_hash rjenkins pg_num &lt;span style=&#34;color:#b452cd&#34;&gt;64&lt;/span&gt; pgp_num &lt;span style=&#34;color:#b452cd&#34;&gt;64&lt;/span&gt; last_change &lt;span style=&#34;color:#b452cd&#34;&gt;16&lt;/span&gt; flags hashpspool stripe_width &lt;span style=&#34;color:#b452cd&#34;&gt;0&lt;/span&gt; expected_num_objects &lt;span style=&#34;color:#b452cd&#34;&gt;1&lt;/span&gt;
+pool &lt;span style=&#34;color:#b452cd&#34;&gt;3&lt;/span&gt; &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#39;volumes&amp;#39;&lt;/span&gt; replicated size &lt;span style=&#34;color:#b452cd&#34;&gt;1&lt;/span&gt; min_size &lt;span style=&#34;color:#b452cd&#34;&gt;1&lt;/span&gt; crush_rule &lt;span style=&#34;color:#b452cd&#34;&gt;0&lt;/span&gt; object_hash rjenkins pg_num &lt;span style=&#34;color:#b452cd&#34;&gt;64&lt;/span&gt; pgp_num &lt;span style=&#34;color:#b452cd&#34;&gt;64&lt;/span&gt; last_change &lt;span style=&#34;color:#b452cd&#34;&gt;17&lt;/span&gt; flags hashpspool stripe_width &lt;span style=&#34;color:#b452cd&#34;&gt;0&lt;/span&gt; expected_num_objects &lt;span style=&#34;color:#b452cd&#34;&gt;1&lt;/span&gt;
+pool &lt;span style=&#34;color:#b452cd&#34;&gt;4&lt;/span&gt; &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#39;backups&amp;#39;&lt;/span&gt; replicated size &lt;span style=&#34;color:#b452cd&#34;&gt;1&lt;/span&gt; min_size &lt;span style=&#34;color:#b452cd&#34;&gt;1&lt;/span&gt; crush_rule &lt;span style=&#34;color:#b452cd&#34;&gt;0&lt;/span&gt; object_hash rjenkins pg_num &lt;span style=&#34;color:#b452cd&#34;&gt;2&lt;/span&gt; pgp_num &lt;span style=&#34;color:#b452cd&#34;&gt;2&lt;/span&gt; last_change &lt;span style=&#34;color:#b452cd&#34;&gt;18&lt;/span&gt; flags hashpspool stripe_width &lt;span style=&#34;color:#b452cd&#34;&gt;0&lt;/span&gt; expected_num_objects &lt;span style=&#34;color:#b452cd&#34;&gt;1&lt;/span&gt;
+pool &lt;span style=&#34;color:#b452cd&#34;&gt;5&lt;/span&gt; &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#39;vms&amp;#39;&lt;/span&gt; replicated size &lt;span style=&#34;color:#b452cd&#34;&gt;1&lt;/span&gt; min_size &lt;span style=&#34;color:#b452cd&#34;&gt;1&lt;/span&gt; crush_rule &lt;span style=&#34;color:#b452cd&#34;&gt;0&lt;/span&gt; object_hash rjenkins pg_num &lt;span style=&#34;color:#b452cd&#34;&gt;64&lt;/span&gt; pgp_num &lt;span style=&#34;color:#b452cd&#34;&gt;64&lt;/span&gt; last_change &lt;span style=&#34;color:#b452cd&#34;&gt;21&lt;/span&gt; flags hashpspool stripe_width &lt;span style=&#34;color:#b452cd&#34;&gt;0&lt;/span&gt; expected_num_objects &lt;span style=&#34;color:#b452cd&#34;&gt;1&lt;/span&gt; application rbd
+
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h1 id=&#34;ceph-osd-tree&#34;&gt;ceph osd tree&lt;/h1&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-sh&#34; data-lang=&#34;sh&#34;&gt;
+[root@ceph0 ~]&lt;span style=&#34;color:#228b22&#34;&gt;# ceph osd tree&lt;/span&gt;
+ID CLASS WEIGHT  TYPE NAME      STATUS REWEIGHT PRI-AFF
+-1       0.87868 root default
+-3       0.29289     host ceph0
+ &lt;span style=&#34;color:#b452cd&#34;&gt;1&lt;/span&gt;   hdd 0.29289         osd.1      up  1.00000 1.00000
+-7       0.29289     host ceph1
+ &lt;span style=&#34;color:#b452cd&#34;&gt;2&lt;/span&gt;   hdd 0.29289         osd.2      up  1.00000 1.00000
+-5       0.29289     host ceph2
+ &lt;span style=&#34;color:#b452cd&#34;&gt;0&lt;/span&gt;   hdd 0.29289         osd.0      up  1.00000 1.00000
+
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h1 id=&#34;ceph-osd-df&#34;&gt;ceph osd df&lt;/h1&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-sh&#34; data-lang=&#34;sh&#34;&gt;
+[root@ceph0 ~]&lt;span style=&#34;color:#228b22&#34;&gt;# ceph osd df&lt;/span&gt;
+ID CLASS WEIGHT  REWEIGHT SIZE   USE     AVAIL  %USE VAR  PGS
+ &lt;span style=&#34;color:#b452cd&#34;&gt;1&lt;/span&gt;   hdd 0.29289  1.00000 300GiB 1.00GiB 299GiB 0.33 1.00  &lt;span style=&#34;color:#b452cd&#34;&gt;81&lt;/span&gt;
+ &lt;span style=&#34;color:#b452cd&#34;&gt;2&lt;/span&gt;   hdd 0.29289  1.00000 300GiB 1.00GiB 299GiB 0.33 1.00  &lt;span style=&#34;color:#b452cd&#34;&gt;88&lt;/span&gt;
+ &lt;span style=&#34;color:#b452cd&#34;&gt;0&lt;/span&gt;   hdd 0.29289  1.00000 300GiB 1.00GiB 299GiB 0.33 1.00  &lt;span style=&#34;color:#b452cd&#34;&gt;89&lt;/span&gt;
+                    TOTAL 900GiB 3.01GiB 897GiB 0.33
+MIN/MAX VAR: 1.00/1.00  STDDEV: &lt;span style=&#34;color:#b452cd&#34;&gt;0&lt;/span&gt;
+
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h1 id=&#34;ceph-auth-list&#34;&gt;ceph auth list&lt;/h1&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-sh&#34; data-lang=&#34;sh&#34;&gt;
+[root@ceph0 ~]&lt;span style=&#34;color:#228b22&#34;&gt;# ceph auth list&lt;/span&gt;
+installed auth entries:
+
+osd.0
+        key: AQA7qY9duVoVFRAA9xe7JGxNo5n2vPWSX1Y+ug==
+        caps: [mgr] allow profile osd
+        caps: [mon] allow profile osd
+        caps: [osd] allow *
+...
+...
+...
+mgr.ceph0
+        key: &lt;span style=&#34;color:#00688b&#34;&gt;AQBaqI9dAAAAABAAC73UDhKvlug07VlAI35D5Q&lt;/span&gt;==
+        caps: [mds] allow *
+        caps: [mon] allow profile mgr
+        caps: [osd] allow *
+
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;- https://seaofnight.github.io/posts/ceph-commands/ - .</description>
         </item>
     
     
