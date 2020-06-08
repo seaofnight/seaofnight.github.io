@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>rbd on Dev Blog</title>
+    <link>https://seaofnight.github.io/tags/rbd/</link>
+    <description>Recent content in rbd on Dev Blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <copyright>.</copyright>
+    <lastBuildDate>Sun, 07 Jun 2020 10:58:08 -0400</lastBuildDate>
+    
+	<atom:link href="https://seaofnight.github.io/tags/rbd/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>ceph create rbd and mount </title>
+      <link>https://seaofnight.github.io/posts/ceph-create-rbd/</link>
+      <pubDate>Sun, 07 Jun 2020 10:58:08 -0400</pubDate>
+      
+      <guid>https://seaofnight.github.io/posts/ceph-create-rbd/</guid>
+      <description>개요  ceph version 은 15.2 입니다.  ceph create replicated pool # pg calcualte exp : 100 = (3 * 100) / 3 ## 대략 7.x 가 나와서 default 옵션인 8로 진행 ## (OSDs * 100) ##Total PGs = ------------ ## pool size ceph osd pool create rbd_repl_bench 8 8 # rbd create \ # ${IMAGE_NAME:=img_repl_bench} \ # --size ${10G, 1024:default unit is MB} \ # --pool ${POOL_NAME:=rbd_repl_bench} rbd create img_repl_bench --size 102400 --pool rbd_repl_bench # rbd 의 기능을 비활성 화 하여야만이 image 를 host 에 map 할 수 있다.</description>
+    </item>
+    
+  </channel>
+</rss>

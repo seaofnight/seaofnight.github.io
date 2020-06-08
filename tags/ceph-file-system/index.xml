@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>ceph file system on Dev Blog</title>
+    <link>https://seaofnight.github.io/tags/ceph-file-system/</link>
+    <description>Recent content in ceph file system on Dev Blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <copyright>.</copyright>
+    <lastBuildDate>Sun, 07 Jun 2020 10:58:08 -0400</lastBuildDate>
+    
+	<atom:link href="https://seaofnight.github.io/tags/ceph-file-system/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>ceph create file system and mount </title>
+      <link>https://seaofnight.github.io/posts/ceph-create-filesystem/</link>
+      <pubDate>Sun, 07 Jun 2020 10:58:08 -0400</pubDate>
+      
+      <guid>https://seaofnight.github.io/posts/ceph-create-filesystem/</guid>
+      <description>개요  ceph version 은 15.2 입니다.  create replicated pool ceph orch apply mds cephfs --placement=&amp;#34;ceph0,ceph1,ceph2&amp;#34; FS_NAME=cephfs_repl_data FS_META=cephfs_repl_meta PG_CNT=8 ceph osd pool create ${FS_NAME} ${PG_CNT} ceph osd pool create ${FS_META} ${PG_CNT} ceph fs new cephfs ${FS_META} ${FS_NAME} [root@ceph-test mnt]# ceph fs status cephfs - 0 clients ====== RANK STATE MDS ACTIVITY DNS INOS 0 active cephfs.ceph1.witvio Reqs: 0 /s 10 13 POOL TYPE USED AVAIL cephfs_repl_meta metadata 1536k 410G cephfs_repl_data data 0 410G STANDBY MDS cephfs.</description>
+    </item>
+    
+  </channel>
+</rss>

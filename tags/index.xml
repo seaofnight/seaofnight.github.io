@@ -13,11 +13,38 @@
     
     
     <item>
+      <title>ceph</title>
+      <link>https://seaofnight.github.io/tags/ceph/</link>
+      <pubDate>Sun, 07 Jun 2020 10:58:08 -0400</pubDate>
+      
+      <guid>https://seaofnight.github.io/tags/ceph/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>ceph file system</title>
+      <link>https://seaofnight.github.io/tags/ceph-file-system/</link>
+      <pubDate>Sun, 07 Jun 2020 10:58:08 -0400</pubDate>
+      
+      <guid>https://seaofnight.github.io/tags/ceph-file-system/</guid>
+      <description></description>
+    </item>
+    
+    <item>
       <title>install</title>
       <link>https://seaofnight.github.io/tags/install/</link>
       <pubDate>Sun, 07 Jun 2020 10:58:08 -0400</pubDate>
       
       <guid>https://seaofnight.github.io/tags/install/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>rbd</title>
+      <link>https://seaofnight.github.io/tags/rbd/</link>
+      <pubDate>Sun, 07 Jun 2020 10:58:08 -0400</pubDate>
+      
+      <guid>https://seaofnight.github.io/tags/rbd/</guid>
       <description></description>
     </item>
     
@@ -31,29 +58,11 @@
     </item>
     
     <item>
-      <title>ceph</title>
-      <link>https://seaofnight.github.io/tags/ceph/</link>
-      <pubDate>Mon, 01 Jun 2020 10:58:08 -0400</pubDate>
-      
-      <guid>https://seaofnight.github.io/tags/ceph/</guid>
-      <description></description>
-    </item>
-    
-    <item>
       <title>command</title>
       <link>https://seaofnight.github.io/tags/command/</link>
       <pubDate>Mon, 01 Jun 2020 10:58:08 -0400</pubDate>
       
       <guid>https://seaofnight.github.io/tags/command/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>commands</title>
-      <link>https://seaofnight.github.io/tags/commands/</link>
-      <pubDate>Mon, 01 Jun 2020 10:58:08 -0400</pubDate>
-      
-      <guid>https://seaofnight.github.io/tags/commands/</guid>
       <description></description>
     </item>
     

@@ -13,6 +13,175 @@
     
     
         <item>
+        <title>ceph create file system and mount </title>
+        <link>https://seaofnight.github.io/posts/ceph-create-filesystem/</link>
+        <pubDate>Sun, 07 Jun 2020 10:58:08 -0400</pubDate>
+        
+        <guid>https://seaofnight.github.io/posts/ceph-create-filesystem/</guid>
+        <description>Dev Blog https://seaofnight.github.io/posts/ceph-create-filesystem/ -&lt;h1 id=&#34;개요&#34;&gt;개요&lt;/h1&gt;
+&lt;ul&gt;
+&lt;li&gt;ceph version 은 15.2 입니다.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h1 id=&#34;create-replicated-pool&#34;&gt;create replicated pool&lt;/h1&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-sh&#34; data-lang=&#34;sh&#34;&gt;
+ceph orch apply mds cephfs --placement=&lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;ceph0,ceph1,ceph2&amp;#34;&lt;/span&gt;
+
+&lt;span style=&#34;color:#00688b&#34;&gt;FS_NAME&lt;/span&gt;=cephfs_repl_data
+&lt;span style=&#34;color:#00688b&#34;&gt;FS_META&lt;/span&gt;=cephfs_repl_meta
+&lt;span style=&#34;color:#00688b&#34;&gt;PG_CNT&lt;/span&gt;=&lt;span style=&#34;color:#b452cd&#34;&gt;8&lt;/span&gt;
+ceph osd pool create &lt;span style=&#34;color:#cd5555&#34;&gt;${&lt;/span&gt;&lt;span style=&#34;color:#00688b&#34;&gt;FS_NAME&lt;/span&gt;&lt;span style=&#34;color:#cd5555&#34;&gt;}&lt;/span&gt; &lt;span style=&#34;color:#cd5555&#34;&gt;${&lt;/span&gt;&lt;span style=&#34;color:#00688b&#34;&gt;PG_CNT&lt;/span&gt;&lt;span style=&#34;color:#cd5555&#34;&gt;}&lt;/span&gt;
+ceph osd pool create &lt;span style=&#34;color:#cd5555&#34;&gt;${&lt;/span&gt;&lt;span style=&#34;color:#00688b&#34;&gt;FS_META&lt;/span&gt;&lt;span style=&#34;color:#cd5555&#34;&gt;}&lt;/span&gt; &lt;span style=&#34;color:#cd5555&#34;&gt;${&lt;/span&gt;&lt;span style=&#34;color:#00688b&#34;&gt;PG_CNT&lt;/span&gt;&lt;span style=&#34;color:#cd5555&#34;&gt;}&lt;/span&gt;
+ceph fs new cephfs &lt;span style=&#34;color:#cd5555&#34;&gt;${&lt;/span&gt;&lt;span style=&#34;color:#00688b&#34;&gt;FS_META&lt;/span&gt;&lt;span style=&#34;color:#cd5555&#34;&gt;}&lt;/span&gt; &lt;span style=&#34;color:#cd5555&#34;&gt;${&lt;/span&gt;&lt;span style=&#34;color:#00688b&#34;&gt;FS_NAME&lt;/span&gt;&lt;span style=&#34;color:#cd5555&#34;&gt;}&lt;/span&gt;
+
+[root@ceph-test mnt]&lt;span style=&#34;color:#228b22&#34;&gt;# ceph fs status&lt;/span&gt;
+cephfs - &lt;span style=&#34;color:#b452cd&#34;&gt;0&lt;/span&gt; &lt;span style=&#34;color:#00688b&#34;&gt;clients&lt;/span&gt;
+======
+RANK  STATE           MDS             ACTIVITY     DNS    INOS  
+ &lt;span style=&#34;color:#b452cd&#34;&gt;0&lt;/span&gt;    active  cephfs.ceph1.witvio  Reqs:    &lt;span style=&#34;color:#b452cd&#34;&gt;0&lt;/span&gt; /s    &lt;span style=&#34;color:#b452cd&#34;&gt;10&lt;/span&gt;     &lt;span style=&#34;color:#b452cd&#34;&gt;13&lt;/span&gt;   
+      POOL          TYPE     USED  AVAIL  
+cephfs_repl_meta  metadata  1536k   410G  
+cephfs_repl_data    data       &lt;span style=&#34;color:#b452cd&#34;&gt;0&lt;/span&gt;    410G  
+    STANDBY MDS      
+cephfs.ceph2.iplnaa  
+cephfs.ceph0.fpvsgg  
+MDS version: ceph version 15.2.3 (d289bbdec69ed7c1f516e0a093594580a76b78d0) octopus (stable)
+
+[root@ceph-test mnt]&lt;span style=&#34;color:#228b22&#34;&gt;# ceph auth get client.admin | grep key&lt;/span&gt; 
+exported keyring &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;for&lt;/span&gt; client.admin
+	&lt;span style=&#34;color:#00688b&#34;&gt;key&lt;/span&gt; = AQDk/NleJfSOExAAKHtFWBmEDdNCLc/WGLFUaQ==
+
+mount.ceph ceph1,ceph0,ceph2:/ /mnt/cephfs-repl -o &lt;span style=&#34;color:#00688b&#34;&gt;name&lt;/span&gt;=admin,secret=AQDk/NleJfSOExAAKHtFWBmEDdNCLc/WGLFUaQ==
+
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h1 id=&#34;erasure-code-pool&#34;&gt;erasure code pool&lt;/h1&gt;
+&lt;ul&gt;
+&lt;li&gt;ceph 의 file system 은 multi file system 을 지원하지 않는다.&lt;/li&gt;
+&lt;li&gt;사실 테스트 해보지를 않았다.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-sh&#34; data-lang=&#34;sh&#34;&gt;
+&lt;span style=&#34;color:#228b22&#34;&gt;# deploy mds&lt;/span&gt; 
+ceph orch apply mds cephfs --placement=&lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;ceph0,ceph1,ceph2&amp;#34;&lt;/span&gt;
+
+&lt;span style=&#34;color:#00688b&#34;&gt;FS_NAME&lt;/span&gt;=cephfs_era_data
+&lt;span style=&#34;color:#00688b&#34;&gt;FS_META&lt;/span&gt;=cephfs_era_meta
+&lt;span style=&#34;color:#00688b&#34;&gt;PG_CNT&lt;/span&gt;=&lt;span style=&#34;color:#b452cd&#34;&gt;8&lt;/span&gt;
+ceph osd pool create &lt;span style=&#34;color:#cd5555&#34;&gt;${&lt;/span&gt;&lt;span style=&#34;color:#00688b&#34;&gt;FS_NAME&lt;/span&gt;&lt;span style=&#34;color:#cd5555&#34;&gt;}&lt;/span&gt; erasure
+ceph osd pool create &lt;span style=&#34;color:#cd5555&#34;&gt;${&lt;/span&gt;&lt;span style=&#34;color:#00688b&#34;&gt;FS_META&lt;/span&gt;&lt;span style=&#34;color:#cd5555&#34;&gt;}&lt;/span&gt; &lt;span style=&#34;color:#cd5555&#34;&gt;${&lt;/span&gt;&lt;span style=&#34;color:#00688b&#34;&gt;PG_CNT&lt;/span&gt;&lt;span style=&#34;color:#cd5555&#34;&gt;}&lt;/span&gt;
+ceph osd pool create cephfs_data &lt;span style=&#34;color:#cd5555&#34;&gt;${&lt;/span&gt;&lt;span style=&#34;color:#00688b&#34;&gt;PG_CNT&lt;/span&gt;&lt;span style=&#34;color:#cd5555&#34;&gt;}&lt;/span&gt;
+&lt;span style=&#34;color:#228b22&#34;&gt;# ceph fs 의 erasure code pool 을 사용하기 위하여는 해당 옵션을 enable 하여야 한다.&lt;/span&gt; 
+ceph osd pool &lt;span style=&#34;color:#658b00&#34;&gt;set&lt;/span&gt; &lt;span style=&#34;color:#cd5555&#34;&gt;${&lt;/span&gt;&lt;span style=&#34;color:#00688b&#34;&gt;FS_NAME&lt;/span&gt;&lt;span style=&#34;color:#cd5555&#34;&gt;}&lt;/span&gt; allow_ec_overwrites &lt;span style=&#34;color:#658b00&#34;&gt;true&lt;/span&gt;
+ceph osd pool application &lt;span style=&#34;color:#658b00&#34;&gt;enable&lt;/span&gt; &lt;span style=&#34;color:#cd5555&#34;&gt;${&lt;/span&gt;&lt;span style=&#34;color:#00688b&#34;&gt;FS_NAME&lt;/span&gt;&lt;span style=&#34;color:#cd5555&#34;&gt;}&lt;/span&gt; cephfs
+
+ceph fs new cephfs &lt;span style=&#34;color:#cd5555&#34;&gt;${&lt;/span&gt;&lt;span style=&#34;color:#00688b&#34;&gt;FS_META&lt;/span&gt;&lt;span style=&#34;color:#cd5555&#34;&gt;}&lt;/span&gt; &lt;span style=&#34;color:#cd5555&#34;&gt;${&lt;/span&gt;&lt;span style=&#34;color:#00688b&#34;&gt;FS_NAME&lt;/span&gt;&lt;span style=&#34;color:#cd5555&#34;&gt;}&lt;/span&gt; --force 
+
+&lt;span style=&#34;color:#228b22&#34;&gt;# ceph status 의 mds 의 active 가 앞으로 오게한다.&lt;/span&gt; 
+mount.ceph ceph1,ceph0,ceph2:/ /mnt/cephfs-era -o &lt;span style=&#34;color:#00688b&#34;&gt;name&lt;/span&gt;=admin,secret=AQDk/NleJfSOExAAKHtFWBmEDdNCLc/WGLFUaQ==
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;- https://seaofnight.github.io/posts/ceph-create-filesystem/ - .</description>
+        </item>
+    
+    
+    
+        <item>
+        <title>ceph create rbd and mount </title>
+        <link>https://seaofnight.github.io/posts/ceph-create-rbd/</link>
+        <pubDate>Sun, 07 Jun 2020 10:58:08 -0400</pubDate>
+        
+        <guid>https://seaofnight.github.io/posts/ceph-create-rbd/</guid>
+        <description>Dev Blog https://seaofnight.github.io/posts/ceph-create-rbd/ -&lt;h1 id=&#34;개요&#34;&gt;개요&lt;/h1&gt;
+&lt;ul&gt;
+&lt;li&gt;ceph version 은 15.2 입니다.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h1 id=&#34;ceph-create-replicated-pool&#34;&gt;ceph create replicated pool&lt;/h1&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-sh&#34; data-lang=&#34;sh&#34;&gt;
+&lt;span style=&#34;color:#228b22&#34;&gt;# pg calcualte exp : 100 = (3 * 100) / 3&lt;/span&gt;
+&lt;span style=&#34;color:#228b22&#34;&gt;## 대략 7.x 가 나와서 default 옵션인 8로 진행&lt;/span&gt; 
+&lt;span style=&#34;color:#228b22&#34;&gt;##             (OSDs * 100)&lt;/span&gt;
+&lt;span style=&#34;color:#228b22&#34;&gt;##Total PGs =  ------------&lt;/span&gt;
+&lt;span style=&#34;color:#228b22&#34;&gt;##              pool size&lt;/span&gt;
+ceph osd pool create rbd_repl_bench &lt;span style=&#34;color:#b452cd&#34;&gt;8&lt;/span&gt; &lt;span style=&#34;color:#b452cd&#34;&gt;8&lt;/span&gt; 
+
+&lt;span style=&#34;color:#228b22&#34;&gt;# rbd create \&lt;/span&gt;
+&lt;span style=&#34;color:#228b22&#34;&gt;# ${IMAGE_NAME:=img_repl_bench} \&lt;/span&gt;
+&lt;span style=&#34;color:#228b22&#34;&gt;# --size ${10G, 1024:default unit is MB} \&lt;/span&gt;
+&lt;span style=&#34;color:#228b22&#34;&gt;# --pool ${POOL_NAME:=rbd_repl_bench}&lt;/span&gt;
+rbd create img_repl_bench --size &lt;span style=&#34;color:#b452cd&#34;&gt;102400&lt;/span&gt; --pool rbd_repl_bench
+
+&lt;span style=&#34;color:#228b22&#34;&gt;# rbd 의 기능을 비활성 화 하여야만이 image 를 host 에 map 할 수 있다.&lt;/span&gt; 
+rbd feature disable rbd_repl_bench/img_repl_bench object-map fast-diff deep-flatten
+
+&lt;span style=&#34;color:#228b22&#34;&gt;# host 에 map 한다.&lt;/span&gt; 
+&lt;span style=&#34;color:#228b22&#34;&gt;## mapping 시에 mod_probe 의 rbd 가 enable 되어있어야 하며&lt;/span&gt; 
+&lt;span style=&#34;color:#228b22&#34;&gt;## linux 의 kernal rbd 가 호스트에 bus 를 생성하여서 통신한다.&lt;/span&gt; 
+rbd map rbd_repl_bench/img_repl_bench 
+
+mkfs.xfs /dev/rbd2
+
+mkdir -p /mnt/rbd-repl/
+
+fstrim -v /mnt/rbd-repl
+
+&lt;span style=&#34;color:#228b22&#34;&gt;# benchmark script 직접 돌려보기 바란다.&lt;/span&gt; 
+rbd bench --io-type write rbd_repl_bench/img_repl_bench  --io-size 4M --rbd-cache=&lt;span style=&#34;color:#658b00&#34;&gt;false&lt;/span&gt; 
+rbd bench rbd_repl_bench/img_repl_bench  --io-type write --io-size 4M --io-threads &lt;span style=&#34;color:#b452cd&#34;&gt;16&lt;/span&gt; --io-total 10G --io-pattern rand --rbd-cache=&lt;span style=&#34;color:#658b00&#34;&gt;false&lt;/span&gt; 
+date; &lt;span style=&#34;color:#658b00&#34;&gt;time&lt;/span&gt; dd &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;if&lt;/span&gt;=/dev/zero &lt;span style=&#34;color:#00688b&#34;&gt;of&lt;/span&gt;=./testfile &lt;span style=&#34;color:#00688b&#34;&gt;bs&lt;/span&gt;=1G &lt;span style=&#34;color:#00688b&#34;&gt;count&lt;/span&gt;=&lt;span style=&#34;color:#b452cd&#34;&gt;5&lt;/span&gt; &lt;span style=&#34;color:#00688b&#34;&gt;oflag&lt;/span&gt;=dsync; sync; rm -rf testfile ; sync; date; fstrim -v /mnt/rbd-repl;
+
+&lt;span style=&#34;color:#228b22&#34;&gt;# 호스트의 disk 를 쓰고있는지 모니터링 하는 스크립트&lt;/span&gt; 
+iostat -xkdzt /dev/sdb /dev/sdc /dev/sdd /dev/sde &lt;span style=&#34;color:#b452cd&#34;&gt;1&lt;/span&gt; | tee rbd-map-repl.txt
+
+&lt;span style=&#34;color:#228b22&#34;&gt;# rbd mapped image 에 write 한 후에 데이터를 삭제할 경우에 rados 를 이용하여 조회하면 pool 내에는 데이터가 그대로 있다.&lt;/span&gt; 
+&lt;span style=&#34;color:#228b22&#34;&gt;# scrub 옵션을 활성화 하여야 하며 manually 하게 pool 의 데이터를 삭제하려면 아래 커맨드를 실행 한다.&lt;/span&gt;
+&lt;span style=&#34;color:#228b22&#34;&gt;# disk 의 trim 기능이 잇어야 한다고 한다. 최신 ssd 의 경우 보장하지만 회사 서버는 그리 최신이 아니여서 수동으로 진행한다.&lt;/span&gt; 
+&lt;span style=&#34;color:#228b22&#34;&gt;# fstrim -v ${TRIM_POINT}&lt;/span&gt;
+fstrim -v /mnt/rbd-repl
+
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h1 id=&#34;ceph-create-erasure-code-pool&#34;&gt;ceph create erasure code pool&lt;/h1&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-sh&#34; data-lang=&#34;sh&#34;&gt;
+&lt;span style=&#34;color:#228b22&#34;&gt;# erasure coded pool 의 경우 metadata pool 과 data pool 이 필요하다.&lt;/span&gt; 
+&lt;span style=&#34;color:#228b22&#34;&gt;# erasure code profile 의 경우 default 옵션으로 진행한다.&lt;/span&gt;
+ceph osd pool create rbd_erasure_meta_bench &lt;span style=&#34;color:#b452cd&#34;&gt;8&lt;/span&gt; &lt;span style=&#34;color:#b452cd&#34;&gt;8&lt;/span&gt; 
+ceph osd pool create rbd_erasure_bench erasure
+
+&lt;span style=&#34;color:#228b22&#34;&gt;# rbd image 로 사용하기 위한 옵션 enable&lt;/span&gt; 
+ceph osd pool &lt;span style=&#34;color:#658b00&#34;&gt;set&lt;/span&gt; rbd_erasure_bench allow_ec_overwrites &lt;span style=&#34;color:#658b00&#34;&gt;true&lt;/span&gt;
+
+&lt;span style=&#34;color:#228b22&#34;&gt;# rbd image create&lt;/span&gt; 
+rbd create --size 100G --data-pool rbd_erasure_bench rbd_erasure_meta_bench/img_erasure_bench
+
+&lt;span style=&#34;color:#228b22&#34;&gt;# rbd mapping 하기 위한 옵션 disable 처리&lt;/span&gt; 
+rbd feature disable rbd_erasure_meta_bench/img_erasure_bench object-map fast-diff deep-flatten
+
+&lt;span style=&#34;color:#228b22&#34;&gt;# rbd image 를 호스트에 mapping 한다.&lt;/span&gt; 
+rbd map rbd_erasure_meta_bench/img_erasure_bench
+
+&lt;span style=&#34;color:#228b22&#34;&gt;# file system 생성 : recommand option 인 xfs 로 생성&lt;/span&gt; 
+mkfs.xfs /dev/rbd1
+
+&lt;span style=&#34;color:#228b22&#34;&gt;# mount point mkdir&lt;/span&gt; 
+mkdir -p /mnt/rbd-era/
+
+&lt;span style=&#34;color:#228b22&#34;&gt;# mount&lt;/span&gt; 
+mount /dev/rbd1 /mnt/rbd-era/
+
+&lt;span style=&#34;color:#228b22&#34;&gt;# benchamrk script&lt;/span&gt; 
+rados bench -p rbd_repl_bench &lt;span style=&#34;color:#b452cd&#34;&gt;10&lt;/span&gt; write --no-cleanup
+rados -p rbd_repl_bench cleanup
+rados bench -p rbd_erasure_bench &lt;span style=&#34;color:#b452cd&#34;&gt;10&lt;/span&gt; write --no-cleanup
+rados -p rbd_erasure_bench cleanup
+dd &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;if&lt;/span&gt;=/dev/zero &lt;span style=&#34;color:#00688b&#34;&gt;of&lt;/span&gt;=./testfile &lt;span style=&#34;color:#00688b&#34;&gt;bs&lt;/span&gt;=1G &lt;span style=&#34;color:#00688b&#34;&gt;count&lt;/span&gt;=&lt;span style=&#34;color:#b452cd&#34;&gt;5&lt;/span&gt; &lt;span style=&#34;color:#00688b&#34;&gt;oflag&lt;/span&gt;=dsync  
+date; &lt;span style=&#34;color:#658b00&#34;&gt;time&lt;/span&gt; dd &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;if&lt;/span&gt;=/dev/zero &lt;span style=&#34;color:#00688b&#34;&gt;of&lt;/span&gt;=./testfile &lt;span style=&#34;color:#00688b&#34;&gt;bs&lt;/span&gt;=1G &lt;span style=&#34;color:#00688b&#34;&gt;count&lt;/span&gt;=&lt;span style=&#34;color:#b452cd&#34;&gt;5&lt;/span&gt; &lt;span style=&#34;color:#00688b&#34;&gt;oflag&lt;/span&gt;=dsync; sync; rm -rf testfile ; sync; date;
+
+&lt;span style=&#34;color:#228b22&#34;&gt;# sampling scripts&lt;/span&gt; 
+
+iostat -xkdzt -p ALL &lt;span style=&#34;color:#b452cd&#34;&gt;1&lt;/span&gt;
+iostat -xkdzt  /dev/sdc &lt;span style=&#34;color:#b452cd&#34;&gt;1&lt;/span&gt;
+iostat -xkdzt /dev/sdb /dev/sdc /dev/sdd /dev/sde &lt;span style=&#34;color:#b452cd&#34;&gt;1&lt;/span&gt; | tee ceph-bench.txt
+iostat -xkcdzt /dev/sdc /dev/sdd /dev/sde &lt;span style=&#34;color:#b452cd&#34;&gt;1&lt;/span&gt; | tee ceph-bench.txt
+
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;- https://seaofnight.github.io/posts/ceph-create-rbd/ - .</description>
+        </item>
+    
+    
+    
+        <item>
         <title>rook-ceph 설치 및 rbd 연동 </title>
         <link>https://seaofnight.github.io/posts/rook-ceph-install/</link>
         <pubDate>Sun, 07 Jun 2020 10:58:08 -0400</pubDate>

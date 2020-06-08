@@ -8,7 +8,27 @@
   </url>
   
   <url>
+    <loc>https://seaofnight.github.io/tags/ceph/</loc>
+    <lastmod>2020-06-07T10:58:08-04:00</lastmod>
+  </url>
+  
+  <url>
     <loc>https://seaofnight.github.io/categories/ceph/</loc>
+    <lastmod>2020-06-07T10:58:08-04:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://seaofnight.github.io/posts/ceph-create-filesystem/</loc>
+    <lastmod>2020-06-07T10:58:08-04:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://seaofnight.github.io/posts/ceph-create-rbd/</loc>
+    <lastmod>2020-06-07T10:58:08-04:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://seaofnight.github.io/tags/ceph-file-system/</loc>
     <lastmod>2020-06-07T10:58:08-04:00</lastmod>
   </url>
   
@@ -28,6 +48,11 @@
   </url>
   
   <url>
+    <loc>https://seaofnight.github.io/tags/rbd/</loc>
+    <lastmod>2020-06-07T10:58:08-04:00</lastmod>
+  </url>
+  
+  <url>
     <loc>https://seaofnight.github.io/tags/rook-ceph/</loc>
     <lastmod>2020-06-07T10:58:08-04:00</lastmod>
   </url>
@@ -43,11 +68,6 @@
   </url>
   
   <url>
-    <loc>https://seaofnight.github.io/tags/ceph/</loc>
-    <lastmod>2020-06-01T10:58:08-04:00</lastmod>
-  </url>
-  
-  <url>
     <loc>https://seaofnight.github.io/posts/ceph-install-with-ansible/</loc>
     <lastmod>2020-06-01T10:58:08-04:00</lastmod>
   </url>
@@ -59,11 +79,6 @@
   
   <url>
     <loc>https://seaofnight.github.io/tags/command/</loc>
-    <lastmod>2020-06-01T10:58:08-04:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://seaofnight.github.io/tags/commands/</loc>
     <lastmod>2020-06-01T10:58:08-04:00</lastmod>
   </url>
   

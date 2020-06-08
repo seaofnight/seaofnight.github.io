@@ -7,10 +7,28 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>.</copyright>
-    <lastBuildDate>Mon, 01 Jun 2020 10:58:08 -0400</lastBuildDate>
+    <lastBuildDate>Sun, 07 Jun 2020 10:58:08 -0400</lastBuildDate>
     
 	<atom:link href="https://seaofnight.github.io/tags/ceph/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>ceph create file system and mount </title>
+      <link>https://seaofnight.github.io/posts/ceph-create-filesystem/</link>
+      <pubDate>Sun, 07 Jun 2020 10:58:08 -0400</pubDate>
+      
+      <guid>https://seaofnight.github.io/posts/ceph-create-filesystem/</guid>
+      <description>개요  ceph version 은 15.2 입니다.  create replicated pool ceph orch apply mds cephfs --placement=&amp;#34;ceph0,ceph1,ceph2&amp;#34; FS_NAME=cephfs_repl_data FS_META=cephfs_repl_meta PG_CNT=8 ceph osd pool create ${FS_NAME} ${PG_CNT} ceph osd pool create ${FS_META} ${PG_CNT} ceph fs new cephfs ${FS_META} ${FS_NAME} [root@ceph-test mnt]# ceph fs status cephfs - 0 clients ====== RANK STATE MDS ACTIVITY DNS INOS 0 active cephfs.ceph1.witvio Reqs: 0 /s 10 13 POOL TYPE USED AVAIL cephfs_repl_meta metadata 1536k 410G cephfs_repl_data data 0 410G STANDBY MDS cephfs.</description>
+    </item>
+    
+    <item>
+      <title>ceph create rbd and mount </title>
+      <link>https://seaofnight.github.io/posts/ceph-create-rbd/</link>
+      <pubDate>Sun, 07 Jun 2020 10:58:08 -0400</pubDate>
+      
+      <guid>https://seaofnight.github.io/posts/ceph-create-rbd/</guid>
+      <description>개요  ceph version 은 15.2 입니다.  ceph create replicated pool # pg calcualte exp : 100 = (3 * 100) / 3 ## 대략 7.x 가 나와서 default 옵션인 8로 진행 ## (OSDs * 100) ##Total PGs = ------------ ## pool size ceph osd pool create rbd_repl_bench 8 8 # rbd create \ # ${IMAGE_NAME:=img_repl_bench} \ # --size ${10G, 1024:default unit is MB} \ # --pool ${POOL_NAME:=rbd_repl_bench} rbd create img_repl_bench --size 102400 --pool rbd_repl_bench # rbd 의 기능을 비활성 화 하여야만이 image 를 host 에 map 할 수 있다.</description>
+    </item>
     
     <item>
       <title>ceph ansible simple installation</title>
