@@ -7,10 +7,28 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>.</copyright>
-    <lastBuildDate>Sun, 07 Jun 2020 10:58:08 -0400</lastBuildDate>
+    <lastBuildDate>Fri, 19 Jun 2020 10:58:08 -0400</lastBuildDate>
     
 	<atom:link href="https://seaofnight.github.io/tags/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>cloudinit</title>
+      <link>https://seaofnight.github.io/tags/cloudinit/</link>
+      <pubDate>Fri, 19 Jun 2020 10:58:08 -0400</pubDate>
+      
+      <guid>https://seaofnight.github.io/tags/cloudinit/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>provisioning</title>
+      <link>https://seaofnight.github.io/tags/provisioning/</link>
+      <pubDate>Fri, 19 Jun 2020 10:58:08 -0400</pubDate>
+      
+      <guid>https://seaofnight.github.io/tags/provisioning/</guid>
+      <description></description>
+    </item>
     
     <item>
       <title>ceph</title>

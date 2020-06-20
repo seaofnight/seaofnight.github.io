@@ -1,13 +1,13 @@
 <!DOCTYPE html>
 <html><head>
-<title>Posts</title>
+<title>cloud-init 을 이용한 간단한 KVM 배포 시나리오 </title>
 
 <meta charset="utf-8">
 <meta name="X-UA-Compatible" content="IE=edge">
 <meta name="google-site-verification" content="">
 <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport">
 <meta content="telephone=no" name="format-detection">
-<meta name="description" content="">
+<meta name="description" content="cloud-init basic usage">
 <meta name="renderer" content="webkit">
 <meta name="theme-color" content="#ffffff">
 
@@ -38,6 +38,10 @@
 
 
 
+
+  
+    <script src="https://seaofnight.github.io//js/toc-collapse.js"></script>
+  
 
 
 
@@ -119,6 +123,66 @@ Ported from <a href="https://mak1t0.cc/" target="_blank" rel="noreferrer noopene
 </div><div ref="extraContainer" class="extra-container">
     
     
+    <div class="toc animated-visibility" :class="{ invisible: scrollY <= 140 }">
+
+
+	<div class="toc-content">
+	
+		
+		
+		
+		<center>- CATALOG -</center>
+		
+		
+		<ul>
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#cloud-init-simple-provisioning-script" onclick="collapseOthers(`#cloud-init-simple-provisioning-script-nav`)" id="cloud-init-simple-provisioning-script-nav">
+									cloud init simple provisioning script
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								<ul class="collapse" data-toggle="collapse">
+							
+								<ul class="collapse" data-toggle="collapse">
+							
+						
+						
+							<li>
+								<a href="#%ec%84%a4%eb%aa%85" onclick="collapseOthers(`#설명-nav`)" id="설명-nav">
+									설명
+								</a>
+							</li>
+						
+						
+					
+				
+			
+		</ul>
+	</div>
+
+</div>
+    
     <div class="pagination">
         <a id="globalBackToTop" class="pagination-action animated-visibility" href="#top" :class="{ invisible: scrollY == 0 }">
             <i class="material-icons pagination-action-icon">
@@ -134,24 +198,6 @@ Ported from <a href="https://mak1t0.cc/" target="_blank" rel="noreferrer noopene
                 brightness_7
             </i>
         </a>
-        
-        
-        
-            <div class="pagination-indicator">
-                <span style="text-align: center">
-                    1<br><div style="display: inline-block; transform: rotate(-28deg)">-</div><br>2
-                </span>
-            </div>
-            
-            
-
-            
-            <a class="pagination-action" href="/posts/page/2/">
-                <i class="material-icons pagination-action-icon">
-                    chevron_right
-                </i>
-            </a>
-            
         
         
     </div>
@@ -195,6 +241,66 @@ Ported from <a href="https://mak1t0.cc/" target="_blank" rel="noreferrer noopene
                 
             
             
+            <div class="toc">
+
+
+	<div class="toc-content">
+	
+		
+		
+		
+		<center>- CATALOG -</center>
+		
+		
+		<ul>
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#cloud-init-simple-provisioning-script" onclick="collapseOthers(`#cloud-init-simple-provisioning-script-nav`)" id="cloud-init-simple-provisioning-script-nav">
+									cloud init simple provisioning script
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								<ul class="collapse" data-toggle="collapse">
+							
+								<ul class="collapse" data-toggle="collapse">
+							
+						
+						
+							<li>
+								<a href="#%ec%84%a4%eb%aa%85" onclick="collapseOthers(`#설명-nav`)" id="설명-nav">
+									설명
+								</a>
+							</li>
+						
+						
+					
+				
+			
+		</ul>
+	</div>
+
+</div>
+            
         </div>
     </div>
 </div>
@@ -237,271 +343,228 @@ Ported from <a href="https://mak1t0.cc/" target="_blank" rel="noreferrer noopene
             <div id="content">
 <div ref="streamContainer" class="stream-container">
     <div class="post-list-container post-list-container-shadow">
-        
-            <a class="a-block">
-                <div class="post-item-wrapper post-item-wrapper-no-hover">
-                    <div class="post-item post-item-no-gaps">
-                        <div class="post-item-info-wrapper">
-                            <div class="post-item-title post-item-title-small year">
-                                2020
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </a>
+        <div class="post">
             
-            <a href="/posts/cloud-init-basic/" class="a-block">
-                <div class="post-item-wrapper">
-                    <div class="post-item post-item-no-gaps">
-                        <div class="post-item-info-wrapper">
-                            <div class="post-item-title">
-                                cloud-init 을 이용한 간단한 KVM 배포 시나리오 
-                            </div>
-                            <div class="post-item-meta">
-    2020-06-19
-    &emsp;
-    
-    
-    
-    &emsp;
-    
-</div>
+            
+            
 
-                        </div>
+            <div class="post-head-wrapper-text-only"
+                
+            >
+                <div class="post-title">
+                    cloud-init 을 이용한 간단한 KVM 배포 시나리오 
+                    
+                    <div class="post-subtitle">
+                        cloud-init basic usage
                     </div>
-                </div>
-            </a>
-            
-            <a href="/posts/rook-ceph-install/" class="a-block">
-                <div class="post-item-wrapper">
-                    <div class="post-item post-item-no-gaps">
-                        <div class="post-item-info-wrapper">
-                            <div class="post-item-title">
-                                rook-ceph 설치 및 rbd 연동 
-                            </div>
-                            <div class="post-item-meta">
-    2020-06-07
-    &emsp;
-    
-    
-    
-    &emsp;
-    
-</div>
+                    
+                    <div class="post-meta">
+                        
+                        <time itemprop="datePublished">
+                            2020-06-19 10:58
+                        </time>
+                        
 
-                        </div>
-                    </div>
-                </div>
-            </a>
-            
-            <a href="/posts/ceph-create-rbd/" class="a-block">
-                <div class="post-item-wrapper">
-                    <div class="post-item post-item-no-gaps">
-                        <div class="post-item-info-wrapper">
-                            <div class="post-item-title">
-                                ceph create rbd and mount 
-                            </div>
-                            <div class="post-item-meta">
-    2020-06-07
-    &emsp;
-    
-    
-    
-    &emsp;
-    
-</div>
+                        
+                            <i class="material-icons" style="">folder</i>
+                                <a href="/categories/cloudinit">cloudinit</a>
+                                &nbsp;
+                        
 
-                        </div>
+                        
+                            <i class="material-icons" style="">label</i>
+                            
+                                <a href="/tags/cloudinit">cloudinit</a>
+                                &nbsp;
+                            
+                                <a href="/tags/provisioning">provisioning</a>
+                                &nbsp;
+                            
+                        
+                        
                     </div>
                 </div>
-            </a>
+            </div>
             
-            <a href="/posts/ceph-create-filesystem/" class="a-block">
-                <div class="post-item-wrapper">
-                    <div class="post-item post-item-no-gaps">
-                        <div class="post-item-info-wrapper">
-                            <div class="post-item-title">
-                                ceph create file system and mount 
-                            </div>
-                            <div class="post-item-meta">
-    2020-06-07
-    &emsp;
-    
-    
-    
-    &emsp;
-    
-</div>
+            <div class="post-body-wrapper">
+                
+                <div class="post-body" v-pre>
+                
+                    <h1 id="cloud-init-simple-provisioning-script">cloud init simple provisioning script</h1>
+<ul>
+<li>check exists cloud image</li>
+<li>if image is dont exitst try download cloud image ans extract image</li>
+<li>check exists vm file, if exists purge files</li>
+<li>generate new user-data, meta-data</li>
+<li>generate ci-image file</li>
+<li>create vm</li>
+</ul>
+<h3 id="설명">설명</h3>
+<ul>
+<li>아래 스크립트 대로 실행하면
+<ul>
+<li>인증 : ssh passwd 인증 root, yjkim1</li>
+<li>인증 : ssh-authorized-key 인증, yjkim1 -&gt; sudo 하셔서 다음 작업하시면 됨</li>
+</ul>
+</li>
+<li>metadata
+<ul>
+<li>static ip 정의 방법 까지는 테스트 해서 돌아가는것  확인 되었음</li>
+<li>cloud-init 20.02 버전의 latest 상태이며</li>
+<li>network 정의 방식이 nodatasource 의 레거시 정의방식은 잘되는것 확인</li>
+<li>version2 는 netplan 방식이다보니 안되는듯 함</li>
+<li>hostname 세팅도 잘되고 있음</li>
+</ul>
+</li>
+</ul>
+<div class="highlight"><pre style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">
 
-                        </div>
-                    </div>
-                </div>
-            </a>
-            
-            <a href="/posts/vitess-install/" class="a-block">
-                <div class="post-item-wrapper">
-                    <div class="post-item post-item-no-gaps">
-                        <div class="post-item-info-wrapper">
-                            <div class="post-item-title">
-                                vitess
-                            </div>
-                            <div class="post-item-meta">
-    2020-06-01
-    &emsp;
-    
-    
-    
-    &emsp;
-    
-</div>
+&gt; ls -al template
+-rwxrwxrwx <span style="color:#b452cd">1</span> root root <span style="color:#b452cd">858783744</span>  6월 <span style="color:#b452cd">20</span> 00:56 CentOS-7-x86_64-GenericCloud-2003.qcow2
+-rwxrwxrwx <span style="color:#b452cd">1</span> root root       <span style="color:#b452cd">206</span>  6월 <span style="color:#b452cd">20</span> 12:41 meta-data
+-rwxrwxrwx <span style="color:#b452cd">1</span> root root      <span style="color:#b452cd">1117</span>  6월 <span style="color:#b452cd">20</span> 12:00 user-data
 
-                        </div>
-                    </div>
-                </div>
-            </a>
-            
-            <a href="/posts/git-command-guide/" class="a-block">
-                <div class="post-item-wrapper">
-                    <div class="post-item post-item-no-gaps">
-                        <div class="post-item-info-wrapper">
-                            <div class="post-item-title">
-                                git command guide
-                            </div>
-                            <div class="post-item-meta">
-    2020-06-01
-    &emsp;
-    
-    
-    
-    &emsp;
-    
-</div>
+&gt; cat template/user-data
+<span style="color:#228b22">#cloud-config</span>
+users:
+  - name: yjkim1
+    passwd: <span style="color:#00688b">$6$5</span>Z0nx4BSLgORhjka<span style="color:#00688b">$tTGRJQi9cdh8a3tNVfrWCl1gHT9</span>/t0jGQtZ3D4Ksm5ytDu2FXIubiIqalFm8dkO8Z/N4ilZP4EH3FG5IUfxNu/
+    groups: wheel
+    lock_passwd: <span style="color:#658b00">false</span>
+    shell: /bin/bash
+    sudo: [<span style="color:#cd5555">&#39;ALL=(ALL) NOPASSWD:ALL&#39;</span>]
+    ssh-authorized-keys:
+      - ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDP00kL5dEGl/yIXkrdtkd40kwYdUnKtUsoY7tV20Ns/LhaWHXdh5Vcfy0IUcOzEY5Hqb9issbe1daehc6wHmOeqbyuvFie0QRQbzdWQOHraMKyFJSQEDaG6kAHcFrqb5yyzNWvc8P4WC+0/NXzh72lR6Y82AT1BsKFHiOzFE1NWdUkFCKzm9L4DBftjZ/vQ3HH/Jdw0oxesO2PJo//xy+sh6ZCmTAj7P4aARV63K0dUOdd5sM5DtgVXn+S8weDQMIk1fDDX6ttScXmveXJPkcA4QsUTck47eQ2ZreOtrBt+D2dNcCSNpxW7fdvTH4bSB9jToGHBjqSWN1POWvtKG2Ox14HDxnkWTRLVQ3bZMiDsvpK76jrgwT8EZeZtxHc1SwNOQapwRyv6cmB5pDng6Guj+pahQ88NoVSFsOZQZzPW3eesZhPBv1k+TzE7Zr1fxkPhB9XvdcK2q69XuZyHk7icga1qKm8HLe8BRi8V3HGCkgTfRccEFiIRnGniC+Qkv8= yjkim1@yjkim1-15Z980-GP50ML
 
-                        </div>
-                    </div>
-                </div>
-            </a>
-            
-            <a href="/posts/firewalld-command/" class="a-block">
-                <div class="post-item-wrapper">
-                    <div class="post-item post-item-no-gaps">
-                        <div class="post-item-info-wrapper">
-                            <div class="post-item-title">
-                                firewalld
-                            </div>
-                            <div class="post-item-meta">
-    2020-06-01
-    &emsp;
-    
-    
-    
-    &emsp;
-    
-</div>
+    <span style="color:#228b22"># yjkim1:admin1234</span> 
+    <span style="color:#228b22"># ssh-auth token 은 local 의 ssh key 이다. ssh-keygen -&gt; ~/.ssh/idrsa.pub</span>
 
-                        </div>
-                    </div>
-                </div>
-            </a>
-            
-            <a href="/posts/ceph-commands/" class="a-block">
-                <div class="post-item-wrapper">
-                    <div class="post-item post-item-no-gaps">
-                        <div class="post-item-info-wrapper">
-                            <div class="post-item-title">
-                                ceph commands
-                            </div>
-                            <div class="post-item-meta">
-    2020-06-01
-    &emsp;
-    
-    
-    
-    &emsp;
-    
-</div>
+ssh_pwauth: <span style="color:#658b00">false</span>
+disable_root: <span style="color:#658b00">false</span>
+chpasswd:
+  list: |
+     root:admin1234
+  expire: False
 
-                        </div>
-                    </div>
-                </div>
-            </a>
-            
-            <a href="/posts/ceph-install-with-ansible/" class="a-block">
-                <div class="post-item-wrapper">
-                    <div class="post-item post-item-no-gaps">
-                        <div class="post-item-info-wrapper">
-                            <div class="post-item-title">
-                                ceph ansible simple installation
-                            </div>
-                            <div class="post-item-meta">
-    2020-06-01
-    &emsp;
-    
-    
-    
-    &emsp;
-    
-</div>
+<span style="color:#228b22"># Remove cloud-init</span>
+runcmd:
+<span style="color:#228b22">#  - yum -y remove cloud-init</span>
+<span style="color:#228b22">#  - updatedb</span>
 
-                        </div>
-                    </div>
-                </div>
-            </a>
-            
-            <a href="/posts/markdown-list/" class="a-block">
-                <div class="post-item-wrapper">
-                    <div class="post-item post-item-no-gaps">
-                        <div class="post-item-info-wrapper">
-                            <div class="post-item-title">
-                                markdown
-                            </div>
-                            <div class="post-item-meta">
-    2020-04-09
-    &emsp;
-    
-    
-    
-    &emsp;
-    
-</div>
+<span style="color:#228b22"># Configure where output will go</span>
+output:
+  all: <span style="color:#cd5555">&#34;&gt;&gt; /var/log/cloud-init.log&#34;</span>
+<span style="color:#228b22"># EOF</span> 
 
-                        </div>
-                    </div>
+&gt; cat template/meta-data
+instance-id: kf0
+local-hostname: kf0
+
+network:
+  version: <span style="color:#b452cd">1</span>
+  config:
+  - id: eth0
+    mtu: <span style="color:#b452cd">1500</span>
+    name: eth0
+    subnets:
+    - address: 192.168.122.14/24
+      gateway: 192.168.122.1
+      type: static
+<span style="color:#228b22"># EOF</span>
+
+&gt; cat create-vm.sh
+<span style="color:#228b22">#!/bin/bash</span> 
+
+<span style="color:#00688b">WORKSPACE</span>=<span style="color:#cd5555">${</span><span style="color:#00688b">PWD</span><span style="color:#cd5555">}</span>
+<span style="color:#00688b">TEMPLATE</span>=<span style="color:#00688b">$WORKSPACE</span>/template
+
+<span style="color:#00688b">CPU</span>=<span style="color:#b452cd">6</span>
+<span style="color:#00688b">MEM</span>=<span style="color:#b452cd">10240</span>
+<span style="color:#00688b">HOSTNAME</span>=kf0
+<span style="color:#00688b">DISK</span>=<span style="color:#00688b">$HOSTNAME</span>.qcow2
+
+<span style="color:#00688b">USER_DATA</span>=user-data
+<span style="color:#00688b">META_DATA</span>=meta-data
+<span style="color:#00688b">CI_ISO</span>=<span style="color:#00688b">$HOSTNAME</span>-cidata.iso
+
+<span style="color:#00688b">IMAGE</span>=<span style="color:#00688b">$TEMPLATE</span>/CentOS-7-x86_64-GenericCloud-2003.qcow2
+
+rm -rf <span style="color:#00688b">$WORKSPACE</span>/<span style="color:#00688b">$HOSTNAME</span> 
+mkdir -p <span style="color:#00688b">$WORKSPACE</span>/<span style="color:#00688b">$HOSTNAME</span>
+cp <span style="color:#00688b">$IMAGE</span> <span style="color:#00688b">$WORKSPACE</span>/<span style="color:#00688b">$HOSTNAME</span>/<span style="color:#00688b">$HOSTNAME</span>.qcow2
+
+cp <span style="color:#00688b">$TEMPLATE</span>/user-data <span style="color:#00688b">$WORKSPACE</span>/<span style="color:#00688b">$HOSTNAME</span>/<span style="color:#00688b">$USER_DATA</span>
+cp <span style="color:#00688b">$TEMPLATE</span>/meta-data <span style="color:#00688b">$WORKSPACE</span>/<span style="color:#00688b">$HOSTNAME</span>/<span style="color:#00688b">$META_DATA</span>
+
+genisoimage -output <span style="color:#00688b">$WORKSPACE</span>/<span style="color:#00688b">$HOSTNAME</span>/<span style="color:#00688b">$CI_ISO</span> -volid cidata -joliet -r <span style="color:#00688b">$WORKSPACE</span>/<span style="color:#00688b">$HOSTNAME</span>/<span style="color:#00688b">$USER_DATA</span> <span style="color:#00688b">$WORKSPACE</span>/<span style="color:#00688b">$HOSTNAME</span>/<span style="color:#00688b">$META_DATA</span> &amp;&gt;&gt; <span style="color:#00688b">$WORKSPACE</span>/<span style="color:#00688b">$HOSTNAME</span>/<span style="color:#00688b">$HOSTNAME</span>-gen-image.log
+
+virt-install <span style="color:#cd5555">\
+</span><span style="color:#cd5555"></span>  --memory <span style="color:#00688b">$MEM</span> <span style="color:#cd5555">\
+</span><span style="color:#cd5555"></span>  --vcpus <span style="color:#00688b">$CPU</span> <span style="color:#cd5555">\
+</span><span style="color:#cd5555"></span>  --name <span style="color:#cd5555">${</span><span style="color:#00688b">HOSTNAME</span><span style="color:#cd5555">}</span> <span style="color:#cd5555">\
+</span><span style="color:#cd5555"></span>  --disk <span style="color:#00688b">$WORKSPACE</span>/<span style="color:#00688b">$HOSTNAME</span>/<span style="color:#00688b">$HOSTNAME</span>.qcow2,device=disk <span style="color:#cd5555">\
+</span><span style="color:#cd5555"></span>  --disk <span style="color:#00688b">$WORKSPACE</span>/<span style="color:#00688b">$HOSTNAME</span>/<span style="color:#00688b">$CI_ISO</span>,device=cdrom <span style="color:#cd5555">\
+</span><span style="color:#cd5555"></span>  --os-type Linux <span style="color:#cd5555">\
+</span><span style="color:#cd5555"></span>  --os-variant centos7.0 <span style="color:#cd5555">\
+</span><span style="color:#cd5555"></span>  --virt-type kvm <span style="color:#cd5555">\
+</span><span style="color:#cd5555"></span>  --graphics none <span style="color:#cd5555">\
+</span><span style="color:#cd5555"></span>  --network default <span style="color:#cd5555">\
+</span><span style="color:#cd5555"></span>  --import
+<span style="color:#228b22"># EOF</span> 
+
+&gt; cat template/backup/meta-data-static-ip-success-case
+instance-id: kf0
+local-hostname: kf0
+
+network-interfaces: |
+  iface eth0 inet static
+  address 192.168.122.2
+  network 192.168.122.0
+  netmask 255.255.255.0
+  broadcast 192.168.122.255
+  gateway 192.168.122.254
+<span style="color:#228b22"># EOF</span> 
+
+&gt; sh -x create-vm.sh
+
+</code></pre></div>
+                    
+                    <HR width="100%" id="EOF">
+		    <p style="color:#777;">Last modified on 2020-06-19</p>
+                    
                 </div>
-            </a>
+            </div>
             
-        
-    </div>
-</div>
+            
+            <nav class="post-pagination">
+
+                
+                <a class="newer-posts">
+			Next<br>No newer posts.
+                </a>
+                
+                
+                
+                <a class="older-posts" href="https://seaofnight.github.io/posts/ceph-create-filesystem/">
+			Previous<br>ceph create file system and mount 
+                </a>
+                
+            </nav>
+            <div class="post-comment-wrapper">
+                
+
+
+
+
+
 
 
             </div>
-
-<div class="pagination">
-    
-    <a class="pagination-action" style="opacity:0">
-    
-        <i class="material-icons pagination-action-icon">
-            chevron_left
-        </i>
-    </a>
-
-        <div class="pagination-indicator">
-            <span>1/2</span>
         </div>
-
-        
-        <a class="pagination-action" href="/posts/page/2/"
-           style="opacity:1">
-        
-                <i class="material-icons pagination-action-icon">
-                    chevron_right
-                </i>
-            </a>
+    </div>
 </div>
 
-
-<div id="single-column-footer">
+            </div><div id="single-column-footer">
 Hugo Theme <a href="https://github.com/amazingrise/hugo-theme-diary">Diary</a> by <a href="https://amazingrise.net">Rise</a>
 <br>
 Ported from <a href="https://mak1t0.cc/" target="_blank" rel="noreferrer noopener">Makito</a>'s <a href="https://github.com/SumiMakito/hexo-theme-journal/" target="_blank" rel="noreferrer noopener">Journal.</a> <br>

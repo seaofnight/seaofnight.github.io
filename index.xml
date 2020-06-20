@@ -6,9 +6,157 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>.</copyright>
-    <lastBuildDate>Sun, 07 Jun 2020 10:58:08 -0400</lastBuildDate>
+    <lastBuildDate>Fri, 19 Jun 2020 10:58:08 -0400</lastBuildDate>
     
         <atom:link href="https://seaofnight.github.io/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    
+        <item>
+        <title>cloud-init 을 이용한 간단한 KVM 배포 시나리오 </title>
+        <link>https://seaofnight.github.io/posts/cloud-init-basic/</link>
+        <pubDate>Fri, 19 Jun 2020 10:58:08 -0400</pubDate>
+        
+        <guid>https://seaofnight.github.io/posts/cloud-init-basic/</guid>
+        <description>Dev Blog https://seaofnight.github.io/posts/cloud-init-basic/ -&lt;h1 id=&#34;cloud-init-simple-provisioning-script&#34;&gt;cloud init simple provisioning script&lt;/h1&gt;
+&lt;ul&gt;
+&lt;li&gt;check exists cloud image&lt;/li&gt;
+&lt;li&gt;if image is dont exitst try download cloud image ans extract image&lt;/li&gt;
+&lt;li&gt;check exists vm file, if exists purge files&lt;/li&gt;
+&lt;li&gt;generate new user-data, meta-data&lt;/li&gt;
+&lt;li&gt;generate ci-image file&lt;/li&gt;
+&lt;li&gt;create vm&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;설명&#34;&gt;설명&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;아래 스크립트 대로 실행하면
+&lt;ul&gt;
+&lt;li&gt;인증 : ssh passwd 인증 root, yjkim1&lt;/li&gt;
+&lt;li&gt;인증 : ssh-authorized-key 인증, yjkim1 -&amp;gt; sudo 하셔서 다음 작업하시면 됨&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;metadata
+&lt;ul&gt;
+&lt;li&gt;static ip 정의 방법 까지는 테스트 해서 돌아가는것  확인 되었음&lt;/li&gt;
+&lt;li&gt;cloud-init 20.02 버전의 latest 상태이며&lt;/li&gt;
+&lt;li&gt;network 정의 방식이 nodatasource 의 레거시 정의방식은 잘되는것 확인&lt;/li&gt;
+&lt;li&gt;version2 는 netplan 방식이다보니 안되는듯 함&lt;/li&gt;
+&lt;li&gt;hostname 세팅도 잘되고 있음&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-sh&#34; data-lang=&#34;sh&#34;&gt;
+
+&amp;gt; ls -al template
+-rwxrwxrwx &lt;span style=&#34;color:#b452cd&#34;&gt;1&lt;/span&gt; root root &lt;span style=&#34;color:#b452cd&#34;&gt;858783744&lt;/span&gt;  6월 &lt;span style=&#34;color:#b452cd&#34;&gt;20&lt;/span&gt; 00:56 CentOS-7-x86_64-GenericCloud-2003.qcow2
+-rwxrwxrwx &lt;span style=&#34;color:#b452cd&#34;&gt;1&lt;/span&gt; root root       &lt;span style=&#34;color:#b452cd&#34;&gt;206&lt;/span&gt;  6월 &lt;span style=&#34;color:#b452cd&#34;&gt;20&lt;/span&gt; 12:41 meta-data
+-rwxrwxrwx &lt;span style=&#34;color:#b452cd&#34;&gt;1&lt;/span&gt; root root      &lt;span style=&#34;color:#b452cd&#34;&gt;1117&lt;/span&gt;  6월 &lt;span style=&#34;color:#b452cd&#34;&gt;20&lt;/span&gt; 12:00 user-data
+
+&amp;gt; cat template/user-data
+&lt;span style=&#34;color:#228b22&#34;&gt;#cloud-config&lt;/span&gt;
+users:
+  - name: yjkim1
+    passwd: &lt;span style=&#34;color:#00688b&#34;&gt;$6$5&lt;/span&gt;Z0nx4BSLgORhjka&lt;span style=&#34;color:#00688b&#34;&gt;$tTGRJQi9cdh8a3tNVfrWCl1gHT9&lt;/span&gt;/t0jGQtZ3D4Ksm5ytDu2FXIubiIqalFm8dkO8Z/N4ilZP4EH3FG5IUfxNu/
+    groups: wheel
+    lock_passwd: &lt;span style=&#34;color:#658b00&#34;&gt;false&lt;/span&gt;
+    shell: /bin/bash
+    sudo: [&lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#39;ALL=(ALL) NOPASSWD:ALL&amp;#39;&lt;/span&gt;]
+    ssh-authorized-keys:
+      - ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDP00kL5dEGl/yIXkrdtkd40kwYdUnKtUsoY7tV20Ns/LhaWHXdh5Vcfy0IUcOzEY5Hqb9issbe1daehc6wHmOeqbyuvFie0QRQbzdWQOHraMKyFJSQEDaG6kAHcFrqb5yyzNWvc8P4WC+0/NXzh72lR6Y82AT1BsKFHiOzFE1NWdUkFCKzm9L4DBftjZ/vQ3HH/Jdw0oxesO2PJo//xy+sh6ZCmTAj7P4aARV63K0dUOdd5sM5DtgVXn+S8weDQMIk1fDDX6ttScXmveXJPkcA4QsUTck47eQ2ZreOtrBt+D2dNcCSNpxW7fdvTH4bSB9jToGHBjqSWN1POWvtKG2Ox14HDxnkWTRLVQ3bZMiDsvpK76jrgwT8EZeZtxHc1SwNOQapwRyv6cmB5pDng6Guj+pahQ88NoVSFsOZQZzPW3eesZhPBv1k+TzE7Zr1fxkPhB9XvdcK2q69XuZyHk7icga1qKm8HLe8BRi8V3HGCkgTfRccEFiIRnGniC+Qkv8= yjkim1@yjkim1-15Z980-GP50ML
+
+    &lt;span style=&#34;color:#228b22&#34;&gt;# yjkim1:admin1234&lt;/span&gt; 
+    &lt;span style=&#34;color:#228b22&#34;&gt;# ssh-auth token 은 local 의 ssh key 이다. ssh-keygen -&amp;gt; ~/.ssh/idrsa.pub&lt;/span&gt;
+
+ssh_pwauth: &lt;span style=&#34;color:#658b00&#34;&gt;false&lt;/span&gt;
+disable_root: &lt;span style=&#34;color:#658b00&#34;&gt;false&lt;/span&gt;
+chpasswd:
+  list: |
+     root:admin1234
+  expire: False
+
+&lt;span style=&#34;color:#228b22&#34;&gt;# Remove cloud-init&lt;/span&gt;
+runcmd:
+&lt;span style=&#34;color:#228b22&#34;&gt;#  - yum -y remove cloud-init&lt;/span&gt;
+&lt;span style=&#34;color:#228b22&#34;&gt;#  - updatedb&lt;/span&gt;
+
+&lt;span style=&#34;color:#228b22&#34;&gt;# Configure where output will go&lt;/span&gt;
+output:
+  all: &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;&amp;gt;&amp;gt; /var/log/cloud-init.log&amp;#34;&lt;/span&gt;
+&lt;span style=&#34;color:#228b22&#34;&gt;# EOF&lt;/span&gt; 
+
+&amp;gt; cat template/meta-data
+instance-id: kf0
+local-hostname: kf0
+
+network:
+  version: &lt;span style=&#34;color:#b452cd&#34;&gt;1&lt;/span&gt;
+  config:
+  - id: eth0
+    mtu: &lt;span style=&#34;color:#b452cd&#34;&gt;1500&lt;/span&gt;
+    name: eth0
+    subnets:
+    - address: 192.168.122.14/24
+      gateway: 192.168.122.1
+      type: static
+&lt;span style=&#34;color:#228b22&#34;&gt;# EOF&lt;/span&gt;
+
+&amp;gt; cat create-vm.sh
+&lt;span style=&#34;color:#228b22&#34;&gt;#!/bin/bash&lt;/span&gt; 
+
+&lt;span style=&#34;color:#00688b&#34;&gt;WORKSPACE&lt;/span&gt;=&lt;span style=&#34;color:#cd5555&#34;&gt;${&lt;/span&gt;&lt;span style=&#34;color:#00688b&#34;&gt;PWD&lt;/span&gt;&lt;span style=&#34;color:#cd5555&#34;&gt;}&lt;/span&gt;
+&lt;span style=&#34;color:#00688b&#34;&gt;TEMPLATE&lt;/span&gt;=&lt;span style=&#34;color:#00688b&#34;&gt;$WORKSPACE&lt;/span&gt;/template
+
+&lt;span style=&#34;color:#00688b&#34;&gt;CPU&lt;/span&gt;=&lt;span style=&#34;color:#b452cd&#34;&gt;6&lt;/span&gt;
+&lt;span style=&#34;color:#00688b&#34;&gt;MEM&lt;/span&gt;=&lt;span style=&#34;color:#b452cd&#34;&gt;10240&lt;/span&gt;
+&lt;span style=&#34;color:#00688b&#34;&gt;HOSTNAME&lt;/span&gt;=kf0
+&lt;span style=&#34;color:#00688b&#34;&gt;DISK&lt;/span&gt;=&lt;span style=&#34;color:#00688b&#34;&gt;$HOSTNAME&lt;/span&gt;.qcow2
+
+&lt;span style=&#34;color:#00688b&#34;&gt;USER_DATA&lt;/span&gt;=user-data
+&lt;span style=&#34;color:#00688b&#34;&gt;META_DATA&lt;/span&gt;=meta-data
+&lt;span style=&#34;color:#00688b&#34;&gt;CI_ISO&lt;/span&gt;=&lt;span style=&#34;color:#00688b&#34;&gt;$HOSTNAME&lt;/span&gt;-cidata.iso
+
+&lt;span style=&#34;color:#00688b&#34;&gt;IMAGE&lt;/span&gt;=&lt;span style=&#34;color:#00688b&#34;&gt;$TEMPLATE&lt;/span&gt;/CentOS-7-x86_64-GenericCloud-2003.qcow2
+
+rm -rf &lt;span style=&#34;color:#00688b&#34;&gt;$WORKSPACE&lt;/span&gt;/&lt;span style=&#34;color:#00688b&#34;&gt;$HOSTNAME&lt;/span&gt; 
+mkdir -p &lt;span style=&#34;color:#00688b&#34;&gt;$WORKSPACE&lt;/span&gt;/&lt;span style=&#34;color:#00688b&#34;&gt;$HOSTNAME&lt;/span&gt;
+cp &lt;span style=&#34;color:#00688b&#34;&gt;$IMAGE&lt;/span&gt; &lt;span style=&#34;color:#00688b&#34;&gt;$WORKSPACE&lt;/span&gt;/&lt;span style=&#34;color:#00688b&#34;&gt;$HOSTNAME&lt;/span&gt;/&lt;span style=&#34;color:#00688b&#34;&gt;$HOSTNAME&lt;/span&gt;.qcow2
+
+cp &lt;span style=&#34;color:#00688b&#34;&gt;$TEMPLATE&lt;/span&gt;/user-data &lt;span style=&#34;color:#00688b&#34;&gt;$WORKSPACE&lt;/span&gt;/&lt;span style=&#34;color:#00688b&#34;&gt;$HOSTNAME&lt;/span&gt;/&lt;span style=&#34;color:#00688b&#34;&gt;$USER_DATA&lt;/span&gt;
+cp &lt;span style=&#34;color:#00688b&#34;&gt;$TEMPLATE&lt;/span&gt;/meta-data &lt;span style=&#34;color:#00688b&#34;&gt;$WORKSPACE&lt;/span&gt;/&lt;span style=&#34;color:#00688b&#34;&gt;$HOSTNAME&lt;/span&gt;/&lt;span style=&#34;color:#00688b&#34;&gt;$META_DATA&lt;/span&gt;
+
+genisoimage -output &lt;span style=&#34;color:#00688b&#34;&gt;$WORKSPACE&lt;/span&gt;/&lt;span style=&#34;color:#00688b&#34;&gt;$HOSTNAME&lt;/span&gt;/&lt;span style=&#34;color:#00688b&#34;&gt;$CI_ISO&lt;/span&gt; -volid cidata -joliet -r &lt;span style=&#34;color:#00688b&#34;&gt;$WORKSPACE&lt;/span&gt;/&lt;span style=&#34;color:#00688b&#34;&gt;$HOSTNAME&lt;/span&gt;/&lt;span style=&#34;color:#00688b&#34;&gt;$USER_DATA&lt;/span&gt; &lt;span style=&#34;color:#00688b&#34;&gt;$WORKSPACE&lt;/span&gt;/&lt;span style=&#34;color:#00688b&#34;&gt;$HOSTNAME&lt;/span&gt;/&lt;span style=&#34;color:#00688b&#34;&gt;$META_DATA&lt;/span&gt; &amp;amp;&amp;gt;&amp;gt; &lt;span style=&#34;color:#00688b&#34;&gt;$WORKSPACE&lt;/span&gt;/&lt;span style=&#34;color:#00688b&#34;&gt;$HOSTNAME&lt;/span&gt;/&lt;span style=&#34;color:#00688b&#34;&gt;$HOSTNAME&lt;/span&gt;-gen-image.log
+
+virt-install &lt;span style=&#34;color:#cd5555&#34;&gt;\
+&lt;/span&gt;&lt;span style=&#34;color:#cd5555&#34;&gt;&lt;/span&gt;  --memory &lt;span style=&#34;color:#00688b&#34;&gt;$MEM&lt;/span&gt; &lt;span style=&#34;color:#cd5555&#34;&gt;\
+&lt;/span&gt;&lt;span style=&#34;color:#cd5555&#34;&gt;&lt;/span&gt;  --vcpus &lt;span style=&#34;color:#00688b&#34;&gt;$CPU&lt;/span&gt; &lt;span style=&#34;color:#cd5555&#34;&gt;\
+&lt;/span&gt;&lt;span style=&#34;color:#cd5555&#34;&gt;&lt;/span&gt;  --name &lt;span style=&#34;color:#cd5555&#34;&gt;${&lt;/span&gt;&lt;span style=&#34;color:#00688b&#34;&gt;HOSTNAME&lt;/span&gt;&lt;span style=&#34;color:#cd5555&#34;&gt;}&lt;/span&gt; &lt;span style=&#34;color:#cd5555&#34;&gt;\
+&lt;/span&gt;&lt;span style=&#34;color:#cd5555&#34;&gt;&lt;/span&gt;  --disk &lt;span style=&#34;color:#00688b&#34;&gt;$WORKSPACE&lt;/span&gt;/&lt;span style=&#34;color:#00688b&#34;&gt;$HOSTNAME&lt;/span&gt;/&lt;span style=&#34;color:#00688b&#34;&gt;$HOSTNAME&lt;/span&gt;.qcow2,device=disk &lt;span style=&#34;color:#cd5555&#34;&gt;\
+&lt;/span&gt;&lt;span style=&#34;color:#cd5555&#34;&gt;&lt;/span&gt;  --disk &lt;span style=&#34;color:#00688b&#34;&gt;$WORKSPACE&lt;/span&gt;/&lt;span style=&#34;color:#00688b&#34;&gt;$HOSTNAME&lt;/span&gt;/&lt;span style=&#34;color:#00688b&#34;&gt;$CI_ISO&lt;/span&gt;,device=cdrom &lt;span style=&#34;color:#cd5555&#34;&gt;\
+&lt;/span&gt;&lt;span style=&#34;color:#cd5555&#34;&gt;&lt;/span&gt;  --os-type Linux &lt;span style=&#34;color:#cd5555&#34;&gt;\
+&lt;/span&gt;&lt;span style=&#34;color:#cd5555&#34;&gt;&lt;/span&gt;  --os-variant centos7.0 &lt;span style=&#34;color:#cd5555&#34;&gt;\
+&lt;/span&gt;&lt;span style=&#34;color:#cd5555&#34;&gt;&lt;/span&gt;  --virt-type kvm &lt;span style=&#34;color:#cd5555&#34;&gt;\
+&lt;/span&gt;&lt;span style=&#34;color:#cd5555&#34;&gt;&lt;/span&gt;  --graphics none &lt;span style=&#34;color:#cd5555&#34;&gt;\
+&lt;/span&gt;&lt;span style=&#34;color:#cd5555&#34;&gt;&lt;/span&gt;  --network default &lt;span style=&#34;color:#cd5555&#34;&gt;\
+&lt;/span&gt;&lt;span style=&#34;color:#cd5555&#34;&gt;&lt;/span&gt;  --import
+&lt;span style=&#34;color:#228b22&#34;&gt;# EOF&lt;/span&gt; 
+
+&amp;gt; cat template/backup/meta-data-static-ip-success-case
+instance-id: kf0
+local-hostname: kf0
+
+network-interfaces: |
+  iface eth0 inet static
+  address 192.168.122.2
+  network 192.168.122.0
+  netmask 255.255.255.0
+  broadcast 192.168.122.255
+  gateway 192.168.122.254
+&lt;span style=&#34;color:#228b22&#34;&gt;# EOF&lt;/span&gt; 
+
+&amp;gt; sh -x create-vm.sh
+
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;- https://seaofnight.github.io/posts/cloud-init-basic/ - .</description>
+        </item>
     
     
     
@@ -1432,172 +1580,6 @@ alt=&amp;#34;IMAGE ALT TEXT HERE&amp;#34; width=&amp;#34;240&amp;#34; height=&am
 &lt;hr&gt;
 &lt;p&gt;License: &lt;a href=&#34;https://creativecommons.org/licenses/by/3.0/&#34;&gt;CC-BY&lt;/a&gt;&lt;/p&gt;
 - https://seaofnight.github.io/posts/markdown-list/ - .</description>
-        </item>
-    
-    
-    
-        <item>
-        <title>install-k8s-cluster-with-kubespray</title>
-        <link>https://seaofnight.github.io/posts/kubernetes-install/</link>
-        <pubDate>Sun, 22 Sep 2019 10:58:08 -0400</pubDate>
-        
-        <guid>https://seaofnight.github.io/posts/kubernetes-install/</guid>
-        <description>Dev Blog https://seaofnight.github.io/posts/kubernetes-install/ -&lt;h1 id=&#34;개요&#34;&gt;개요&lt;/h1&gt;
-&lt;p&gt;오늘은 K8s Cluster 을 간략하게 생성 해보는 예제를 기록해 보려고 한다.
-Cluster 생성은 Kubespray 프로젝트를 이용하여 생성할 예정이다.&lt;/p&gt;
-&lt;h1 id=&#34;클러스터-정보&#34;&gt;클러스터 정보&lt;/h1&gt;
-&lt;ul&gt;
-&lt;li&gt;vm 생성 : vagrant&lt;/li&gt;
-&lt;li&gt;호스트 정보
-&lt;ul&gt;
-&lt;li&gt;k8s-master : 10.0.3.2&lt;/li&gt;
-&lt;li&gt;k8s-node1 : 10.0.3.3&lt;/li&gt;
-&lt;li&gt;k8s-node2  : 10.0.3.4&lt;/li&gt;
-&lt;/ul&gt;
-&lt;/li&gt;
-&lt;li&gt;single master, 2 node&lt;/li&gt;
-&lt;/ul&gt;
-&lt;h1 id=&#34;사전-설치&#34;&gt;사전 설치&lt;/h1&gt;
-&lt;ul&gt;
-&lt;li&gt;사전설치 요소에는 아래와 같다.
-&lt;ul&gt;
-&lt;li&gt;pip 설치&lt;/li&gt;
-&lt;li&gt;kubespray 프로젝트 클론&lt;/li&gt;
-&lt;li&gt;ansible 설치 : pip install 하면 설치됨&lt;/li&gt;
-&lt;/ul&gt;
-&lt;/li&gt;
-&lt;li&gt;나머지 sshd, user account,  host 설정은 skip 한다.&lt;/li&gt;
-&lt;/ul&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-sh&#34; data-lang=&#34;sh&#34;&gt;$ sudo yum install -y git python-pip 
-$ git clone https://github.com/kubernetes-sigs/kubespray
-$ pip install  -r kubespray/requirements.txt
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;ul&gt;
-&lt;li&gt;ssh fingerprint 관련 설정을 해준다.&lt;/li&gt;
-&lt;li&gt;아래는 쉘 파일 내용이니 붙여 넣기한후에 실행 해주면 된다.&lt;/li&gt;
-&lt;/ul&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-sh&#34; data-lang=&#34;sh&#34;&gt;
-
-&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;function&lt;/span&gt; append_hosts_info(){
-cat &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;lt;&amp;lt; EOF &amp;gt;&amp;gt; /etc/hosts
-&lt;/span&gt;&lt;span style=&#34;color:#cd5555&#34;&gt;# kubernetes nodes
-&lt;/span&gt;&lt;span style=&#34;color:#cd5555&#34;&gt;10.0.3.2 k8s-master1
-&lt;/span&gt;&lt;span style=&#34;color:#cd5555&#34;&gt;10.0.3.3 k8s-worker1
-&lt;/span&gt;&lt;span style=&#34;color:#cd5555&#34;&gt;10.0.3.4 k8s-worker2
-&lt;/span&gt;&lt;span style=&#34;color:#cd5555&#34;&gt;EOF&lt;/span&gt;
-
-
-&lt;span style=&#34;color:#228b22&#34;&gt;# master&lt;/span&gt; 
-firewall-cmd --permanent --add-service=https
-firewall-cmd --permanent --add-port=443/tcp
-firewall-cmd --permanent --add-port=6443/tcp
-firewall-cmd --permanent --add-port=2379-2380/tcp
-firewall-cmd --permanent --add-port=10250/tcp
-firewall-cmd --permanent --add-port=10251/tcp
-firewall-cmd --permanent --add-port=10252/tcp
-firewall-cmd --permanent --add-port=10255/tcp
-firewall-cmd --permanent --add-port=8472/udp
-firewall-cmd --add-masquerade --permanent
-firewall-cmd --permanent --add-port=30000-32767/tcp
-
-&lt;span style=&#34;color:#228b22&#34;&gt;# worker&lt;/span&gt; 
-firewall-cmd --permanent --add-port=10250/tcp
-firewall-cmd --permanent --add-port=10255/tcp
-firewall-cmd --permanent --add-port=8472/udp
-firewall-cmd --permanent --add-port=30000-32767/tcp
-firewall-cmd --add-masquerade --permanent
-
-
-}
-
-
-&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;function&lt;/span&gt; generate_ssh_key(){
-
- cat /dev/zero | ssh-keygen -q -N &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;&amp;#34;&lt;/span&gt;
-
-}
-
-&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;function&lt;/span&gt; deploy_ssh_key_all_nodes(){
-
- &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;for&lt;/span&gt; i in &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;$(&lt;/span&gt;cat /etc/hosts | tail -n &lt;span style=&#34;color:#b452cd&#34;&gt;3&lt;/span&gt; | awk &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#39;{print $2}&amp;#39;&lt;/span&gt;&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;)&lt;/span&gt; ; &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;do&lt;/span&gt;
-  ssh-keyscan -t rsa &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;&lt;/span&gt;&lt;span style=&#34;color:#00688b&#34;&gt;$i&lt;/span&gt;&lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;&lt;/span&gt; &amp;gt;&amp;gt; ~/.ssh/known_hosts
-  sshpass -p &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;vagrant&amp;#34;&lt;/span&gt; ssh-copy-id -i /root/.ssh/id_rsa.pub root@&lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;&lt;/span&gt;&lt;span style=&#34;color:#00688b&#34;&gt;$i&lt;/span&gt;&lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;&lt;/span&gt;
-  ssh &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;&lt;/span&gt;&lt;span style=&#34;color:#00688b&#34;&gt;$i&lt;/span&gt;&lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;&lt;/span&gt; hostname
- &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;done&lt;/span&gt;
-
-
-}
-
-
-main(){
-
- append_hosts_info
- generate_ssh_key
- deploy_ssh_key_all_nodes
-
-}
-
-main
-
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h1 id=&#34;설치-하고자-할-cluster-설정&#34;&gt;설치 하고자 할 cluster 설정&lt;/h1&gt;
-&lt;ul&gt;
-&lt;li&gt;kubespray 를 이용하여 cluster를 정의 하려면 inventory 파일을 수정해 주어야 한다.&lt;/li&gt;
-&lt;li&gt;kubespary 의 인벤토리 파일은 inventory 파일의 sample 폴더를 참고 하면 된다.&lt;/li&gt;
-&lt;/ul&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-sh&#34; data-lang=&#34;sh&#34;&gt;$ cp -rfp kubespray/inventory/sample kubespray/inventory/mycluster
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h1 id=&#34;inventory-설정&#34;&gt;inventory 설정&lt;/h1&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-sh&#34; data-lang=&#34;sh&#34;&gt;
-$ cat &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;lt;&amp;lt; EOF &amp;gt; kubespray/inventory/mycluster/hosts.ini
-&lt;/span&gt;&lt;span style=&#34;color:#cd5555&#34;&gt;[all]
-&lt;/span&gt;&lt;span style=&#34;color:#cd5555&#34;&gt;k8s-master ansible_host=10.0.3.2 ip=10.0.3.2 etcd_member_name=etcd1
-&lt;/span&gt;&lt;span style=&#34;color:#cd5555&#34;&gt;k8s-node1 ansible_host=10.0.3.3 ip=10.0.3.3
-&lt;/span&gt;&lt;span style=&#34;color:#cd5555&#34;&gt;k8s-node2 ansible_host=10.0.3.4 ip=10.0.3.4
-&lt;/span&gt;&lt;span style=&#34;color:#cd5555&#34;&gt;
-&lt;/span&gt;&lt;span style=&#34;color:#cd5555&#34;&gt;[kube-master]
-&lt;/span&gt;&lt;span style=&#34;color:#cd5555&#34;&gt;k8s-master
-&lt;/span&gt;&lt;span style=&#34;color:#cd5555&#34;&gt;
-&lt;/span&gt;&lt;span style=&#34;color:#cd5555&#34;&gt;[kube-node]
-&lt;/span&gt;&lt;span style=&#34;color:#cd5555&#34;&gt;k8s-master
-&lt;/span&gt;&lt;span style=&#34;color:#cd5555&#34;&gt;k8s-node1
-&lt;/span&gt;&lt;span style=&#34;color:#cd5555&#34;&gt;k8s-node2
-&lt;/span&gt;&lt;span style=&#34;color:#cd5555&#34;&gt;
-&lt;/span&gt;&lt;span style=&#34;color:#cd5555&#34;&gt;[etcd]
-&lt;/span&gt;&lt;span style=&#34;color:#cd5555&#34;&gt;k8s-master
-&lt;/span&gt;&lt;span style=&#34;color:#cd5555&#34;&gt;
-&lt;/span&gt;&lt;span style=&#34;color:#cd5555&#34;&gt;[k8s-cluster:children]
-&lt;/span&gt;&lt;span style=&#34;color:#cd5555&#34;&gt;kube-node
-&lt;/span&gt;&lt;span style=&#34;color:#cd5555&#34;&gt;kube-master
-&lt;/span&gt;&lt;span style=&#34;color:#cd5555&#34;&gt;
-&lt;/span&gt;&lt;span style=&#34;color:#cd5555&#34;&gt;EOF&lt;/span&gt;
-
-$ cat kubespray/inventory/mycluster/hosts.ini
-
-&lt;span style=&#34;color:#228b22&#34;&gt;# network 가 flannel -&amp;gt; calico 로 변경해주는 스크립트이다.&lt;/span&gt; 
-$ sed -i &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#39;s/kube_network_plugin: flannel/kube_network_plugin: calico/&amp;#39;&lt;/span&gt; kubespray/inventory/mycluster/group_vars/k8s-cluster/k8s-cluster.yml
-
-&lt;span style=&#34;color:#228b22&#34;&gt;# external lb 가 있을경우에는 해당 IP 를 요기 추가해주어야된다.&lt;/span&gt; 
-$ &lt;span style=&#34;color:#658b00&#34;&gt;echo&lt;/span&gt; -e &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;supplementary_addresses_in_ssl_keys: [219.250.188.73]&amp;#34;&lt;/span&gt; &amp;gt;&amp;gt; kubespray/inventory/mycluster/group_vars/k8s-cluster/k8s-cluster.yml
-
-&lt;span style=&#34;color:#228b22&#34;&gt;# multus 를 사용할 경우엔 실행 시켜주면 된다.&lt;/span&gt; 
-$ sed -i &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#39;s/kube_network_plugin_multus: false/kube_network_plugin_multus: true/&amp;#39;&lt;/span&gt; kubespray/inventory/mycluster/group_vars/k8s-cluster/k8s-cluster.yml
-
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h1 id=&#34;설치&#34;&gt;설치&lt;/h1&gt;
-&lt;ul&gt;
-&lt;li&gt;인벤토리 설정이 정상적으로 진행되었다면 설치를 진행한다.&lt;/li&gt;
-&lt;/ul&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-sh&#34; data-lang=&#34;sh&#34;&gt;
-$ ansible-playbook -b -i inventory/mycluster/host.ini cluster.yml 
-
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h1 id=&#34;일부-기능만-설치-하고자-할경우&#34;&gt;일부 기능만 설치 하고자 할경우&lt;/h1&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-sh&#34; data-lang=&#34;sh&#34;&gt;&lt;span style=&#34;color:#228b22&#34;&gt;# ansible tag 조회&lt;/span&gt; 
-ansible-playbook -b -i inventory/mycluster/hosts.ini cluster.yml --list-tags
-
-&lt;span style=&#34;color:#228b22&#34;&gt;# 설치하고자 하는 플러그인을 태그명에 넣어준다.&lt;/span&gt; 
-ansible-playbook -b -i inventory/mycluster/hosts.ini cluster.yml --tags=&lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;rbd-provisioner,helm,metrics_server&amp;#34;&lt;/span&gt;
-ansible-playbook -b -i inventory/mycluster/hosts.ini cluster.yml --tags=&lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;ingress_controller&amp;#34;&lt;/span&gt;
-ansible-playbook -b -i kubespray/inventory/mycluster/hosts.ini kubespray/cluster.yml --tags=&lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;coredns,nodelocaldns&amp;#34;&lt;/span&gt;
-
-
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;- https://seaofnight.github.io/posts/kubernetes-install/ - .</description>
         </item>
     
     

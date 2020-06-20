@@ -7,10 +7,19 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>.</copyright>
-    <lastBuildDate>Sun, 07 Jun 2020 10:58:08 -0400</lastBuildDate>
+    <lastBuildDate>Fri, 19 Jun 2020 10:58:08 -0400</lastBuildDate>
     
 	<atom:link href="https://seaofnight.github.io/posts/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>cloud-init 을 이용한 간단한 KVM 배포 시나리오 </title>
+      <link>https://seaofnight.github.io/posts/cloud-init-basic/</link>
+      <pubDate>Fri, 19 Jun 2020 10:58:08 -0400</pubDate>
+      
+      <guid>https://seaofnight.github.io/posts/cloud-init-basic/</guid>
+      <description>cloud init simple provisioning script  check exists cloud image if image is dont exitst try download cloud image ans extract image check exists vm file, if exists purge files generate new user-data, meta-data generate ci-image file create vm  설명  아래 스크립트 대로 실행하면  인증 : ssh passwd 인증 root, yjkim1 인증 : ssh-authorized-key 인증, yjkim1 -&amp;gt; sudo 하셔서 다음 작업하시면 됨   metadata  static ip 정의 방법 까지는 테스트 해서 돌아가는것 확인 되었음 cloud-init 20.</description>
+    </item>
     
     <item>
       <title>ceph create file system and mount </title>
