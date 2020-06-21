@@ -18,14 +18,14 @@
         <pubDate>Fri, 19 Jun 2020 10:58:08 -0400</pubDate>
         
         <guid>https://seaofnight.github.io/posts/cloud-init-basic/</guid>
-        <description>Dev Blog https://seaofnight.github.io/posts/cloud-init-basic/ -&lt;h1 id=&#34;cloud-init-simple-provisioning-script&#34;&gt;cloud init simple provisioning script&lt;/h1&gt;
+        <description>Dev Blog https://seaofnight.github.io/posts/cloud-init-basic/ -&lt;h1 id=&#34;todo-list&#34;&gt;todo list&lt;/h1&gt;
 &lt;ul&gt;
-&lt;li&gt;check exists cloud image&lt;/li&gt;
-&lt;li&gt;if image is dont exitst try download cloud image ans extract image&lt;/li&gt;
-&lt;li&gt;check exists vm file, if exists purge files&lt;/li&gt;
-&lt;li&gt;generate new user-data, meta-data&lt;/li&gt;
-&lt;li&gt;generate ci-image file&lt;/li&gt;
-&lt;li&gt;create vm&lt;/li&gt;
+&lt;li&gt;&lt;input disabled=&#34;&#34; type=&#34;checkbox&#34;&gt; check exists cloud image&lt;/li&gt;
+&lt;li&gt;&lt;input disabled=&#34;&#34; type=&#34;checkbox&#34;&gt; if image is dont exitst try download cloud image ans extract image&lt;/li&gt;
+&lt;li&gt;&lt;input checked=&#34;&#34; disabled=&#34;&#34; type=&#34;checkbox&#34;&gt; check exists vm file, if exists purge files&lt;/li&gt;
+&lt;li&gt;&lt;input checked=&#34;&#34; disabled=&#34;&#34; type=&#34;checkbox&#34;&gt; generate new user-data, meta-data&lt;/li&gt;
+&lt;li&gt;&lt;input checked=&#34;&#34; disabled=&#34;&#34; type=&#34;checkbox&#34;&gt; generate ci-image file&lt;/li&gt;
+&lt;li&gt;&lt;input checked=&#34;&#34; disabled=&#34;&#34; type=&#34;checkbox&#34;&gt; create vm&lt;/li&gt;
 &lt;/ul&gt;
 &lt;h3 id=&#34;설명&#34;&gt;설명&lt;/h3&gt;
 &lt;ul&gt;
@@ -41,6 +41,7 @@
 &lt;li&gt;cloud-init 20.02 버전의 latest 상태이며&lt;/li&gt;
 &lt;li&gt;network 정의 방식이 nodatasource 의 레거시 정의방식은 잘되는것 확인&lt;/li&gt;
 &lt;li&gt;version2 는 netplan 방식이다보니 안되는듯 함&lt;/li&gt;
+&lt;li&gt;version1 도 해보니 안됨, 추가 디버깅 필요&lt;/li&gt;
 &lt;li&gt;hostname 세팅도 잘되고 있음&lt;/li&gt;
 &lt;/ul&gt;
 &lt;/li&gt;
@@ -155,7 +156,11 @@ network-interfaces: |
 
 &amp;gt; sh -x create-vm.sh
 
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h1 id=&#34;참고자료&#34;&gt;참고자료&lt;/h1&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h1 id=&#34;결과물&#34;&gt;결과물&lt;/h1&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://github.com/seaofnight/cloud-init-tutorial&#34;&gt;https://github.com/seaofnight/cloud-init-tutorial&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h1 id=&#34;참고자료&#34;&gt;참고자료&lt;/h1&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;a href=&#34;https://stafwag.github.io/blog/blog/2019/03/03/howto-use-centos-cloud-images-with-cloud-init/&#34;&gt;how to use centos cloud image with cloud-init&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href=&#34;https://fabianlee.org/2020/03/14/kvm-testing-cloud-init-locally-using-kvm-for-a-centos-cloud-image/&#34;&gt;fabianlee - kvm cloud-init local centos&lt;/a&gt;&lt;/li&gt;

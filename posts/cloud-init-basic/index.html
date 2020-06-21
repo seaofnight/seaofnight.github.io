@@ -145,8 +145,8 @@ Ported from <a href="https://mak1t0.cc/" target="_blank" rel="noreferrer noopene
 						
 						
 							<li>
-								<a href="#cloud-init-simple-provisioning-script" onclick="collapseOthers(`#cloud-init-simple-provisioning-script-nav`)" id="cloud-init-simple-provisioning-script-nav">
-									cloud init simple provisioning script
+								<a href="#todo-list" onclick="collapseOthers(`#todo-list-nav`)" id="todo-list-nav">
+									todo list
 								</a>
 							</li>
 						
@@ -189,6 +189,24 @@ Ported from <a href="https://mak1t0.cc/" target="_blank" rel="noreferrer noopene
 							
 								</ul>
 							
+						
+						
+						
+							<li>
+								<a href="#%ea%b2%b0%ea%b3%bc%eb%ac%bc" onclick="collapseOthers(`#결과물-nav`)" id="결과물-nav">
+									결과물
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
 						
 						
 						
@@ -287,8 +305,8 @@ Ported from <a href="https://mak1t0.cc/" target="_blank" rel="noreferrer noopene
 						
 						
 							<li>
-								<a href="#cloud-init-simple-provisioning-script" onclick="collapseOthers(`#cloud-init-simple-provisioning-script-nav`)" id="cloud-init-simple-provisioning-script-nav">
-									cloud init simple provisioning script
+								<a href="#todo-list" onclick="collapseOthers(`#todo-list-nav`)" id="todo-list-nav">
+									todo list
 								</a>
 							</li>
 						
@@ -331,6 +349,24 @@ Ported from <a href="https://mak1t0.cc/" target="_blank" rel="noreferrer noopene
 							
 								</ul>
 							
+						
+						
+						
+							<li>
+								<a href="#%ea%b2%b0%ea%b3%bc%eb%ac%bc" onclick="collapseOthers(`#결과물-nav`)" id="결과물-nav">
+									결과물
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
 						
 						
 						
@@ -438,14 +474,14 @@ Ported from <a href="https://mak1t0.cc/" target="_blank" rel="noreferrer noopene
                 
                 <div class="post-body" v-pre>
                 
-                    <h1 id="cloud-init-simple-provisioning-script">cloud init simple provisioning script</h1>
+                    <h1 id="todo-list">todo list</h1>
 <ul>
-<li>check exists cloud image</li>
-<li>if image is dont exitst try download cloud image ans extract image</li>
-<li>check exists vm file, if exists purge files</li>
-<li>generate new user-data, meta-data</li>
-<li>generate ci-image file</li>
-<li>create vm</li>
+<li><input disabled="" type="checkbox"> check exists cloud image</li>
+<li><input disabled="" type="checkbox"> if image is dont exitst try download cloud image ans extract image</li>
+<li><input checked="" disabled="" type="checkbox"> check exists vm file, if exists purge files</li>
+<li><input checked="" disabled="" type="checkbox"> generate new user-data, meta-data</li>
+<li><input checked="" disabled="" type="checkbox"> generate ci-image file</li>
+<li><input checked="" disabled="" type="checkbox"> create vm</li>
 </ul>
 <h3 id="설명">설명</h3>
 <ul>
@@ -461,6 +497,7 @@ Ported from <a href="https://mak1t0.cc/" target="_blank" rel="noreferrer noopene
 <li>cloud-init 20.02 버전의 latest 상태이며</li>
 <li>network 정의 방식이 nodatasource 의 레거시 정의방식은 잘되는것 확인</li>
 <li>version2 는 netplan 방식이다보니 안되는듯 함</li>
+<li>version1 도 해보니 안됨, 추가 디버깅 필요</li>
 <li>hostname 세팅도 잘되고 있음</li>
 </ul>
 </li>
@@ -575,7 +612,11 @@ network-interfaces: |
 
 &gt; sh -x create-vm.sh
 
-</code></pre></div><h1 id="참고자료">참고자료</h1>
+</code></pre></div><h1 id="결과물">결과물</h1>
+<ul>
+<li><a href="https://github.com/seaofnight/cloud-init-tutorial">https://github.com/seaofnight/cloud-init-tutorial</a></li>
+</ul>
+<h1 id="참고자료">참고자료</h1>
 <ul>
 <li><a href="https://stafwag.github.io/blog/blog/2019/03/03/howto-use-centos-cloud-images-with-cloud-init/">how to use centos cloud image with cloud-init</a></li>
 <li><a href="https://fabianlee.org/2020/03/14/kvm-testing-cloud-init-locally-using-kvm-for-a-centos-cloud-image/">fabianlee - kvm cloud-init local centos</a></li>
