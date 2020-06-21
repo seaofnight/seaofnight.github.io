@@ -155,7 +155,16 @@ network-interfaces: |
 
 &amp;gt; sh -x create-vm.sh
 
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;- https://seaofnight.github.io/posts/cloud-init-basic/ - .</description>
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h1 id=&#34;참고자료&#34;&gt;참고자료&lt;/h1&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://stafwag.github.io/blog/blog/2019/03/03/howto-use-centos-cloud-images-with-cloud-init/&#34;&gt;how to use centos cloud image with cloud-init&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://fabianlee.org/2020/03/14/kvm-testing-cloud-init-locally-using-kvm-for-a-centos-cloud-image/&#34;&gt;fabianlee - kvm cloud-init local centos&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://gist.github.com/itzg/2577205f2036f787a2bd876ae458e18e&#34;&gt;ref gist&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux_atomic_host/7/html/installation_and_configuration_guide/setting_up_cloud_init&#34;&gt;redhat cloud init&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://docs.nebbiolo.io/latest/sw-adminguide/onprem-cloud-init/&#34;&gt;on prem cloud-init example&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://cloudinit.readthedocs.io/en/latest/index.html&#34;&gt;cloud-init&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+- https://seaofnight.github.io/posts/cloud-init-basic/ - .</description>
         </item>
     
     
